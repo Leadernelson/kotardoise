@@ -83,7 +83,7 @@
     
     .books-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
       width: 100%;
@@ -93,12 +93,13 @@
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 1.5rem;
+      padding: 1.75rem;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
       border: 1px solid rgba(255, 255, 255, 0.2);
       position: relative;
       overflow: hidden;
+      min-width: 420px;
     }
     
     .book::before {
@@ -144,6 +145,7 @@
     .info {
       flex: 1;
       min-width: 0;
+      overflow: hidden;
     }
     
     .info h2 {
@@ -157,16 +159,19 @@
     
     .info-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       margin: 0.75rem 0;
       padding: 0.5rem 0;
+      min-width: 0;
+      gap: 0.75rem;
     }
     
     .info-label {
       font-weight: 500;
       color: #4a5568;
-      min-width: 80px;
+      min-width: 90px;
       font-size: 0.9rem;
+      flex-shrink: 0;
     }
     
     .info-value {
@@ -174,6 +179,19 @@
       font-weight: 400;
       flex: 1;
       word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      max-width: 100%;
+    }
+    
+    .info-value.isbn {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      min-width: 0;
+      max-width: 220px;
     }
     
     .stock-badge {
@@ -186,11 +204,18 @@
       background: linear-gradient(135deg, #48bb78, #38a169);
       color: white;
       box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     
     .stock-badge.out-of-stock {
       background: linear-gradient(135deg, #f56565, #e53e3e);
       box-shadow: 0 2px 8px rgba(245, 101, 101, 0.3);
+    }
+    
+    .stock-badge.undefined {
+      background: linear-gradient(135deg, #a0aec0, #718096);
+      box-shadow: 0 2px 8px rgba(160, 174, 192, 0.3);
     }
     
     .loading {
@@ -217,6 +242,70 @@
       100% { transform: rotate(360deg); }
     }
     
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 3rem 0 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .pagination button {
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #4a5568;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      min-width: 44px;
+      font-size: 0.9rem;
+    }
+    
+    .pagination button:hover:not(:disabled) {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination button.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .pagination .page-info {
+      color: white;
+      font-weight: 500;
+      margin: 0 1rem;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      font-size: 0.9rem;
+    }
+    
+    .results-info {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+    
+    .results-info strong {
+      font-weight: 600;
+      color: white;
+    }
+    
     .no-results {
       text-align: center;
       color: white;
@@ -224,15 +313,13 @@
       margin-top: 3rem;
       opacity: 0.8;
     }
-    
-    /* Tablettes en mode portrait */
     @media (max-width: 1024px) {
       .container {
         padding: 1.5rem;
       }
       
       .books-grid {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
         gap: 1.5rem;
       }
       
@@ -300,7 +387,7 @@
       }
       
       .info-label {
-        min-width: 70px;
+        min-width: 85px;
         font-size: 0.85rem;
       }
       
@@ -418,6 +505,29 @@
         margin-top: 2rem;
         padding: 0 1rem;
       }
+      
+      .pagination {
+        gap: 0.25rem;
+        margin: 2rem 0 1.5rem;
+      }
+      
+      .pagination button {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+        min-width: 40px;
+      }
+      
+      .pagination .page-info {
+        margin: 0 0.5rem;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
+      
+      .results-info {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        padding: 0 0.5rem;
+      }
     }
     
     /* Très petits écrans */
@@ -484,31 +594,54 @@
       <input type="text" id="search" placeholder="Rechercher un livre, un auteur ou un ISBN...">
     </div>
     <div id="livres" class="books-grid"></div>
+    <div id="results-info" class="results-info"></div>
+    <div id="pagination" class="pagination"></div>
   </div>
 
   <script>
     let allBooks = [];
+    let filteredBooks = [];
+    let currentPage = 1;
+    const booksPerPage = 10; // Nombre de livres par page
 
-    function renderBooks(books) {
+    function renderBooks(books, page = 1) {
       const container = document.getElementById("livres");
+      const resultsInfo = document.getElementById("results-info");
+      const pagination = document.getElementById("pagination");
       
       if (books.length === 0) {
         container.innerHTML = '<div class="no-results">Aucun livre trouvé 📚</div>';
+        resultsInfo.innerHTML = '';
+        pagination.innerHTML = '';
         return;
       }
       
+      // Calcul de pagination
+      const totalPages = Math.ceil(books.length / booksPerPage);
+      const startIndex = (page - 1) * booksPerPage;
+      const endIndex = startIndex + booksPerPage;
+      const booksToShow = books.slice(startIndex, endIndex);
+      
+      // Affichage des informations de résultats
+      resultsInfo.innerHTML = `
+        <strong>${books.length}</strong> livre${books.length > 1 ? 's' : ''} trouvé${books.length > 1 ? 's' : ''}
+        | Page <strong>${page}</strong> sur <strong>${totalPages}</strong>
+        | Affichage de <strong>${startIndex + 1}</strong> à <strong>${Math.min(endIndex, books.length)}</strong>
+      `;
+      
+      // Rendu des livres
       container.innerHTML = "";
-
-      books.forEach(livre => {
+      booksToShow.forEach((livre, index) => {
         const div = document.createElement("div");
         div.className = "book";
+        div.style.animationDelay = `${index * 0.1}s`;
 
         const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-L.jpg`;
 
         div.innerHTML = `
           <div class="book-content">
             <div class="book-cover">
-              <img src="${coverURL}" alt="Couverture de ${livre.Titre}" onerror="this.src='https://via.placeholder.com/120x160/667eea/white?text=📚'">
+              <img src="${coverURL}" alt="Couverture de ${livre.Titre}" onerror="this.src='https://via.placeholder.com/120x160/667eea/white?text=📚'" loading="lazy">
             </div>
             <div class="info">
               <h2>${livre.Titre}</h2>
@@ -518,43 +651,165 @@
               </div>
               <div class="info-item">
                 <span class="info-label">ISBN:</span>
-                <span class="info-value">${livre.ISBN}</span>
+                <span class="info-value isbn">${livre.ISBN}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Stock:</span>
-                <span class="stock-badge ${livre.Stock == 0 ? 'out-of-stock' : ''}">${livre.Stock} exemplaire${livre.Stock > 1 ? 's' : ''}</span>
+                <span class="stock-badge ${
+                  (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
+                  (livre.Stock == 0) ? 'out-of-stock' : ''
+                }">${
+                  (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : 
+                  `${livre.Stock} ${(livre.Stock != 1) ? 'exemplaires' : 'exemplaire'}`
+                }</span>
               </div>
             </div>
           </div>
         `;
         container.appendChild(div);
       });
+      
+      // Rendu de la pagination
+      renderPagination(totalPages, page);
     }
 
-    // Afficher un indicateur de chargement
-    const container = document.getElementById("livres");
-    container.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement des livres...</div>';
+    function renderPagination(totalPages, currentPage) {
+      const pagination = document.getElementById("pagination");
+      
+      if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+      }
+      
+      let paginationHTML = '';
+      
+      // Bouton Précédent
+      paginationHTML += `
+        <button onclick="changePage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>
+          ← Précédent
+        </button>
+      `;
+      
+      // Logique des numéros de page
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, currentPage + 2);
+      
+      // Première page
+      if (startPage > 1) {
+        paginationHTML += `<button onclick="changePage(1)" ${currentPage === 1 ? 'class="active"' : ''}>1</button>`;
+        if (startPage > 2) {
+          paginationHTML += '<span class="page-info">...</span>';
+        }
+      }
+      
+      // Pages autour de la page actuelle
+      for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+          <button onclick="changePage(${i})" ${i === currentPage ? 'class="active"' : ''}>
+            ${i}
+          </button>
+        `;
+      }
+      
+      // Dernière page
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          paginationHTML += '<span class="page-info">...</span>';
+        }
+        paginationHTML += `<button onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'class="active"' : ''}>${totalPages}</button>`;
+      }
+      
+      // Bouton Suivant
+      paginationHTML += `
+        <button onclick="changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
+          Suivant →
+        </button>
+      `;
+      
 
-    fetch("https://opensheet.elk.sh/1LBcmGmEKOn8LscQunZrINNY8RWlKHkxT2qb6liInYuQ/1")
-      .then(res => res.json())
-      .then(data => {
+      
+      pagination.innerHTML = paginationHTML;
+    }
+
+    function changePage(page) {
+      if (page < 1 || page > Math.ceil(filteredBooks.length / booksPerPage)) return;
+      
+      currentPage = page;
+      renderBooks(filteredBooks, currentPage);
+      
+      // Scroll vers le haut
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function performSearch(query) {
+      if (!query.trim()) {
+        filteredBooks = [...allBooks];
+      } else {
+        const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
+        
+        // Recherche exhaustive dans tous les livres chargés
+        filteredBooks = allBooks.filter(livre => {
+          const searchableText = [
+            livre.Titre?.toLowerCase() || '',
+            livre.Auteur?.toLowerCase() || '',
+            livre.ISBN?.toLowerCase() || ''
+          ].join(' ');
+          
+          return searchTerms.every(term => searchableText.includes(term));
+        });
+      }
+      
+      currentPage = 1;
+      renderBooks(filteredBooks, currentPage);
+    }
+
+
+
+    // Chargement complet automatique pour garantir une recherche exhaustive
+    async function loadInitialBooks() {
+      const container = document.getElementById("livres");
+      const resultsInfo = document.getElementById("results-info");
+      
+      container.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement de la bibliothèque complète...</div>';
+      resultsInfo.innerHTML = '';
+
+      try {
+        // Charge automatiquement toute la bibliothèque pour garantir une recherche complète
+        const response = await fetch("https://opensheet.elk.sh/1LBcmGmEKOn8LscQunZrINNY8RWlKHkxT2qb6liInYuQ/1");
+        const data = await response.json();
+        
+        console.log(`📚 Chargement de ${data.length} livres...`);
+        
+        // Charger tous les livres d'un coup pour garantir une recherche exhaustive
         allBooks = data;
-        renderBooks(allBooks);
-      })
-      .catch(error => {
+        
+        console.log(`📚 Bibliothèque complète chargée: ${allBooks.length} livres - Recherche exhaustive disponible`);
+        
+        filteredBooks = [...allBooks];
+        renderBooks(filteredBooks, 1);
+        
+      } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
         container.innerHTML = '<div class="no-results">Erreur lors du chargement des données 😞</div>';
-      });
+        resultsInfo.innerHTML = '';
+      }
+    }
 
+
+
+    // Recherche avec debounce optimisé
+    let searchTimeout;
     document.getElementById("search").addEventListener("input", function () {
-      const query = this.value.toLowerCase();
-      const filtered = allBooks.filter(livre =>
-        livre.Titre?.toLowerCase().includes(query) ||
-        livre.Auteur?.toLowerCase().includes(query) ||
-        livre.ISBN?.toLowerCase().includes(query)
-      );
-      renderBooks(filtered);
+      const query = this.value;
+      
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        performSearch(query);
+      }, 300); // Délai fixe maintenant que tout est chargé
     });
+
+    // Démarrer le chargement initial
+    loadInitialBooks();
   </script>
 </body>
 </html>
