@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>📚 Stock de Livres</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>📚 La bibliothèque du KotArdoise</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -40,6 +41,10 @@
       justify-content: center;
       margin-bottom: 3rem;
       position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
     
     #search {
@@ -55,6 +60,9 @@
       transition: all 0.3s ease;
       outline: none;
       font-weight: 400;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
     
     #search:focus {
@@ -78,6 +86,7 @@
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
+      width: 100%;
     }
     
     .book {
@@ -216,39 +225,253 @@
       opacity: 0.8;
     }
     
+    /* Tablettes en mode portrait */
+    @media (max-width: 1024px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .books-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+    }
+    
+    /* Tablettes en mode paysage et petits écrans */
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
       }
       
       h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         margin-bottom: 2rem;
+        line-height: 1.2;
+      }
+      
+      .search-container {
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+      }
+      
+      #search {
+        max-width: 100%;
+        font-size: 1rem;
+        padding: 0.875rem 1.25rem 0.875rem 2.75rem;
+      }
+      
+      .search-icon {
+        left: 0.875rem;
+        font-size: 1.1rem;
       }
       
       .books-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+      }
+      
+      .book {
+        padding: 1.25rem;
+      }
+      
+      .book-content {
+        gap: 1.25rem;
+      }
+      
+      img {
+        width: 100px;
+        max-height: 140px;
+      }
+      
+      .info h2 {
+        font-size: 1.25rem;
+        margin-bottom: 0.875rem;
+      }
+      
+      .info-item {
+        margin: 0.5rem 0;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+      }
+      
+      .info-label {
+        min-width: 70px;
+        font-size: 0.85rem;
+      }
+      
+      .info-value {
+        font-size: 0.9rem;
+      }
+      
+      .stock-badge {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+      }
+    }
+    
+    /* Smartphones en mode portrait */
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.75rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+      }
+      
+      .search-container {
+        padding: 0;
+        margin-bottom: 1.5rem;
+      }
+      
+      #search {
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: 20px;
+      }
+      
+      .search-icon {
+        left: 0.75rem;
+        font-size: 1rem;
+      }
+      
+      .books-grid {
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      
+      .book {
+        padding: 1rem;
+        border-radius: 16px;
       }
       
       .book-content {
         flex-direction: column;
         text-align: center;
+        gap: 1rem;
+      }
+      
+      .book-cover {
+        align-self: center;
       }
       
       img {
-        align-self: center;
+        width: 90px;
+        max-height: 120px;
+      }
+      
+      .info {
+        width: 100%;
+      }
+      
+      .info h2 {
+        font-size: 1.15rem;
+        margin-bottom: 0.75rem;
+        text-align: center;
       }
       
       .info-item {
         justify-content: center;
         flex-direction: column;
         text-align: center;
+        margin: 0.4rem 0;
+        gap: 0.15rem;
       }
       
       .info-label {
         min-width: auto;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.15rem;
+        font-size: 0.8rem;
+        opacity: 0.8;
+      }
+      
+      .info-value {
+        font-size: 0.85rem;
+      }
+      
+      .stock-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+        margin-top: 0.25rem;
+      }
+      
+      .loading {
+        height: 150px;
+        font-size: 1rem;
+      }
+      
+      .spinner {
+        width: 30px;
+        height: 30px;
+        margin-right: 0.75rem;
+      }
+      
+      .no-results {
+        font-size: 1rem;
+        margin-top: 2rem;
+        padding: 0 1rem;
+      }
+    }
+    
+    /* Très petits écrans */
+    @media (max-width: 360px) {
+      .container {
+        padding: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.25rem;
+      }
+      
+      .book {
+        padding: 0.875rem;
+        margin: 0 0.25rem;
+      }
+      
+      img {
+        width: 80px;
+        max-height: 110px;
+      }
+      
+      .info h2 {
+        font-size: 1.05rem;
+      }
+      
+      .info-value {
+        font-size: 0.8rem;
+      }
+      
+      .stock-badge {
+        font-size: 0.7rem;
+        padding: 0.125rem 0.4rem;
+      }
+    }
+    
+    /* Amélioration des interactions tactiles */
+    @media (hover: none) and (pointer: coarse) {
+      .book:hover {
+        transform: none;
+      }
+      
+      .book:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+      
+      #search:focus {
+        transform: none;
+      }
+      
+      .book:hover img {
+        transform: none;
       }
     }
   </style>
