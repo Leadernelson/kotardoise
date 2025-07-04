@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>📚 Stock de Livres</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 3rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      letter-spacing: -0.5px;
+    }
+    
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    #search {
+      padding: 1rem 1.5rem 1rem 3rem;
+      width: 100%;
+      max-width: 500px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      outline: none;
+      font-weight: 400;
+    }
+    
+    #search:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      background: white;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: #666;
+      pointer-events: none;
+    }
+    
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .book {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .book::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    
+    .book:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+    
+    .book-content {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    
+    .book-cover {
+      position: relative;
+      flex-shrink: 0;
+    }
+    
+    img {
+      width: 120px;
+      height: auto;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+    
+    .book:hover img {
+      transform: scale(1.05);
+    }
+    
+    .info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .info h2 {
+      margin: 0 0 1rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #2d3748;
+      line-height: 1.3;
+      word-wrap: break-word;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin: 0.75rem 0;
+      padding: 0.5rem 0;
+    }
+    
+    .info-label {
+      font-weight: 500;
+      color: #4a5568;
+      min-width: 80px;
+      font-size: 0.9rem;
+    }
+    
+    .info-value {
+      color: #2d3748;
+      font-weight: 400;
+      flex: 1;
+      word-wrap: break-word;
+    }
+    
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+    }
+    
+    .stock-badge.out-of-stock {
+      background: linear-gradient(135deg, #f56565, #e53e3e);
+      box-shadow: 0 2px 8px rgba(245, 101, 101, 0.3);
+    }
+    
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: white;
+      font-size: 1.2rem;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .no-results {
+      text-align: center;
+      color: white;
+      font-size: 1.2rem;
+      margin-top: 3rem;
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .books-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .book-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      img {
+        align-self: center;
+      }
+      
+      .info-item {
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .info-label {
+        min-width: auto;
+        margin-bottom: 0.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 La bibliothèque du KotArdoise 📚</h1>
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Rechercher un livre, un auteur ou un ISBN...">
+    </div>
+    <div id="livres" class="books-grid"></div>
+  </div>
+
+  <script>
+    let allBooks = [];
+
+    function renderBooks(books) {
+      const container = document.getElementById("livres");
+      
+      if (books.length === 0) {
+        container.innerHTML = '<div class="no-results">Aucun livre trouvé 📚</div>';
+        return;
+      }
+      
+      container.innerHTML = "";
+
+      books.forEach(livre => {
+        const div = document.createElement("div");
+        div.className = "book";
+
+        const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-L.jpg`;
+
+        div.innerHTML = `
+          <div class="book-content">
+            <div class="book-cover">
+              <img src="${coverURL}" alt="Couverture de ${livre.Titre}" onerror="this.src='https://via.placeholder.com/120x160/667eea/white?text=📚'">
+            </div>
+            <div class="info">
+              <h2>${livre.Titre}</h2>
+              <div class="info-item">
+                <span class="info-label">Auteur:</span>
+                <span class="info-value">${livre.Auteur}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">ISBN:</span>
+                <span class="info-value">${livre.ISBN}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Stock:</span>
+                <span class="stock-badge ${livre.Stock == 0 ? 'out-of-stock' : ''}">${livre.Stock} exemplaire${livre.Stock > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Afficher un indicateur de chargement
+    const container = document.getElementById("livres");
+    container.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement des livres...</div>';
+
+    fetch("https://opensheet.elk.sh/1LBcmGmEKOn8LscQunZrINNY8RWlKHkxT2qb6liInYuQ/1")
+      .then(res => res.json())
+      .then(data => {
+        allBooks = data;
+        renderBooks(allBooks);
+      })
+      .catch(error => {
+        console.error("Erreur lors du chargement des données :", error);
+        container.innerHTML = '<div class="no-results">Erreur lors du chargement des données 😞</div>';
+      });
+
+    document.getElementById("search").addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      const filtered = allBooks.filter(livre =>
+        livre.Titre?.toLowerCase().includes(query) ||
+        livre.Auteur?.toLowerCase().includes(query) ||
+        livre.ISBN?.toLowerCase().includes(query)
+      );
+      renderBooks(filtered);
+    });
+  </script>
+</body>
+</html>
