@@ -39,6 +39,17 @@
     .search-container {
       display: flex;
       justify-content: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .ai-search-container {
+      display: flex;
+      justify-content: center;
       margin-bottom: 3rem;
       position: relative;
       width: 100%;
@@ -65,7 +76,31 @@
       appearance: none;
     }
     
+    #ai-search {
+      padding: 1rem 1.5rem 1rem 3rem;
+      width: 100%;
+      max-width: 500px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      outline: none;
+      font-weight: 400;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    
     #search:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      background: white;
+    }
+    
+    #ai-search:focus {
       transform: translateY(-2px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
       background: white;
@@ -79,6 +114,50 @@
       font-size: 1.2rem;
       color: #666;
       pointer-events: none;
+    }
+    
+    .ai-search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: #666;
+      pointer-events: none;
+    }
+    
+    .reset-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+    
+    .reset-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .reset-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+    
+    .reset-button:active {
+      transform: translateY(0);
     }
     
     .books-grid {
@@ -342,8 +421,23 @@
       }
       
       .search-container {
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+      }
+      
+      .ai-search-container {
         margin-bottom: 2rem;
         padding: 0 0.5rem;
+      }
+      
+      .reset-container {
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+      }
+      
+      .reset-button {
+        font-size: 0.85rem;
+        padding: 0.7rem 1.25rem;
       }
       
       #search {
@@ -352,7 +446,18 @@
         padding: 0.875rem 1.25rem 0.875rem 2.75rem;
       }
       
+      #ai-search {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.875rem 1.25rem 0.875rem 2.75rem;
+      }
+      
       .search-icon {
+        left: 0.875rem;
+        font-size: 1.1rem;
+      }
+      
+      .ai-search-icon {
         left: 0.875rem;
         font-size: 1.1rem;
       }
@@ -416,7 +521,23 @@
       
       .search-container {
         padding: 0;
+        margin-bottom: 1rem;
+      }
+      
+      .ai-search-container {
+        padding: 0;
         margin-bottom: 1.5rem;
+      }
+      
+      .reset-container {
+        padding: 0;
+        margin-bottom: 1rem;
+      }
+      
+      .reset-button {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+        border-radius: 16px;
       }
       
       #search {
@@ -425,7 +546,19 @@
         border-radius: 20px;
       }
       
+      #ai-search {
+        width: 100%;
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: 20px;
+      }
+      
       .search-icon {
+        left: 0.75rem;
+        font-size: 1rem;
+      }
+      
+      .ai-search-icon {
         left: 0.75rem;
         font-size: 1rem;
       }
@@ -621,6 +754,16 @@
       <span class="search-icon">🔍</span>
       <input type="text" id="search" placeholder="Rechercher un livre, un auteur ou un ISBN...">
     </div>
+    
+    <div class="ai-search-container">
+      <span class="ai-search-icon">🤖</span>
+      <input type="text" id="ai-search" placeholder="Décrivez le livre que vous cherchez...">
+    </div>
+    
+    <div class="reset-container">
+      <button id="reset-btn" class="reset-button">🔄 Afficher tous les livres</button>
+    </div>
+    
     <div id="livres" class="books-grid"></div>
     <div id="results-info" class="results-info"></div>
     <div id="pagination" class="pagination"></div>
@@ -769,6 +912,21 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function resetSearch() {
+      // Vider les champs de recherche
+      document.getElementById('search').value = '';
+      document.getElementById('ai-search').value = '';
+      
+      // Réinitialiser la liste filtrée à tous les livres
+      filteredBooks = [...allBooks];
+      currentPage = 1;
+      
+      // Afficher tous les livres
+      renderBooks(filteredBooks, currentPage);
+      
+      console.log(`🔄 Recherche réinitialisée: ${allBooks.length} livres affichés`);
+    }
+
     function performSearch(query) {
       if (!query.trim()) {
         filteredBooks = [...allBooks];
@@ -825,6 +983,91 @@
 
 
 
+    // Configuration de l'API via Netlify Functions
+    async function performAISearch(query) {
+      if (!query.trim()) {
+        alert('Veuillez entrer une description du livre que vous cherchez.');
+        return;
+      }
+
+      const aiSearchInput = document.getElementById('ai-search');
+      const originalPlaceholder = aiSearchInput.placeholder;
+      
+      try {
+        aiSearchInput.disabled = true;
+        aiSearchInput.placeholder = 'Recherche IA en cours...';
+
+        // Créer une liste des livres disponibles pour Gemini
+        const booksData = allBooks.map(book => ({
+          titre: book.Titre,
+          auteur: book.Auteur,
+          isbn: book.ISBN
+        }));
+
+        // Appel à notre fonction Netlify au lieu de Gemini directement
+        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? '/api/ai-search'  // Pour le développement local
+          : '/.netlify/functions/ai-search';  // Pour la production
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: query,
+            booksData: booksData
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur API: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Erreur lors de la recherche IA');
+        }
+
+        const matchingISBNs = data.matchingISBNs || [];
+
+        // Filtrer les livres basés sur les ISBN retournés par l'IA
+        if (Array.isArray(matchingISBNs) && matchingISBNs.length > 0) {
+          filteredBooks = allBooks.filter(book => 
+            matchingISBNs.includes(book.ISBN)
+          );
+          
+          // Réorganiser selon l'ordre de pertinence donné par l'IA
+          filteredBooks.sort((a, b) => {
+            const indexA = matchingISBNs.indexOf(a.ISBN);
+            const indexB = matchingISBNs.indexOf(b.ISBN);
+            return indexA - indexB;
+          });
+        } else {
+          filteredBooks = [];
+        }
+
+        currentPage = 1;
+        renderBooks(filteredBooks, currentPage);
+        
+        // Afficher un message de résultat
+        if (filteredBooks.length > 0) {
+          document.getElementById('search').value = ''; // Vider la recherche classique
+          console.log(`🤖 Recherche IA: ${filteredBooks.length} livre(s) trouvé(s) pour "${query}"`);
+        } else {
+          alert(`Aucun livre trouvé pour la description : "${query}"`);
+        }
+
+      } catch (error) {
+        console.error('Erreur lors de la recherche IA:', error);
+        alert('Erreur lors de la recherche IA. Veuillez réessayer.');
+      } finally {
+        aiSearchInput.disabled = false;
+        aiSearchInput.placeholder = originalPlaceholder;
+      }
+    }
+
     // Recherche avec debounce optimisé
     let searchTimeout;
     document.getElementById("search").addEventListener("input", function () {
@@ -834,6 +1077,19 @@
       searchTimeout = setTimeout(() => {
         performSearch(query);
       }, 300); // Délai fixe maintenant que tout est chargé
+    });
+
+    // Event listeners pour la recherche IA
+    document.getElementById('ai-search').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const query = this.value;
+        performAISearch(query);
+      }
+    });
+
+    // Event listener pour le bouton de réinitialisation
+    document.getElementById('reset-btn').addEventListener('click', function() {
+      resetSearch();
     });
 
     // Démarrer le chargement initial

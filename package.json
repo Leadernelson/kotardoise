@@ -1,0 +1,11 @@
+{
+  "name": "bibliotheque-kotardoise",
+  "version": "1.0.0",
+  "description": "Bibliothèque du KotArdoise avec recherche IA",
+  "main": "index.html",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "build": "echo 'No build process needed'"
+  }
+}
