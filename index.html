@@ -775,6 +775,50 @@
     let currentPage = 1;
     const booksPerPage = 15; // Optimisé pour 1800 livres (120 pages max)
 
+    // Cache localStorage pour optimiser la bande passante
+    const CACHE_KEY = 'kotardoise_books_cache';
+    const CACHE_VERSION = '1.0';
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures en millisecondes
+
+    function getCachedBooks() {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (!cached) return null;
+        
+        const { data, timestamp, version } = JSON.parse(cached);
+        const now = Date.now();
+        
+        // Vérifier si le cache est encore valide
+        if (version === CACHE_VERSION && (now - timestamp) < CACHE_DURATION) {
+          console.log(`📦 Utilisation du cache local: ${data.length} livres`);
+          return data;
+        }
+        
+        // Cache expiré, le supprimer
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+      } catch (error) {
+        console.warn('Erreur lecture cache:', error);
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+      }
+    }
+
+    function setCachedBooks(data) {
+      try {
+        const cacheData = {
+          data: data,
+          timestamp: Date.now(),
+          version: CACHE_VERSION
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+        console.log(`💾 Cache mis à jour: ${data.length} livres sauvegardés`);
+      } catch (error) {
+        console.warn('Erreur sauvegarde cache:', error);
+        // Storage plein, on continue sans cache
+      }
+    }
+
     function renderBooks(books, page = 1) {
       const container = document.getElementById("livres");
       const resultsInfo = document.getElementById("results-info");
@@ -795,8 +839,8 @@
       
       // Affichage des informations de résultats
       resultsInfo.innerHTML = `
-        <strong>${books.length}</strong> livre${books.length > 1 ? 's' : ''} trouvé${books.length > 1 ? 's' : ''}
-        | Page <strong>${page}</strong> sur <strong>${totalPages}</strong>
+        <strong>${books.length}</strong> livre${books.length > 1 ? 's' : ''} trouvé${books.length > 1 ? 's' : ''} 
+        | Page <strong>${page}</strong> sur <strong>${totalPages}</strong> 
         | Affichage de <strong>${startIndex + 1}</strong> à <strong>${Math.min(endIndex, books.length)}</strong>
       `;
       
@@ -807,12 +851,19 @@
         div.className = "book";
         div.style.animationDelay = `${index * 0.1}s`;
 
-        const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-L.jpg`;
+        const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-M.jpg`; // Taille Medium au lieu de Large
 
         div.innerHTML = `
           <div class="book-content">
             <div class="book-cover">
-              <img src="${coverURL}" alt="Couverture de ${livre.Titre}" onerror="this.src='https://via.placeholder.com/120x160/667eea/white?text=📚'" loading="lazy">
+              <img src="${coverURL}" 
+                   alt="Couverture de ${livre.Titre}" 
+                   onerror="this.src='https://via.placeholder.com/120x160/667eea/white?text=📚'" 
+                   loading="lazy"
+                   decoding="async"
+                   width="120"
+                   height="180"
+                   onload="trackBandwidthUsage('images', 15000)"> <!-- ~15KB par image Medium -->
             </div>
             <div class="info">
               <h2>${livre.Titre}</h2>
@@ -898,6 +949,7 @@
       `;
       
 
+
       
       pagination.innerHTML = paginationHTML;
     }
@@ -927,7 +979,7 @@
       console.log(`🔄 Recherche réinitialisée: ${allBooks.length} livres affichés`);
     }
 
-    function performSearch(query) {
+    function performSearch(query = '') {
       if (!query.trim()) {
         filteredBooks = [...allBooks];
       } else {
@@ -960,29 +1012,39 @@
       resultsInfo.innerHTML = '';
 
       try {
-        const response = await fetch("https://opensheet.elk.sh/1LBcmGmEKOn8LscQunZrINNY8RWlKHkxT2qb6liInYuQ/1");
-        const data = await response.json();
-        
-        console.log(`📚 Chargement optimisé de ${data.length} livres...`);
-        
-        // Pour des volumes importants (>1000), traitement par batch pour éviter le blocage UI
-        if (data.length > 1000) {
-          allBooks = [];
-          const batchSize = 200;
+        // Vérifier le cache avant de faire une requête réseau
+        const cachedBooks = getCachedBooks();
+        if (cachedBooks) {
+          allBooks = cachedBooks;
+          console.log(`📚 Chargement depuis le cache: ${allBooks.length} livres`);
+        } else {
+          const response = await fetchWithCompression("https://opensheet.elk.sh/1LBcmGmEKOn8LscQunZrINNY8RWlKHkxT2qb6liInYuQ/1");
+          const data = response;
           
-          for (let i = 0; i < data.length; i += batchSize) {
-            const batch = data.slice(i, i + batchSize);
-            allBooks = allBooks.concat(batch);
+          console.log(`📚 Chargement optimisé de ${data.length} livres...`);
+          
+          // Pour des volumes importants (>1000), traitement par batch pour éviter le blocage UI
+          if (data.length > 1000) {
+            allBooks = [];
+            const batchSize = 200;
             
-            // Petit délai pour permettre au browser de respirer
-            if (i + batchSize < data.length) {
-              await new Promise(resolve => setTimeout(resolve, 10));
+            for (let i = 0; i < data.length; i += batchSize) {
+              const batch = data.slice(i, i + batchSize);
+              allBooks = allBooks.concat(batch);
+              
+              // Petit délai pour permettre au browser de respirer
+              if (i + batchSize < data.length) {
+                await new Promise(resolve => setTimeout(resolve, 10));
+              }
             }
+            
+            console.log(`📚 Traitement par batch terminé: ${allBooks.length} livres chargés`);
+          } else {
+            allBooks = data;
           }
           
-          console.log(`📚 Traitement par batch terminé: ${allBooks.length} livres chargés`);
-        } else {
-          allBooks = data;
+          // Mettre à jour le cache avec les nouveaux livres chargés
+          setCachedBooks(allBooks);
         }
         
         console.log(`📚 Bibliothèque optimisée chargée: ${allBooks.length} livres - Recherche exhaustive disponible`);
@@ -1170,6 +1232,46 @@
     document.getElementById('reset-btn').addEventListener('click', function() {
       resetSearch();
     });
+
+    // Monitoring de la bande passante
+    let bandwidthUsage = {
+      session: 0,
+      images: 0,
+      data: 0
+    };
+
+    function trackBandwidthUsage(type, bytes) {
+      bandwidthUsage.session += bytes;
+      bandwidthUsage[type] += bytes;
+      
+      // Log tous les 1MB
+      if (bandwidthUsage.session % (1024 * 1024) < bytes) {
+        console.log(`📊 Bande passante utilisée cette session: ${Math.round(bandwidthUsage.session / 1024)}KB`);
+      }
+    }
+
+    // Optimisation des requêtes réseau avec compression
+    async function fetchWithCompression(url) {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Cache-Control': 'public, max-age=3600' // Cache 1h côté browser
+          }
+        });
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        const estimatedSize = JSON.stringify(data).length;
+        trackBandwidthUsage('data', estimatedSize);
+        
+        return data;
+      } catch (error) {
+        console.error('Erreur réseau optimisée:', error);
+        throw error;
+      }
+    }
 
     // Démarrer le chargement initial
     loadInitialBooks();
