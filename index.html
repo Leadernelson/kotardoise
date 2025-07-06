@@ -264,16 +264,6 @@
       font-size: 0.9rem;
     }
     
-    .info-value.isbn {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8em;
-      min-width: 0;
-      max-width: 200px;
-    }
-    
     .stock-badge {
       display: inline-flex;
       align-items: center;
@@ -621,11 +611,6 @@
         min-width: 0;
       }
       
-      .info-value.isbn {
-        font-size: 0.7rem;
-        max-width: 120px;
-      }
-      
       .stock-badge {
         font-size: 0.7rem;
         padding: 0.1rem 0.4rem;
@@ -715,11 +700,6 @@
         font-size: 0.75rem;
       }
       
-      .info-value.isbn {
-        font-size: 0.65rem;
-        max-width: 100px;
-      }
-      
       .stock-badge {
         font-size: 0.65rem;
         padding: 0.1rem 0.3rem;
@@ -752,7 +732,7 @@
     <h1>📚 La bibliothèque du KotArdoise 📚</h1>
     <div class="search-container">
       <span class="search-icon">🔍</span>
-      <input type="text" id="search" placeholder="Rechercher un livre, un auteur ou un ISBN...">
+      <input type="text" id="search" placeholder="Rechercher un livre ou un auteur...">
     </div>
     
     <div class="ai-search-container">
@@ -889,10 +869,6 @@
                 <span class="info-value">${livre.Auteur}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">ISBN:</span>
-                <span class="info-value isbn">${livre.ISBN}</span>
-              </div>
-              <div class="info-item">
                 <span class="info-label">Stock:</span>
                 <span class="stock-badge ${
                   (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
@@ -1006,8 +982,7 @@
         filteredBooks = allBooks.filter(livre => {
           const searchableText = [
             livre.Titre?.toLowerCase() || '',
-            livre.Auteur?.toLowerCase() || '',
-            livre.ISBN?.toLowerCase() || ''
+            livre.Auteur?.toLowerCase() || ''
           ].join(' ');
           
           return searchTerms.every(term => searchableText.includes(term));
