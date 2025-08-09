@@ -5,7 +5,128 @@
 [functions]
   node_bundler = "esbuild"
 
+# Redirections pour l'API
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Configuration des headers pour la performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Sécurité
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Performance
+    X-DNS-Prefetch-Control = "on"
+
+# Headers spécifiques pour les ressources statiques
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Content-Type = "text/css; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+    X-Content-Type-Options = "nosniff"
+
+# Headers pour les polices
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Content-Type = "font/woff2"
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# Headers pour les images
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Headers pour le manifeste et SW
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Content-Type = "application/javascript"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Headers pour le HTML principal
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://generativelanguage.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://covers.openlibrary.org https://via.placeholder.com data:; connect-src 'self' https://opensheet.elk.sh https://generativelanguage.googleapis.com; manifest-src 'self'"
+
+# Préchargement des ressources critiques
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Link = '</styles/main.css>; rel=preload; as=style, </js/app.js>; rel=preload; as=script, <https://fonts.googleapis.com>; rel=preconnect, <https://covers.openlibrary.org>; rel=preconnect'
+
+# Compression et optimisation
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = false
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+# Configuration de la compression
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+# Optimisations pour les performances
+[context.production]
+  [context.production.processing]
+    skip_processing = false
+  [context.production.processing.css]
+    bundle = true
+    minify = true
+  [context.production.processing.js]
+    bundle = false
+    minify = true
+  [context.production.processing.html]
+    pretty_urls = true
+
+# Variables d'environnement pour les fonctions
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "development"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
