@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>📚 La bibliothèque du KotArdoise</title>
-  <link rel="stylesheet" href="styles/advanced-animations.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -22,34 +21,28 @@
     }
     
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 3rem 2rem;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      padding: 2rem;
     }
     
     h1 {
       text-align: center;
-      margin-bottom: 4rem;
-      font-size: 3.5rem;
+      margin-bottom: 3rem;
+      font-size: 3rem;
       font-weight: 700;
       color: white;
-      text-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
-      letter-spacing: -1px;
-      line-height: 1.1;
-      position: relative;
-      z-index: 1;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      letter-spacing: -0.5px;
     }
     
     .search-container {
       display: flex;
       justify-content: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       position: relative;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -57,208 +50,156 @@
     .ai-search-container {
       display: flex;
       justify-content: center;
-      margin-bottom: 3.5rem;
+      margin-bottom: 3rem;
       position: relative;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       margin-left: auto;
       margin-right: auto;
     }
     
     #search {
-      padding: 1.25rem 1.75rem 1.25rem 3.5rem;
+      padding: 1rem 1.5rem 1rem 3rem;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       font-size: 1.1rem;
       border: none;
-      border-radius: 30px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
       outline: none;
       font-weight: 400;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     #ai-search {
-      padding: 1.25rem 1.75rem 1.25rem 3.5rem;
+      padding: 1rem 1.5rem 1rem 3rem;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       font-size: 1.1rem;
       border: none;
-      border-radius: 30px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
       outline: none;
       font-weight: 400;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     #search:focus {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
       background: white;
-      border: 1px solid rgba(102, 126, 234, 0.3);
     }
     
     #ai-search:focus {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
       background: white;
-      border: 1px solid rgba(102, 126, 234, 0.3);
     }
     
     .search-icon {
       position: absolute;
-      left: 1.25rem;
+      left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: #666;
       pointer-events: none;
-      transition: all 0.3s ease;
     }
     
     .ai-search-icon {
       position: absolute;
-      left: 1.25rem;
+      left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: #666;
       pointer-events: none;
-      transition: all 0.3s ease;
-    }
-    
-    #search:focus + .search-icon,
-    #ai-search:focus + .ai-search-icon {
-      color: #667eea;
-      transform: translateY(-50%) scale(1.1);
     }
     
     .reset-container {
       display: flex;
       justify-content: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       width: 100%;
     }
     
     .reset-button {
-      padding: 1rem 2rem;
+      padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: 25px;
-      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
       color: white;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .reset-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transition: left 0.6s ease;
+      gap: 0.5rem;
     }
     
     .reset-button:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 4px 15px rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-    
-    .reset-button:hover::before {
-      left: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
     }
     
     .reset-button:active {
-      transform: translateY(-1px);
+      transform: translateY(0);
     }
     
     .books-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      margin-top: 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
       width: 100%;
-      padding: 0;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
     }
     
     .book {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(25px);
-      border-radius: 24px;
-      padding: 1.75rem;
-      box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.12),
-        0 8px 25px rgba(0, 0, 0, 0.08),
-        0 2px 10px rgba(0, 0, 0, 0.04);
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 1.25rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       position: relative;
-      overflow: visible;
-      width: 100%;
-      min-width: 0;
-      max-width: none;
+      overflow: hidden;
+      min-width: 380px;
     }
     
-    /* Ligne de dégradé supprimée pour améliorer l'esthétique */
-    
-    .book::after {
+    .book::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-      pointer-events: none;
-      border-radius: 24px;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
     }
     
     .book:hover {
-      transform: translateY(-12px) scale(1.02);
-      box-shadow:
-        0 35px 80px rgba(0, 0, 0, 0.18),
-        0 15px 35px rgba(0, 0, 0, 0.12),
-        0 5px 15px rgba(102, 126, 234, 0.1);
-      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     }
     
     .book-content {
       display: flex;
-      gap: 1.5rem;
+      gap: 1.25rem;
       align-items: flex-start;
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      overflow: visible;
     }
     
     .book-cover {
@@ -266,108 +207,50 @@
       flex-shrink: 0;
     }
     
-    .book-cover::before {
-      content: '';
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      right: -5px;
-      bottom: -5px;
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-      border-radius: 18px;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: -1;
-    }
-    
-    .book:hover .book-cover::before {
-      opacity: 1;
-    }
-    
     img {
-      width: 130px;
+      width: 120px;
       height: auto;
-      max-height: 190px;
+      max-height: 180px;
       object-fit: contain;
-      border-radius: 16px;
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.2),
-        0 4px 15px rgba(0, 0, 0, 0.1);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
     }
     
     .book:hover img {
-      transform: scale(1.08) rotateY(5deg);
-      box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.25),
-        0 8px 20px rgba(0, 0, 0, 0.15);
+      transform: scale(1.05);
     }
     
     .info {
       flex: 1;
       min-width: 0;
-      overflow: visible;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      width: 100%;
+      overflow: hidden;
     }
     
     .info h2 {
-      margin: 0 0 1rem;
-      font-size: 1.4rem;
+      margin: 0 0 0.75rem;
+      font-size: 1.3rem;
       font-weight: 600;
       color: #2d3748;
-      line-height: 1.25;
+      line-height: 1.3;
       word-wrap: break-word;
-      position: relative;
-      padding-bottom: 0.5rem;
-    }
-    
-    .info h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 40px;
-      height: 2px;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      border-radius: 1px;
     }
     
     .info-item {
       display: flex;
       align-items: flex-start;
-      margin: 0.75rem 0;
-      padding: 0.75rem;
+      margin: 0.5rem 0;
+      padding: 0.25rem 0;
       min-width: 0;
-      gap: 1rem;
-      background: rgba(248, 250, 252, 0.6);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 12px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: visible;
-      width: 100%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-    
-    .info-item:hover {
-      background: rgba(102, 126, 234, 0.08);
-      border-color: rgba(102, 126, 234, 0.2);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      gap: 0.75rem;
     }
     
     .info-label {
-      font-weight: 600;
+      font-weight: 500;
       color: #4a5568;
-      min-width: 80px;
-      font-size: 0.875rem;
+      min-width: 75px;
+      font-size: 0.85rem;
       flex-shrink: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      opacity: 0.8;
     }
     
     .info-value {
@@ -377,119 +260,51 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
       hyphens: auto;
-      width: 100%;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      overflow: visible;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 24px;
+      max-width: 100%;
+      font-size: 0.9rem;
     }
     
     .stock-badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.6rem 1.25rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 20px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 500;
       background: linear-gradient(135deg, #48bb78, #38a169);
       color: white;
-      box-shadow:
-        0 6px 20px rgba(72, 187, 120, 0.3),
-        0 3px 10px rgba(72, 187, 120, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
       white-space: nowrap;
       flex-shrink: 0;
-      position: relative;
-      overflow: visible;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      min-width: fit-content;
-      width: auto;
-      backdrop-filter: blur(5px);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stock-badge::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.6s ease;
-    }
-    
-    .stock-badge:hover::before {
-      left: 100%;
     }
     
     .stock-badge.out-of-stock {
       background: linear-gradient(135deg, #f56565, #e53e3e);
-      box-shadow:
-        0 6px 20px rgba(245, 101, 101, 0.3),
-        0 3px 10px rgba(245, 101, 101, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 8px rgba(245, 101, 101, 0.3);
     }
     
     .stock-badge.undefined {
       background: linear-gradient(135deg, #a0aec0, #718096);
-      box-shadow:
-        0 6px 20px rgba(160, 174, 192, 0.3),
-        0 3px 10px rgba(160, 174, 192, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-    
-    .stock-badge:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow:
-        0 8px 25px rgba(72, 187, 120, 0.4),
-        0 4px 15px rgba(72, 187, 120, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-    
-    .stock-badge.out-of-stock:hover {
-      box-shadow:
-        0 8px 25px rgba(245, 101, 101, 0.4),
-        0 4px 15px rgba(245, 101, 101, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-    
-    .stock-badge.undefined:hover {
-      box-shadow:
-        0 8px 25px rgba(160, 174, 192, 0.4),
-        0 4px 15px rgba(160, 174, 192, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(160, 174, 192, 0.3);
     }
     
     .loading {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 300px;
+      height: 200px;
       color: white;
-      font-size: 1.3rem;
-      font-weight: 500;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 24px;
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      font-size: 1.2rem;
     }
     
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.2);
-      border-top: 5px solid white;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-right: 1.5rem;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      margin-right: 1rem;
     }
     
     @keyframes spin {
@@ -501,213 +316,150 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.75rem;
-      margin: 4rem 0 3rem;
+      gap: 0.5rem;
+      margin: 3rem 0 2rem;
       flex-wrap: wrap;
-      padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      backdrop-filter: blur(15px);
     }
     
     .pagination button {
-      padding: 1rem 1.25rem;
+      padding: 0.75rem 1rem;
       border: none;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
       color: #4a5568;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(15px);
-      min-width: 50px;
-      font-size: 0.95rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .pagination button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
-      transition: left 0.6s ease;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      min-width: 44px;
+      font-size: 0.9rem;
     }
     
     .pagination button:hover:not(:disabled) {
       background: white;
-      transform: translateY(-3px) scale(1.05);
-      box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.2),
-        0 4px 12px rgba(102, 126, 234, 0.1);
-      border-color: rgba(102, 126, 234, 0.3);
-    }
-    
-    .pagination button:hover:not(:disabled)::before {
-      left: 100%;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
     .pagination button:disabled {
-      opacity: 0.4;
+      opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
     }
     
     .pagination button.active {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
-      box-shadow:
-        0 8px 25px rgba(102, 126, 234, 0.5),
-        0 4px 15px rgba(102, 126, 234, 0.3);
-      transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
     
     .pagination .page-info {
       color: white;
-      font-weight: 600;
-      margin: 0 1.5rem;
-      padding: 1rem 1.5rem;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      backdrop-filter: blur(15px);
-      font-size: 0.95rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+      margin: 0 1rem;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      font-size: 0.9rem;
     }
     
     .results-info {
       text-align: center;
-      color: rgba(255, 255, 255, 0.95);
-      margin-bottom: 2rem;
-      font-size: 1rem;
-      font-weight: 500;
-      padding: 1rem 2rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      font-weight: 400;
     }
     
     .results-info strong {
-      font-weight: 700;
+      font-weight: 600;
       color: white;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
     
     .no-results {
       text-align: center;
       color: white;
-      font-size: 1.5rem;
-      margin-top: 4rem;
-      opacity: 0.9;
-      padding: 3rem 2rem;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      font-weight: 500;
+      font-size: 1.2rem;
+      margin-top: 3rem;
+      opacity: 0.8;
     }
     @media (max-width: 1024px) {
       .container {
-        padding: 2.5rem 1.5rem;
-      }
-      
-      .books-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        padding: 0;
-      }
-      
-      h1 {
-        font-size: 3rem;
-        margin-bottom: 3.5rem;
-      }
-      
-      .book {
         padding: 1.5rem;
       }
       
-      img {
-        width: 120px;
-        max-height: 175px;
+      .books-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.25rem;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
       }
     }
     
     /* Tablettes en mode paysage et petits écrans */
     @media (max-width: 768px) {
       .container {
-        padding: 2rem 1rem;
+        padding: 1rem;
       }
       
       h1 {
-        font-size: 2.5rem;
-        margin-bottom: 3rem;
-        line-height: 1.15;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.2;
       }
       
       .search-container {
-        margin-bottom: 1.75rem;
+        margin-bottom: 1.5rem;
         padding: 0 0.5rem;
-        max-width: 100%;
       }
       
       .ai-search-container {
-        margin-bottom: 2.5rem;
-        padding: 0 0.5rem;
-        max-width: 100%;
-      }
-      
-      .reset-container {
         margin-bottom: 2rem;
         padding: 0 0.5rem;
       }
       
+      .reset-container {
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+      }
+      
       .reset-button {
-        font-size: 0.9rem;
-        padding: 0.875rem 1.5rem;
+        font-size: 0.85rem;
+        padding: 0.7rem 1.25rem;
       }
       
       #search {
         max-width: 100%;
         font-size: 1rem;
-        padding: 1rem 1.5rem 1rem 3rem;
-        border-radius: 25px;
+        padding: 0.875rem 1.25rem 0.875rem 2.75rem;
       }
       
       #ai-search {
         width: 100%;
         font-size: 1rem;
-        padding: 1rem 1.5rem 1rem 3rem;
-        border-radius: 25px;
+        padding: 0.875rem 1.25rem 0.875rem 2.75rem;
       }
       
       .search-icon {
-        left: 1rem;
-        font-size: 1.2rem;
+        left: 0.875rem;
+        font-size: 1.1rem;
       }
       
       .ai-search-icon {
-        left: 1rem;
-        font-size: 1.2rem;
+        left: 0.875rem;
+        font-size: 1.1rem;
       }
       
       .books-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        margin-top: 2.5rem;
-        padding: 0;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
       }
       
       .book {
-        padding: 1.5rem;
-        border-radius: 20px;
+        padding: 1.25rem;
       }
       
       .book-content {
@@ -715,25 +467,23 @@
       }
       
       img {
-        width: 110px;
-        max-height: 160px;
+        width: 100px;
+        max-height: 140px;
       }
       
       .info h2 {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        margin-bottom: 0.875rem;
       }
       
       .info-item {
-        margin: 0.5rem 0;
-        padding: 0.6rem;
-        flex-wrap: nowrap;
-        gap: 0.75rem;
-        border-radius: 10px;
+        margin: 0.4rem 0;
+        flex-wrap: wrap;
+        gap: 0.25rem;
       }
       
       .info-label {
-        min-width: 75px;
+        min-width: 70px;
         font-size: 0.8rem;
       }
       
@@ -742,96 +492,75 @@
       }
       
       .stock-badge {
-        font-size: 0.8rem;
-        padding: 0.5rem 1rem;
-        border-radius: 18px;
-      }
-      
-      .pagination {
-        margin: 3rem 0 2rem;
-        padding: 1rem;
-        gap: 0.5rem;
-      }
-      
-      .pagination button {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        min-width: 45px;
-      }
-      
-      .pagination .page-info {
-        margin: 0 1rem;
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
       }
     }
     
     /* Smartphones en mode portrait */
     @media (max-width: 480px) {
       .container {
-        padding: 1.5rem 1rem;
+        padding: 0.75rem;
       }
       
       h1 {
-        font-size: 2rem;
-        margin-bottom: 2.5rem;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
         padding: 0 0.5rem;
-        line-height: 1.1;
       }
       
       .search-container {
         padding: 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
       }
       
       .ai-search-container {
         padding: 0;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
       }
       
       .reset-container {
         padding: 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
       }
       
       .reset-button {
-        font-size: 0.875rem;
-        padding: 0.75rem 1.25rem;
-        border-radius: 20px;
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+        border-radius: 16px;
       }
       
       #search {
-        font-size: 1rem;
-        padding: 1rem 1.25rem 1rem 2.75rem;
-        border-radius: 25px;
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: 20px;
       }
       
       #ai-search {
         width: 100%;
-        font-size: 1rem;
-        padding: 1rem 1.25rem 1rem 2.75rem;
-        border-radius: 25px;
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: 20px;
       }
       
       .search-icon {
-        left: 1rem;
-        font-size: 1.1rem;
+        left: 0.75rem;
+        font-size: 1rem;
       }
       
       .ai-search-icon {
-        left: 1rem;
-        font-size: 1.1rem;
+        left: 0.75rem;
+        font-size: 1rem;
       }
       
       .books-grid {
-        gap: 1.25rem;
-        margin-top: 2rem;
-        padding: 0;
+        gap: 1rem;
+        margin-top: 1rem;
       }
       
       .book {
-        padding: 1.25rem;
-        border-radius: 20px;
+        padding: 1rem;
+        border-radius: 16px;
         min-width: auto;
       }
       
@@ -846,171 +575,134 @@
       }
       
       img {
-        width: 90px;
-        max-height: 130px;
+        width: 80px;
+        max-height: 110px;
       }
       
       .info {
         flex: 1;
         min-width: 0;
-        gap: 0.5rem;
       }
       
       .info h2 {
-        font-size: 1.2rem;
-        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
         text-align: left;
         line-height: 1.2;
       }
       
-      .info h2::after {
-        width: 30px;
-        height: 1.5px;
-      }
-      
       .info-item {
-        margin: 0.4rem 0;
-        padding: 0.5rem;
-        gap: 0.75rem;
+        margin: 0.3rem 0;
+        gap: 0.5rem;
         align-items: flex-start;
         flex-direction: row;
-        border-radius: 8px;
       }
       
       .info-label {
-        min-width: 55px;
+        min-width: 50px;
         font-size: 0.75rem;
         opacity: 0.8;
         flex-shrink: 0;
       }
       
       .info-value {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         flex: 1;
         min-width: 0;
       }
       
       .stock-badge {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.8rem;
-        border-radius: 16px;
+        font-size: 0.7rem;
+        padding: 0.1rem 0.4rem;
       }
       
       .loading {
-        height: 200px;
-        font-size: 1.1rem;
-        padding: 1.5rem;
+        height: 150px;
+        font-size: 1rem;
       }
       
       .spinner {
-        width: 35px;
-        height: 35px;
-        margin-right: 1rem;
+        width: 30px;
+        height: 30px;
+        margin-right: 0.75rem;
       }
       
       .no-results {
-        font-size: 1.2rem;
-        margin-top: 3rem;
-        padding: 2rem 1rem;
+        font-size: 1rem;
+        margin-top: 2rem;
+        padding: 0 1rem;
       }
       
       .pagination {
-        gap: 0.5rem;
-        margin: 2.5rem 0 2rem;
-        padding: 1rem;
+        gap: 0.25rem;
+        margin: 2rem 0 1.5rem;
       }
       
       .pagination button {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        min-width: 42px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+        min-width: 40px;
       }
       
       .pagination .page-info {
-        margin: 0 0.75rem;
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
+        margin: 0 0.5rem;
+        padding: 0.6rem;
+        font-size: 0.85rem;
       }
       
       .results-info {
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
-        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        padding: 0 0.5rem;
       }
     }
     
     /* Très petits écrans */
     @media (max-width: 360px) {
       .container {
-        padding: 1rem 0.75rem;
+        padding: 0.5rem;
       }
       
       h1 {
-        font-size: 1.75rem;
-        margin-bottom: 2rem;
+        font-size: 1.6rem;
+        margin-bottom: 1.25rem;
       }
       
       .book {
-        padding: 1rem;
-        margin: 0;
-        border-radius: 18px;
+        padding: 0.875rem;
+        margin: 0 0.25rem;
       }
       
       .book-content {
-        gap: 0.875rem;
+        gap: 0.75rem;
       }
       
       img {
-        width: 75px;
-        max-height: 105px;
+        width: 70px;
+        max-height: 95px;
       }
       
       .info h2 {
-        font-size: 1.1rem;
-        margin-bottom: 0.6rem;
-      }
-      
-      .info h2::after {
-        width: 25px;
-        height: 1.5px;
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
       }
       
       .info-item {
-        margin: 0.3rem 0;
-        padding: 0.4rem;
-        border-radius: 6px;
+        margin: 0.25rem 0;
       }
       
       .info-label {
-        min-width: 50px;
+        min-width: 45px;
         font-size: 0.7rem;
       }
       
       .info-value {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
       }
       
       .stock-badge {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.6rem;
-        border-radius: 14px;
-      }
-      
-      .pagination {
-        padding: 0.75rem;
-        gap: 0.25rem;
-      }
-      
-      .pagination button {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.8rem;
-        min-width: 38px;
-      }
-      
-      .pagination .page-info {
-        margin: 0 0.5rem;
-        padding: 0.6rem 0.8rem;
-        font-size: 0.8rem;
+        font-size: 0.65rem;
+        padding: 0.1rem 0.3rem;
       }
     }
     
@@ -1018,67 +710,20 @@
     @media (hover: none) and (pointer: coarse) {
       .book:hover {
         transform: none;
-        animation: none;
       }
       
       .book:active {
-        transform: scale(0.96);
-        transition: transform 0.15s ease;
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
       }
       
-      #search:focus,
-      #ai-search:focus {
+      #search:focus {
         transform: none;
-        animation: none;
       }
       
       .book:hover img {
         transform: none;
       }
-      
-      .book:hover::before {
-        animation: none;
-      }
-      
-      .reset-button:hover::before,
-      .pagination button:hover::before {
-        left: 0;
-      }
-    }
-    
-    /* Ajout d'effets de focus améliorés */
-    .book:focus-within {
-      outline: 3px solid rgba(102, 126, 234, 0.5);
-      outline-offset: 4px;
-      border-radius: 28px;
-    }
-    
-    #search:focus-visible,
-    #ai-search:focus-visible {
-      outline: 3px solid rgba(102, 126, 234, 0.6);
-      outline-offset: 3px;
-    }
-    
-    .reset-button:focus-visible,
-    .pagination button:focus-visible {
-      outline: 2px solid rgba(255, 255, 255, 0.8);
-      outline-offset: 2px;
-    }
-    
-    /* Smooth scroll pour l'ensemble de la page */
-    html {
-      scroll-behavior: smooth;
-    }
-    
-    /* Amélioration de la sélection de texte */
-    ::selection {
-      background: rgba(102, 126, 234, 0.3);
-      color: inherit;
-    }
-    
-    ::-moz-selection {
-      background: rgba(102, 126, 234, 0.3);
-      color: inherit;
     }
   </style>
 </head>

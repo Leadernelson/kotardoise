@@ -18,29 +18,25 @@
   }
 }
 
-/* Enhanced Magnetic Hover Effects - Désactivé pour éviter les conflits */
-/* .book:hover {
-  animation: enhancedMagneticPull 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Magnetic Hover Effects */
+.book:hover {
+  animation: magneticPull 0.3s ease-out forwards;
 }
 
-@keyframes enhancedMagneticPull {
+@keyframes magneticPull {
   0% {
-    transform: translateY(0) scale(1) rotateX(0deg);
+    transform: translateY(0) scale(1);
   }
-  30% {
-    transform: translateY(-6px) scale(1.015) rotateX(2deg);
-  }
-  70% {
-    transform: translateY(-10px) scale(1.02) rotateX(3deg);
+  50% {
+    transform: translateY(-4px) scale(1.01);
   }
   100% {
-    transform: translateY(-12px) scale(1.02) rotateX(0deg);
+    transform: translateY(-8px) scale(1.02);
   }
-} */
+}
 
-/* Enhanced Liquid Button Effects */
-.reset-button::after,
-.pagination button::after {
+/* Liquid Button Effects */
+.btn::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -48,17 +44,14 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.3);
   transform: translate(-50%, -50%);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 0;
+  transition: width 0.6s, height 0.6s;
 }
 
-.reset-button:active::after,
-.pagination button:active::after {
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.2);
+.btn:active::after {
+  width: 300px;
+  height: 300px;
 }
 
 /* Parallax Scroll Effects */
@@ -76,28 +69,23 @@
   }
 }
 
-/* Enhanced Morphing Search Bar */
-#search:focus,
-#ai-search:focus {
-  animation: enhancedSearchMorph 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Morphing Search Bar */
+.search-input:focus,
+.ai-search-input:focus {
+  animation: searchMorph 0.5s ease-out forwards;
 }
 
-@keyframes enhancedSearchMorph {
+@keyframes searchMorph {
   0% {
-    border-radius: 30px;
-    transform: scale(1) translateY(0);
+    border-radius: 50px;
   }
-  30% {
-    border-radius: 20px;
-    transform: scale(1.03) translateY(-2px);
-  }
-  70% {
-    border-radius: 35px;
-    transform: scale(1.02) translateY(-3px);
+  50% {
+    border-radius: 25px;
+    transform: scale(1.02);
   }
   100% {
-    border-radius: 30px;
-    transform: scale(1.02) translateY(-4px);
+    border-radius: 50px;
+    transform: scale(1) translateY(-2px);
   }
 }
 
@@ -176,53 +164,46 @@
   }
 }
 
-/* Enhanced Book Reveal Animation - Modifiée pour éviter les conflits */
+/* Book Reveal Animation */
 .book {
-  animation: enhancedBookReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  animation: bookReveal 0.8s ease-out forwards;
 }
 
-@keyframes enhancedBookReveal {
+@keyframes bookReveal {
   0% {
     opacity: 0;
-    transform: translateY(30px) scale(0.95);
+    transform: translateY(50px) rotateX(-90deg);
   }
   50% {
-    opacity: 0.7;
-    transform: translateY(10px) scale(0.98);
+    opacity: 0.5;
+    transform: translateY(25px) rotateX(-45deg);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) rotateX(0deg);
   }
 }
 
-/* Enhanced Holographic Effect - Désactivé temporairement */
-/* .book:hover::before {
+/* Holographic Effect */
+.book::before {
   background: linear-gradient(
     45deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.15) 50%,
-    transparent 80%
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
   );
-  animation: enhancedHologram 2s ease-in-out;
+  animation: hologram 3s linear infinite;
 }
 
-@keyframes enhancedHologram {
+@keyframes hologram {
   0% {
-    transform: translateX(-120%) skewX(-10deg);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
+    transform: translateX(-100%) skewX(-15deg);
   }
   100% {
-    transform: translateX(220%) skewX(-10deg);
-    opacity: 0;
+    transform: translateX(200%) skewX(-15deg);
   }
-} */
+}
 
 /* Pulse Loading Animation */
 .loading .spinner {
@@ -328,25 +309,19 @@ body::before {
   }
 }
 
-/* Enhanced Micro-interactions for Form Elements */
-#search:focus ~ .search-icon,
-#ai-search:focus ~ .ai-search-icon {
-  animation: enhancedIconBounce 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #667eea;
+/* Micro-interactions for Form Elements */
+.search-input:focus ~ .search-icon,
+.ai-search-input:focus ~ .ai-search-icon {
+  animation: iconBounce 0.5s ease-out;
+  color: rgba(255, 255, 255, 1);
 }
 
-@keyframes enhancedIconBounce {
-  0% {
-    transform: translateY(-50%) scale(1) rotate(0deg);
+@keyframes iconBounce {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
   }
-  30% {
-    transform: translateY(-50%) scale(1.3) rotate(5deg);
-  }
-  60% {
-    transform: translateY(-50%) scale(1.1) rotate(-2deg);
-  }
-  100% {
-    transform: translateY(-50%) scale(1.1) rotate(0deg);
+  50% {
+    transform: translateY(-50%) scale(1.2);
   }
 }
 
