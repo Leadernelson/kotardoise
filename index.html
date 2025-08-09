@@ -403,13 +403,16 @@
       white-space: nowrap;
       flex-shrink: 0;
       position: relative;
-      overflow: visible;
+      overflow: hidden;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid rgba(255, 255, 255, 0.3);
       min-width: fit-content;
       width: auto;
       backdrop-filter: blur(5px);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      transform: translateZ(0); /* Force hardware acceleration pour éviter les tremblements */
+      backface-visibility: hidden;
+      will-change: transform;
     }
     
     .stock-badge::before {
@@ -444,7 +447,7 @@
     }
     
     .stock-badge:hover {
-      transform: translateY(-2px) scale(1.05);
+      transform: translateY(-2px) scale(1.05) translateZ(0);
       box-shadow:
         0 8px 25px rgba(72, 187, 120, 0.4),
         0 4px 15px rgba(72, 187, 120, 0.3),
@@ -452,6 +455,7 @@
     }
     
     .stock-badge.out-of-stock:hover {
+      transform: translateY(-2px) scale(1.05) translateZ(0);
       box-shadow:
         0 8px 25px rgba(245, 101, 101, 0.4),
         0 4px 15px rgba(245, 101, 101, 0.3),
@@ -459,6 +463,7 @@
     }
     
     .stock-badge.undefined:hover {
+      transform: translateY(-2px) scale(1.05) translateZ(0);
       box-shadow:
         0 8px 25px rgba(160, 174, 192, 0.4),
         0 4px 15px rgba(160, 174, 192, 0.3),
@@ -1112,8 +1117,8 @@
 
     // Cache localStorage pour optimiser la bande passante
     const CACHE_KEY = 'kotardoise_books_cache';
-    const CACHE_VERSION = '1.0';
-    const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes en millisecondes - balance parfaite entre performance et fraîcheur
+    const CACHE_VERSION = '1.1'; // Version mise à jour pour résoudre les bugs
+    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes en millisecondes - prolongé pour éviter les rafraîchissements fréquents
 
     function getCachedBooks() {
       try {
@@ -1207,13 +1212,14 @@
         div.style.animationDelay = `${index * 0.1}s`;
 
         const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-M.jpg`; // Taille Medium au lieu de Large
+        const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
 
         div.innerHTML = `
           <div class="book-content">
             <div class="book-cover">
               <img src="${coverURL}" 
                    alt="Couverture de ${livre.Titre}" 
-                   onerror="this.src='https://via.placeholder.com/120x160/667eea/white?text=📚'" 
+                   onerror="this.onerror=null; this.src='${fallbackURL}'; console.log('Fallback image loaded for ISBN: ${livre.ISBN}');" 
                    loading="lazy"
                    decoding="async"
                    width="120"
@@ -1372,8 +1378,8 @@
           filteredBooks = [...allBooks];
           renderBooks(filteredBooks, 1);
           
-          // Vérifier discrètement s'il y a des mises à jour en arrière-plan
-          checkForUpdatesInBackground();
+          // Ne pas vérifier les mises à jour automatiquement pour éviter les rafraîchissements continus
+          // checkForUpdatesInBackground(); // Désactivé
           
         } else {
           // Pas de cache, charger depuis l'API
@@ -1434,8 +1440,13 @@
       renderBooks(filteredBooks, 1);
     }
 
-    // Vérification en arrière-plan pour les mises à jour (optionnelle avec cache court)
+    // Vérification en arrière-plan pour les mises à jour (désactivée pour éviter le rafraîchissement continu)
     async function checkForUpdatesInBackground() {
+      // Fonction désactivée temporairement pour éviter les rafraîchissements continus
+      console.log('🔍 Vérification automatique des mises à jour désactivée');
+      return;
+      
+      /*
       try {
         // Attendre un peu plus longtemps avant de vérifier car le cache expire souvent
         await new Promise(resolve => setTimeout(resolve, 8000));
@@ -1460,6 +1471,7 @@
       } catch (error) {
         console.log('🔍 Vérification mise à jour échouée (normal):', error.message);
       }
+      */
     }
 
     // Fonction pour détecter les changements dans les données

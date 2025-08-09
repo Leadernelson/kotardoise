@@ -350,22 +350,25 @@ body::before {
   }
 }
 
-/* Success Animation for Stock Badges */
+/* Success Animation for Stock Badges - Version corrigée */
 .stock-badge {
   position: relative;
   overflow: hidden;
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden; /* Évite les glitches */
 }
 
 .stock-badge:hover {
   animation: stockPulse 0.6s ease-in-out;
+  animation-fill-mode: both;
 }
 
 @keyframes stockPulse {
   0%, 100% {
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
   }
 }
 
