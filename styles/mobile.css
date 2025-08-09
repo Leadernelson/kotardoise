@@ -1,5 +1,59 @@
 /* Mobile-First Responsive Styles - Optimized for Performance */
 
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  /* Désactiver les animations coûteuses sur mobile */
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+  }
+  
+  /* Optimiser les animations pour mobile */
+  .book {
+    animation: none !important; /* Désactiver les animations d'entrée sur mobile */
+    will-change: auto; /* Réduire l'utilisation de la GPU */
+  }
+  
+  .book-content {
+    will-change: auto;
+  }
+  
+  /* Images optimisées pour mobile */
+  img {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+  }
+  
+  /* Réduire les effets visuels coûteux */
+  .book::after,
+  .book::before {
+    display: none; /* Supprimer les pseudo-éléments coûteux */
+  }
+  
+  /* Simplifier les box-shadows sur mobile */
+  .book {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .book:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Optimiser le backdrop-filter */
+  .book,
+  #search,
+  #ai-search {
+    backdrop-filter: none; /* Supprimer backdrop-filter sur mobile */
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* Tablet Landscape */
 @media (max-width: 1024px) {
   .container {
@@ -380,50 +434,69 @@
   }
 }
 
-/* Touch Device Optimizations */
+/* Touch Device Optimizations - Version améliorée */
 @media (hover: none) and (pointer: coarse) {
+  /* Désactiver toutes les animations hover sur mobile */
   .book:hover {
-    transform: none;
-    animation: none;
+    transform: none !important;
+    animation: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   }
   
   .book:active {
-    transform: scale(0.96);
-    transition: transform 0.15s ease;
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease !important;
   }
   
   #search:focus,
   #ai-search:focus {
-    transform: none;
-    animation: none;
+    transform: none !important;
+    animation: none !important;
   }
   
   .book:hover img {
-    transform: none;
+    transform: none !important;
   }
   
-  .book:hover::before {
-    animation: none;
+  .book:hover::before,
+  .book:hover::after {
+    animation: none !important;
+    display: none !important;
+  }
+  
+  .stock-badge:hover {
+    transform: none !important;
+    animation: none !important;
   }
   
   .reset-button:hover::before,
   .pagination button:hover::before {
     left: 0;
+    animation: none !important;
   }
   
-  /* Larger touch targets for mobile */
+  /* Optimiser les tailles de touch targets */
   .reset-button {
     min-height: 48px;
+    padding: 12px 20px;
   }
   
   .pagination button {
     min-height: 44px;
     min-width: 44px;
+    padding: 10px 12px;
   }
   
   #search,
   #ai-search {
     min-height: 48px;
+    padding: 12px 16px 12px 44px;
+  }
+  
+  /* Simplifier les effets visuels */
+  .info-item:hover {
+    background: rgba(248, 250, 252, 0.8) !important;
+    transform: none !important;
   }
 }
 

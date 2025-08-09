@@ -372,20 +372,65 @@ body::before {
   }
 }
 
-/* Advanced Responsive Animations */
+/* Advanced Responsive Animations - Version optimisée pour mobile */
 @media (max-width: 768px) {
+  /* Désactiver toutes les animations lourdes sur mobile */
   .book {
-    animation: mobileBookReveal 0.6s ease-out forwards;
+    animation: none !important;
+    will-change: auto;
+  }
+  
+  .book:hover {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  .floating-element {
+    display: none; /* Supprimer complètement les éléments flottants sur mobile */
+  }
+  
+  /* Simplifier les animations de recherche */
+  #search:focus,
+  #ai-search:focus {
+    animation: none !important;
+  }
+  
+  /* Désactiver les effets holographiques */
+  .book:hover::before,
+  .book:hover::after {
+    display: none !important;
+  }
+  
+  /* Simplifier les animations des badges */
+  .stock-badge:hover {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Désactiver les particules */
+  @keyframes floatingParticles {
+    0%, 100% { opacity: 0; transform: translateY(0); }
+  }
+  
+  /* Simplifier les effets de boutons */
+  .reset-button:hover,
+  .pagination button:hover {
+    animation: none !important;
+  }
+  
+  .reset-button::after,
+  .pagination button::after {
+    display: none !important;
   }
   
   @keyframes mobileBookReveal {
     0% {
       opacity: 0;
-      transform: translateX(-30px);
+      transform: translateY(10px);
     }
     100% {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateY(0);
     }
   }
 }

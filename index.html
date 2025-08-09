@@ -4,7 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>📚 La bibliothèque du KotArdoise</title>
-  <link rel="stylesheet" href="styles/advanced-animations.css">
+  
+  <!-- Chargement prioritaire du CSS mobile -->
+  <link rel="stylesheet" href="styles/mobile.css" media="(max-width: 768px)">
+  <link rel="stylesheet" href="styles/mobile-performance.css" media="(max-width: 768px)">
+  <link rel="stylesheet" href="styles/advanced-animations.css" media="(min-width: 769px)">
+  
+  <!-- Préconnexion aux domaines externes pour améliorer les performances -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://covers.openlibrary.org">
+  <link rel="preconnect" href="https://opensheet.elk.sh">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -1113,15 +1124,62 @@
     let allBooks = [];
     let filteredBooks = [];
     let currentPage = 1;
-    const booksPerPage = 15; // Optimisé pour 1800 livres (120 pages max)
+    const booksPerPage = window.innerWidth <= 768 ? 8 : 15; // Moins de livres par page sur mobile pour améliorer les performances
+
+    // Détection d'appareil mobile pour optimisations spécifiques
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
     // Cache localStorage pour optimiser la bande passante
     const CACHE_KEY = 'kotardoise_books_cache';
-    const CACHE_VERSION = '1.1'; // Version mise à jour pour résoudre les bugs
-    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes en millisecondes - prolongé pour éviter les rafraîchissements fréquents
+    const CACHE_VERSION = '1.3'; // Version mise à jour pour optimisations mobile
+    const CACHE_DURATION = isMobile ? 60 * 60 * 1000 : 30 * 60 * 1000; // Cache plus long sur mobile (1h vs 30min)
+
+    // Fonction pour nettoyer les anciens caches problématiques
+    function cleanupOldCache() {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { version } = JSON.parse(cached);
+          // Supprimer tout cache avec une version antérieure à 1.2
+          if (!version || version !== CACHE_VERSION) {
+            console.log('🧹 Suppression de l\'ancien cache bugué (version:', version, ')');
+            localStorage.removeItem(CACHE_KEY);
+            
+            // Supprimer aussi d'autres clés de cache qui pourraient causer des problèmes
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+              const key = localStorage.key(i);
+              if (key && key.includes('kotardoise')) {
+                keysToRemove.push(key);
+              }
+            }
+            keysToRemove.forEach(key => {
+              if (key !== CACHE_KEY) {
+                localStorage.removeItem(key);
+                console.log('🧹 Suppression clé cache:', key);
+              }
+            });
+            
+            return true; // Cache nettoyé
+          }
+        }
+        return false; // Pas de nettoyage nécessaire
+      } catch (error) {
+        console.warn('Erreur nettoyage cache:', error);
+        localStorage.removeItem(CACHE_KEY);
+        return true;
+      }
+    }
 
     function getCachedBooks() {
       try {
+        // Nettoyer d'abord les anciens caches
+        const wasCleanedUp = cleanupOldCache();
+        if (wasCleanedUp) {
+          console.log('✅ Cache nettoyé - rechargement depuis l\'API');
+          return null;
+        }
+        
         const cached = localStorage.getItem(CACHE_KEY);
         if (!cached) return null;
         
@@ -1191,10 +1249,11 @@
         return;
       }
       
-      // Calcul de pagination
-      const totalPages = Math.ceil(books.length / booksPerPage);
-      const startIndex = (page - 1) * booksPerPage;
-      const endIndex = startIndex + booksPerPage;
+      // Calcul de pagination avec optimisation mobile
+      const itemsPerPage = isMobile ? 8 : booksPerPage;
+      const totalPages = Math.ceil(books.length / itemsPerPage);
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
       const booksToShow = books.slice(startIndex, endIndex);
       
       // Affichage des informations de résultats
@@ -1204,52 +1263,101 @@
         | Affichage de <strong>${startIndex + 1}</strong> à <strong>${Math.min(endIndex, books.length)}</strong>
       `;
       
-      // Rendu des livres
+      // Optimisation du rendu pour mobile - utiliser RequestAnimationFrame
       container.innerHTML = "";
-      booksToShow.forEach((livre, index) => {
-        const div = document.createElement("div");
-        div.className = "book";
-        div.style.animationDelay = `${index * 0.1}s`;
-
-        const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-M.jpg`; // Taille Medium au lieu de Large
-        const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
-
-        div.innerHTML = `
-          <div class="book-content">
-            <div class="book-cover">
-              <img src="${coverURL}" 
-                   alt="Couverture de ${livre.Titre}" 
-                   onerror="this.onerror=null; this.src='${fallbackURL}'; console.log('Fallback image loaded for ISBN: ${livre.ISBN}');" 
-                   loading="lazy"
-                   decoding="async"
-                   width="120"
-                   height="180"
-                   onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', 15000)"> <!-- ~15KB par image Medium -->
-            </div>
-            <div class="info">
-              <h2>${livre.Titre}</h2>
-              <div class="info-item">
-                <span class="info-label">Auteur:</span>
-                <span class="info-value">${livre.Auteur}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Stock:</span>
-                <span class="stock-badge ${
-                  (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
-                  (livre.Stock == 0) ? 'out-of-stock' : ''
-                }">${
-                  (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : 
-                  `${livre.Stock} ${(livre.Stock != 1) ? 'exemplaires' : 'exemplaire'}`
-                }</span>
-              </div>
-            </div>
-          </div>
-        `;
-        container.appendChild(div);
-      });
+      
+      if (isMobile) {
+        // Rendu optimisé pour mobile - par batch pour éviter les blocages
+        renderBooksInBatches(container, booksToShow);
+      } else {
+        // Rendu normal pour desktop
+        renderBooksNormal(container, booksToShow);
+      }
       
       // Rendu de la pagination
       renderPagination(totalPages, page);
+    }
+
+    // Fonction de rendu optimisé pour mobile
+    function renderBooksInBatches(container, booksToShow) {
+      const batchSize = 3; // Traiter 3 livres à la fois sur mobile
+      let currentIndex = 0;
+      
+      function renderBatch() {
+        const endIndex = Math.min(currentIndex + batchSize, booksToShow.length);
+        
+        for (let i = currentIndex; i < endIndex; i++) {
+          const livre = booksToShow[i];
+          const div = createBookElement(livre, i);
+          container.appendChild(div);
+        }
+        
+        currentIndex = endIndex;
+        
+        if (currentIndex < booksToShow.length) {
+          // Utiliser requestAnimationFrame pour le prochain batch
+          requestAnimationFrame(renderBatch);
+        }
+      }
+      
+      // Commencer le rendu par batch
+      renderBatch();
+    }
+
+    // Fonction de rendu normal pour desktop
+    function renderBooksNormal(container, booksToShow) {
+      booksToShow.forEach((livre, index) => {
+        const div = createBookElement(livre, index);
+        container.appendChild(div);
+      });
+    }
+
+    // Fonction pour créer un élément livre
+    function createBookElement(livre, index) {
+      const div = document.createElement("div");
+      div.className = "book";
+      div.style.animationDelay = `${index * 0.1}s`;
+
+      // Optimisation des images pour mobile
+      const imageSize = isMobile ? 'S' : 'M'; // Taille Small sur mobile, Medium sur desktop
+      const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-${imageSize}.jpg`;
+      const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
+      
+      // Optimisation du lazy loading pour mobile
+      const loadingAttribute = isMobile ? 'loading="lazy" decoding="async"' : 'loading="lazy" decoding="async"';
+
+      div.innerHTML = `
+        <div class="book-content">
+          <div class="book-cover">
+            <img src="${coverURL}" 
+                 alt="Couverture de ${livre.Titre}" 
+                 onerror="this.onerror=null; this.src='${fallbackURL}'; console.log('Fallback image loaded for ISBN: ${livre.ISBN}');" 
+                 ${loadingAttribute}
+                 width="120"
+                 height="180"
+                 onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', ${isMobile ? '8000' : '15000'})"> 
+          </div>
+          <div class="info">
+            <h2>${livre.Titre}</h2>
+            <div class="info-item">
+              <span class="info-label">Auteur:</span>
+              <span class="info-value">${livre.Auteur}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Stock:</span>
+              <span class="stock-badge ${
+                (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
+                (livre.Stock == 0) ? 'out-of-stock' : ''
+              }">${
+                (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : 
+                `${livre.Stock} ${(livre.Stock != 1) ? 'exemplaires' : 'exemplaire'}`
+              }</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      return div;
     }
 
     function renderPagination(totalPages, currentPage) {
@@ -1312,13 +1420,18 @@
     }
 
     function changePage(page) {
-      if (page < 1 || page > Math.ceil(filteredBooks.length / booksPerPage)) return;
+      const itemsPerPage = isMobile ? 8 : booksPerPage;
+      if (page < 1 || page > Math.ceil(filteredBooks.length / itemsPerPage)) return;
       
       currentPage = page;
       renderBooks(filteredBooks, currentPage);
       
-      // Scroll vers le haut
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll vers le haut avec une animation plus douce sur mobile
+      if (isMobile) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
     function resetSearch() {
@@ -1363,6 +1476,22 @@
     async function loadInitialBooks() {
       const container = document.getElementById("livres");
       const resultsInfo = document.getElementById("results-info");
+      
+      // Vérification préliminaire pour détecter les boucles de rafraîchissement
+      const loadStartTime = Date.now();
+      const lastLoadTime = sessionStorage.getItem('lastLoadTime');
+      
+      if (lastLoadTime) {
+        const timeSinceLastLoad = loadStartTime - parseInt(lastLoadTime);
+        if (timeSinceLastLoad < 5000) { // Moins de 5 secondes depuis le dernier chargement
+          console.warn('⚠️ Chargement détecté trop rapidement - possible boucle de rafraîchissement');
+          console.log('🧹 Nettoyage préventif du cache...');
+          localStorage.removeItem(CACHE_KEY);
+          sessionStorage.removeItem('lastLoadTime');
+        }
+      }
+      
+      sessionStorage.setItem('lastLoadTime', loadStartTime.toString());
       
       container.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement de la bibliothèque...</div>';
       resultsInfo.innerHTML = '';
@@ -1716,8 +1845,8 @@
       
       clearTimeout(searchTimeout);
       
-      // Pour des volumes importants, ajuster le délai selon la longueur
-      const debounceDelay = allBooks.length > 1000 ? 400 : 300;
+      // Délai optimisé pour mobile - plus long pour éviter trop de requêtes
+      const debounceDelay = isMobile ? 600 : (allBooks.length > 1000 ? 400 : 300);
       
       searchTimeout = setTimeout(() => {
         // Vérifier le cache d'abord
@@ -1735,8 +1864,9 @@
         if (query.length > 2) {
           searchCache.set(cacheKey, [...filteredBooks]);
           
-          // Limiter la taille du cache
-          if (searchCache.size > 50) {
+          // Limiter la taille du cache - plus petit sur mobile
+          const maxCacheSize = isMobile ? 20 : 50;
+          if (searchCache.size > maxCacheSize) {
             const firstKey = searchCache.keys().next().value;
             searchCache.delete(firstKey);
           }
@@ -1760,8 +1890,74 @@
     // Démarrer le chargement initial
     loadInitialBooks();
 
+    // Optimisation mobile : Intersection Observer pour un lazy loading avancé
+    if (isMobile && 'IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+              observer.unobserve(img);
+            }
+          }
+        });
+      }, {
+        rootMargin: '50px' // Commencer à charger 50px avant que l'image soit visible
+      });
+      
+      // Observer toutes les images avec data-src
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          imageObserver.observe(img);
+        });
+      });
+    }
+
     // Rendre la fonction de rafraîchissement accessible globalement
     window.forceDataRefresh = forceDataRefresh;
+    
+    // Fonction d'urgence pour nettoyer complètement le cache (accessible via console)
+    window.clearAllCache = function() {
+      console.log('🧹 Nettoyage complet du cache...');
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log('✅ Cache complètement nettoyé - rechargez la page');
+      alert('Cache nettoyé ! Rechargez la page (F5) pour appliquer les corrections.');
+    };
+    
+    // Fonction pour diagnostiquer les problèmes de cache
+    window.debugCache = function() {
+      console.log('🔍 Diagnostic du cache:');
+      console.log('- Cache version attendue:', CACHE_VERSION);
+      
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { version, timestamp, data } = JSON.parse(cached);
+          console.log('- Cache version actuelle:', version);
+          console.log('- Cache timestamp:', new Date(timestamp));
+          console.log('- Cache taille:', data?.length || 0, 'livres');
+          console.log('- Cache age:', Math.round((Date.now() - timestamp) / 60000), 'minutes');
+        } else {
+          console.log('- Aucun cache trouvé');
+        }
+        
+        console.log('- Autres clés localStorage:');
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          console.log('  -', key);
+        }
+      } catch (error) {
+        console.error('Erreur diagnostic:', error);
+      }
+    };
+    
+    console.log('🔧 Fonctions de débogage disponibles:');
+    console.log('- window.clearAllCache() : Nettoie complètement le cache');
+    console.log('- window.debugCache() : Affiche les informations de cache');
+    console.log('- window.forceDataRefresh() : Force le rechargement des données');
   </script>
 </body>
 </html>

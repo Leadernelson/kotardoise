@@ -1,0 +1,85 @@
+/* Mobile Performance Optimization CSS */
+
+/* Force hardware acceleration pour tous les éléments animés */
+.book,
+.stock-badge,
+.reset-button,
+.pagination button {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
+/* Optimisations spécifiques pour les appareils à faible performance */
+@media (max-width: 768px) and (max-resolution: 150dpi) {
+  /* Réduire encore plus les effets sur les écrans basse résolution */
+  .book {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .book:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Simplifier les dégradés */
+  .stock-badge {
+    background: #48bb78 !important;
+  }
+  
+  .stock-badge.out-of-stock {
+    background: #f56565 !important;
+  }
+  
+  .stock-badge.undefined {
+    background: #a0aec0 !important;
+  }
+}
+
+/* Optimisations pour les connexions lentes */
+@media (max-width: 768px) {
+  /* Réduire la qualité des images de fond */
+  body {
+    background: #667eea !important; /* Couleur unie au lieu du gradient */
+  }
+  
+  /* Simplifier les transitions */
+  .book,
+  .stock-badge,
+  .info-item {
+    transition: all 0.2s ease !important;
+  }
+}
+
+/* Optimisations pour économiser la batterie */
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+  /* Limiter les animations même si l'utilisateur n'a pas demandé reduced motion */
+  .book {
+    animation-duration: 0.3s !important;
+  }
+  
+  .spinner {
+    animation-duration: 1.5s !important; /* Ralentir le spinner */
+  }
+}
+
+/* Optimisations pour les très petits écrans */
+@media (max-width: 360px) {
+  /* Forcer la simplification */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+  }
+  
+  .book {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .book:hover {
+    background: rgba(255, 255, 255, 1) !important;
+  }
+}
