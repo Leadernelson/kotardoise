@@ -238,12 +238,17 @@
   }
   
   .search-icon,
-  .ai-search-icon {
-    left: 1rem;
-    font-size: 1.1rem;
-  }
-  
-  .books-grid {
+      .ai-search-icon {
+        left: 1rem;
+        font-size: 1.1rem;
+      }
+      
+      .ai-search-loader {
+        right: 1rem;
+        width: 18px;
+        height: 18px;
+        border-width: 2px;
+      }  .books-grid {
     gap: 1.25rem;
     margin-top: 2rem;
     padding: 0;
