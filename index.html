@@ -1124,9 +1124,9 @@
     let allBooks = [];
     let filteredBooks = [];
     let currentPage = 1;
-    const booksPerPage = window.innerWidth <= 768 ? 8 : 15; // Moins de livres par page sur mobile pour améliorer les performances
+    const booksPerPage = 10; // Nombre uniforme de livres par page partout (basé sur mobile optimisé)
 
-    // Détection d'appareil mobile pour optimisations spécifiques
+    // Détection d'appareil mobile pour optimisations spécifiques (gardée pour autres optimisations)
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
     // Cache localStorage pour optimiser la bande passante
@@ -1249,11 +1249,10 @@
         return;
       }
       
-      // Calcul de pagination avec optimisation mobile
-      const itemsPerPage = isMobile ? 8 : booksPerPage;
-      const totalPages = Math.ceil(books.length / itemsPerPage);
-      const startIndex = (page - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
+      // Calcul de pagination uniforme partout
+      const totalPages = Math.ceil(books.length / booksPerPage);
+      const startIndex = (page - 1) * booksPerPage;
+      const endIndex = startIndex + booksPerPage;
       const booksToShow = books.slice(startIndex, endIndex);
       
       // Affichage des informations de résultats
@@ -1263,24 +1262,17 @@
         | Affichage de <strong>${startIndex + 1}</strong> à <strong>${Math.min(endIndex, books.length)}</strong>
       `;
       
-      // Optimisation du rendu pour mobile - utiliser RequestAnimationFrame
+      // Rendu uniforme partout - utiliser le rendu par batch qui fonctionne bien
       container.innerHTML = "";
-      
-      if (isMobile) {
-        // Rendu optimisé pour mobile - par batch pour éviter les blocages
-        renderBooksInBatches(container, booksToShow);
-      } else {
-        // Rendu normal pour desktop
-        renderBooksNormal(container, booksToShow);
-      }
+      renderBooksInBatches(container, booksToShow);
       
       // Rendu de la pagination
       renderPagination(totalPages, page);
     }
 
-    // Fonction de rendu optimisé pour mobile
+    // Fonction de rendu optimisé par batch (utilisée partout maintenant)
     function renderBooksInBatches(container, booksToShow) {
-      const batchSize = 3; // Traiter 3 livres à la fois sur mobile
+      const batchSize = 4; // Traiter 4 livres à la fois partout (optimal)
       let currentIndex = 0;
       
       function renderBatch() {
@@ -1304,27 +1296,19 @@
       renderBatch();
     }
 
-    // Fonction de rendu normal pour desktop
-    function renderBooksNormal(container, booksToShow) {
-      booksToShow.forEach((livre, index) => {
-        const div = createBookElement(livre, index);
-        container.appendChild(div);
-      });
-    }
-
     // Fonction pour créer un élément livre
     function createBookElement(livre, index) {
       const div = document.createElement("div");
       div.className = "book";
       div.style.animationDelay = `${index * 0.1}s`;
 
-      // Amélioration de la qualité des images - utiliser Medium même sur mobile pour éviter la pixelisation
-      const imageSize = isMobile ? 'M' : 'L'; // Medium sur mobile, Large sur desktop pour une meilleure qualité
+      // Uniformisation des miniatures - même qualité partout (basée sur mobile qui fonctionne)
+      const imageSize = 'M'; // Taille Medium partout pour uniformité et qualité
       const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-${imageSize}.jpg`;
       const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
       
-      // Optimisation du lazy loading pour mobile
-      const loadingAttribute = isMobile ? 'loading="lazy" decoding="async"' : 'loading="lazy" decoding="async"';
+      // Mêmes paramètres de chargement partout
+      const loadingAttribute = 'loading="lazy" decoding="async"';
 
       div.innerHTML = `
         <div class="book-content">
@@ -1336,7 +1320,7 @@
                  width="120"
                  height="180"
                  style="object-fit: cover; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"
-                 onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', ${isMobile ? '25000' : '40000'})"> 
+                 onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', 25000)"> 
           </div>
           <div class="info">
             <h2>${livre.Titre}</h2>
@@ -1421,18 +1405,13 @@
     }
 
     function changePage(page) {
-      const itemsPerPage = isMobile ? 8 : booksPerPage;
-      if (page < 1 || page > Math.ceil(filteredBooks.length / itemsPerPage)) return;
+      if (page < 1 || page > Math.ceil(filteredBooks.length / booksPerPage)) return;
       
       currentPage = page;
       renderBooks(filteredBooks, currentPage);
       
-      // Scroll vers le haut avec une animation plus douce sur mobile
-      if (isMobile) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      // Scroll vers le haut avec une animation douce partout
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function resetSearch() {

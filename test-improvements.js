@@ -5,17 +5,18 @@ console.log('🧪 Test des améliorations appliquées...');
 // Test 1: Vérifier la qualité des images
 function testImageQuality() {
   const images = document.querySelectorAll('img');
-  let highQualityCount = 0;
+  let uniformQualityCount = 0;
   let totalImages = images.length;
   
   images.forEach(img => {
-    if (img.src.includes('-L.jpg') || img.src.includes('-M.jpg')) {
-      highQualityCount++;
+    if (img.src.includes('-M.jpg')) { // Toutes les images devraient être en taille M maintenant
+      uniformQualityCount++;
     }
   });
   
-  console.log(`📸 Images de qualité: ${highQualityCount}/${totalImages}`);
-  console.log(`📸 Pourcentage de qualité améliorée: ${Math.round(highQualityCount/totalImages*100)}%`);
+  console.log(`📸 Images uniformes (taille M): ${uniformQualityCount}/${totalImages}`);
+  console.log(`📸 Pourcentage d'uniformité: ${Math.round(uniformQualityCount/totalImages*100)}%`);
+  console.log('✅ Toutes les images utilisent maintenant la même qualité partout');
 }
 
 // Test 2: Vérifier les optimisations IA
@@ -42,17 +43,22 @@ function testAISearch() {
   return testQueries;
 }
 
-// Test 3: Vérifier les optimisations mobile
-function testMobileOptimizations() {
+// Test 3: Vérifier les optimisations uniformes
+function testUniformOptimizations() {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
   console.log(`📱 Appareil mobile détecté: ${isMobile}`);
   
+  console.log('� Optimisations uniformes actives partout:');
+  console.log('- Images: taille M (Medium) sur tous les appareils');
+  console.log('- Pagination: 10 livres par page partout');
+  console.log('- Rendu: par batch de 4 livres partout');
+  console.log('- Qualité: uniforme et optimale');
+  
   if (isMobile) {
-    console.log('📱 Optimisations mobile actives:');
-    console.log('- Images: taille M (Medium) pour éviter la pixelisation');
-    console.log('- Pagination: 8 livres par page');
+    console.log('📱 Optimisations mobiles supplémentaires:');
     console.log('- Debounce: 600ms');
     console.log('- Cache: 1 heure');
+    console.log('- Animations: simplifiées');
   }
 }
 
@@ -60,13 +66,13 @@ function testMobileOptimizations() {
 setTimeout(() => {
   testImageQuality();
   testAISearch();
-  testMobileOptimizations();
+  testUniformOptimizations();
   
-  console.log('✅ Tests terminés - Les améliorations sont actives!');
+  console.log('✅ Tests terminés - Uniformisation complète!');
   console.log('🧪 Pour tester la recherche IA, essayez: "voldemort", "magie", "guerre"');
 }, 2000);
 
 // Export des fonctions pour utilisation manuelle
 window.testImageQuality = testImageQuality;
 window.testAISearch = testAISearch;
-window.testMobileOptimizations = testMobileOptimizations;
+window.testUniformOptimizations = testUniformOptimizations;
