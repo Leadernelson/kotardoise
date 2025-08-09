@@ -1,0 +1,416 @@
+/* Advanced Animations & Visual Effects */
+
+/* Particle System Animation */
+@keyframes floatingParticles {
+  0% {
+    transform: translateY(100vh) translateX(0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(100px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Enhanced Magnetic Hover Effects - Désactivé pour éviter les conflits */
+/* .book:hover {
+  animation: enhancedMagneticPull 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes enhancedMagneticPull {
+  0% {
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+  30% {
+    transform: translateY(-6px) scale(1.015) rotateX(2deg);
+  }
+  70% {
+    transform: translateY(-10px) scale(1.02) rotateX(3deg);
+  }
+  100% {
+    transform: translateY(-12px) scale(1.02) rotateX(0deg);
+  }
+} */
+
+/* Enhanced Liquid Button Effects */
+.reset-button::after,
+.pagination button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.reset-button:active::after,
+.pagination button:active::after {
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Parallax Scroll Effects */
+.header {
+  transform: translateZ(0);
+  animation: headerParallax 20s ease-in-out infinite;
+}
+
+@keyframes headerParallax {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0.5deg);
+  }
+}
+
+/* Enhanced Morphing Search Bar */
+#search:focus,
+#ai-search:focus {
+  animation: enhancedSearchMorph 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes enhancedSearchMorph {
+  0% {
+    border-radius: 30px;
+    transform: scale(1) translateY(0);
+  }
+  30% {
+    border-radius: 20px;
+    transform: scale(1.03) translateY(-2px);
+  }
+  70% {
+    border-radius: 35px;
+    transform: scale(1.02) translateY(-3px);
+  }
+  100% {
+    border-radius: 30px;
+    transform: scale(1.02) translateY(-4px);
+  }
+}
+
+/* Glitch Text Effect for Title */
+.header h1 {
+  position: relative;
+}
+
+.header h1::before,
+.header h1::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+}
+
+.header h1::before {
+  animation: glitch1 3s infinite;
+  color: #ff00ff;
+  z-index: -1;
+}
+
+.header h1::after {
+  animation: glitch2 3s infinite;
+  color: #00ffff;
+  z-index: -2;
+}
+
+@keyframes glitch1 {
+  0%, 14%, 15%, 49%, 50%, 99%, 100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  15%, 49% {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+}
+
+@keyframes glitch2 {
+  0%, 19%, 20%, 44%, 45%, 99%, 100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  20%, 44% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+
+/* Floating Elements */
+.floating-element {
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-element:nth-child(1) { animation-delay: 0s; }
+.floating-element:nth-child(2) { animation-delay: 1s; }
+.floating-element:nth-child(3) { animation-delay: 2s; }
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+/* Enhanced Book Reveal Animation - Modifiée pour éviter les conflits */
+.book {
+  animation: enhancedBookReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes enhancedBookReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(10px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced Holographic Effect - Désactivé temporairement */
+/* .book:hover::before {
+  background: linear-gradient(
+    45deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 80%
+  );
+  animation: enhancedHologram 2s ease-in-out;
+}
+
+@keyframes enhancedHologram {
+  0% {
+    transform: translateX(-120%) skewX(-10deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(220%) skewX(-10deg);
+    opacity: 0;
+  }
+} */
+
+/* Pulse Loading Animation */
+.loading .spinner {
+  animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* Text Reveal Animation */
+.book-title {
+  overflow: hidden;
+  position: relative;
+}
+
+.book-title::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #667eea, transparent);
+  transform: translateX(-100%);
+  animation: textReveal 2s ease-in-out;
+}
+
+@keyframes textReveal {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Smooth Scroll Indicators */
+.scroll-indicator {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scroll-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.scroll-dot.active {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.5);
+}
+
+/* Interactive Cursor Effect */
+.interactive-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: all 0.1s ease;
+  mix-blend-mode: difference;
+}
+
+.interactive-cursor.hover {
+  transform: scale(2);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Breathing Animation for Background */
+body::before {
+  animation: backgroundPulse 20s ease-in-out infinite, breathe 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    filter: brightness(1) contrast(1);
+  }
+  50% {
+    filter: brightness(1.1) contrast(1.05);
+  }
+}
+
+/* Enhanced Micro-interactions for Form Elements */
+#search:focus ~ .search-icon,
+#ai-search:focus ~ .ai-search-icon {
+  animation: enhancedIconBounce 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #667eea;
+}
+
+@keyframes enhancedIconBounce {
+  0% {
+    transform: translateY(-50%) scale(1) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-50%) scale(1.3) rotate(5deg);
+  }
+  60% {
+    transform: translateY(-50%) scale(1.1) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(-50%) scale(1.1) rotate(0deg);
+  }
+}
+
+/* Success Animation for Stock Badges */
+.stock-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.stock-badge:hover {
+  animation: stockPulse 0.6s ease-in-out;
+}
+
+@keyframes stockPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Advanced Responsive Animations */
+@media (max-width: 768px) {
+  .book {
+    animation: mobileBookReveal 0.6s ease-out forwards;
+  }
+  
+  @keyframes mobileBookReveal {
+    0% {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* Performance Optimizations */
+.book,
+.btn,
+.search-input,
+.ai-search-input {
+  will-change: transform, opacity;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .book:hover {
+    transform: none;
+  }
+  
+  .floating-element {
+    animation: none;
+  }
+}
