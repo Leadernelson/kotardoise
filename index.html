@@ -1318,8 +1318,8 @@
       div.className = "book";
       div.style.animationDelay = `${index * 0.1}s`;
 
-      // Optimisation des images pour mobile
-      const imageSize = isMobile ? 'S' : 'M'; // Taille Small sur mobile, Medium sur desktop
+      // Amélioration de la qualité des images - utiliser Medium même sur mobile pour éviter la pixelisation
+      const imageSize = isMobile ? 'M' : 'L'; // Medium sur mobile, Large sur desktop pour une meilleure qualité
       const coverURL = `https://covers.openlibrary.org/b/isbn/${livre.ISBN}-${imageSize}.jpg`;
       const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
       
@@ -1335,7 +1335,8 @@
                  ${loadingAttribute}
                  width="120"
                  height="180"
-                 onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', ${isMobile ? '8000' : '15000'})"> 
+                 style="object-fit: cover; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"
+                 onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', ${isMobile ? '25000' : '40000'})"> 
           </div>
           <div class="info">
             <h2>${livre.Titre}</h2>
@@ -1728,49 +1729,24 @@
         aiSearchInput.disabled = true;
         aiSearchInput.placeholder = 'Recherche IA en cours...';
 
-        // Approche intelligente pour gros volumes : pré-filtrage puis envoi complet
+        // Approche pour gros volumes : envoyer TOUS les livres à l'IA pour des résultats optimaux
         let booksToSend;
         
-        if (allBooks.length > 1000) {
-          // 1. Effectuer d'abord une recherche textuelle rapide pour réduire l'ensemble
-          const quickSearchTerms = query.toLowerCase().split(' ')
-            .filter(term => term.length > 2) // Ignorer les mots trop courts
-            .slice(0, 5); // Limiter aux 5 premiers mots clés
-          
-          let preFilteredBooks = allBooks;
-          
-          if (quickSearchTerms.length > 0) {
-            preFilteredBooks = allBooks.filter(livre => {
-              const searchableText = [
-                livre.Titre?.toLowerCase() || '',
-                livre.Auteur?.toLowerCase() || ''
-              ].join(' ');
-              
-              // Au moins un terme doit correspondre pour le pré-filtrage
-              return quickSearchTerms.some(term => searchableText.includes(term));
-            });
-          }
-          
-          // Si le pré-filtrage donne encore trop de résultats, prendre les plus récents/populaires
-          if (preFilteredBooks.length > 800) {
-            preFilteredBooks = preFilteredBooks.slice(0, 800);
-          }
-          
-          console.log(`🤖 Pré-filtrage: ${preFilteredBooks.length} livres sur ${allBooks.length} envoyés à l'IA`);
-          
-          booksToSend = preFilteredBooks.map(book => ({
-            titre: book.Titre,
-            auteur: book.Auteur,
-            isbn: book.ISBN
-          }));
-        } else {
-          // Pour moins de 1000 livres, envoyer tout
-          booksToSend = allBooks.map(book => ({
-            titre: book.Titre,
-            auteur: book.Auteur,
-            isbn: book.ISBN
-          }));
-        }
+        console.log(`🤖 Envoi de TOUS les livres à l'IA: ${allBooks.length} livres (requête: "${query}")`);
+        
+        // Envoyer tous les livres avec un maximum de détails pour une recherche optimale
+        booksToSend = allBooks.map(book => ({
+          titre: book.Titre,
+          auteur: book.Auteur,
+          isbn: book.ISBN,
+          // Ajouter tous les champs disponibles pour maximiser les correspondances
+          genre: book.Genre || '',
+          editeur: book.Editeur || '',
+          description: book.Description || '',
+          annee: book.Annee || '',
+          serie: book.Serie || '',
+          tome: book.Tome || ''
+        }));
 
         // Appel à notre fonction Netlify au lieu de Gemini directement
         const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
@@ -1813,18 +1789,62 @@
             return indexA - indexB;
           });
         } else {
-          filteredBooks = [];
+          // Fallback: si l'IA ne trouve rien, faire une recherche textuelle large
+          console.log('🔍 Fallback: recherche textuelle large');
+          const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
+          
+          filteredBooks = allBooks.filter(livre => {
+            const searchableText = [
+              livre.Titre?.toLowerCase() || '',
+              livre.Auteur?.toLowerCase() || '',
+              livre.Genre?.toLowerCase() || '',
+              livre.Description?.toLowerCase() || ''
+            ].join(' ');
+            
+            // Recherche flexible avec correspondances partielles
+            return searchTerms.some(term => {
+              // Recherche exacte
+              if (searchableText.includes(term)) return true;
+              
+              // Correspondances partielles pour mots longs
+              if (term.length >= 4) {
+                const words = searchableText.split(' ');
+                return words.some(word => 
+                  word.startsWith(term) || 
+                  (word.length >= 4 && term.includes(word.substring(0, 3)))
+                );
+              }
+              
+              // Recherche de similarité pour des mots comme "voldemort" -> "harry potter"
+              const synonymMap = {
+                'voldemort': ['harry', 'potter', 'poudlard', 'hogwarts', 'magic'],
+                'hermione': ['harry', 'potter', 'granger'],
+                'dumbledore': ['harry', 'potter', 'albus'],
+                'poudlard': ['harry', 'potter', 'hogwarts'],
+                'magie': ['fantasy', 'magic', 'wizard', 'sorcier'],
+                'guerre': ['battle', 'fight', 'combat', 'militaire'],
+                'amour': ['love', 'romance', 'romantic']
+              };
+              
+              if (synonymMap[term]) {
+                return synonymMap[term].some(synonym => searchableText.includes(synonym));
+              }
+              
+              return false;
+            });
+          });
         }
 
         currentPage = 1;
         renderBooks(filteredBooks, currentPage);
         
-        // Afficher un message de résultat
+        // Afficher un message de résultat amélioré
         if (filteredBooks.length > 0) {
           document.getElementById('search').value = ''; // Vider la recherche classique
-          console.log(`🤖 Recherche IA: ${filteredBooks.length} livre(s) trouvé(s) pour "${query}"`);
+          const source = matchingISBNs && matchingISBNs.length > 0 ? 'IA' : 'recherche textuelle élargie';
+          console.log(`🤖 Recherche ${source}: ${filteredBooks.length} livre(s) trouvé(s) pour "${query}"`);
         } else {
-          alert(`Aucun livre trouvé pour la description : "${query}"`);
+          alert(`Aucun livre trouvé pour la description : "${query}". Essayez avec des mots-clés différents ou plus généraux.`);
         }
 
       } catch (error) {
