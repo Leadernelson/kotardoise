@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de recherche de couverture</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-book { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .book-cover img { max-width: 120px; max-height: 180px; }
+    </style>
+</head>
+<body>
+    <h1>Test de recherche de couverture</h1>
+    
+    <div class="test-book">
+        <h3>Livre avec ISBN (normal)</h3>
+        <div id="book1"></div>
+    </div>
+    
+    <div class="test-book">
+        <h3>Livre sans ISBN (recherche par auteur/titre)</h3>
+        <div id="book2"></div>
+    </div>
+    
+    <script>
+        // Copier les fonctions nécessaires du fichier principal
+        
+        // Fonction pour gérer les erreurs d'image et tenter une recherche alternative
+        async function handleImageError(imgElement, auteur, titre, fallbackURL) {
+            try {
+                // Nettoyer les paramètres
+                const author = encodeURIComponent(auteur.trim());
+                const title = encodeURIComponent(titre.trim());
+                
+                // Rechercher le livre dans OpenLibrary
+                const searchURL = `https://openlibrary.org/search.json?title=${title}&author=${author}&limit=1`;
+                
+                const response = await fetch(searchURL);
+                const data = await response.json();
+                
+                if (data.docs && data.docs.length > 0) {
+                    const book = data.docs[0];
+                    
+                    // Essayer d'abord avec l'ISBN trouvé
+                    if (book.isbn && book.isbn.length > 0) {
+                        const isbn = book.isbn[0];
+                        const coverURL = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
+                        
+                        // Tester si cette couverture existe
+                        const testImg = new Image();
+                        testImg.onload = function() {
+                            imgElement.src = coverURL;
+                            console.log(`Couverture trouvée via recherche ISBN: ${isbn} pour "${titre}"`);
+                        };
+                        testImg.onerror = function() {
+                            // Si l'ISBN ne fonctionne pas, essayer avec l'OLID
+                            tryOLID();
+                        };
+                        testImg.src = coverURL;
+                        return;
+                    }
+                    
+                    // Fonction pour essayer avec l'OLID (OpenLibrary ID)
+                    function tryOLID() {
+                        if (book.key) {
+                            const olid = book.key.replace('/works/', '');
+                            const olidCoverURL = `https://covers.openlibrary.org/b/olid/${olid}-M.jpg`;
+                            
+                            const testImg2 = new Image();
+                            testImg2.onload = function() {
+                                imgElement.src = olidCoverURL;
+                                console.log(`Couverture trouvée via OLID: ${olid} pour "${titre}"`);
+                            };
+                            testImg2.onerror = function() {
+                                // Aucune couverture trouvée, utiliser le fallback
+                                imgElement.src = fallbackURL;
+                                console.log(`Aucune couverture trouvée pour "${titre}" par ${auteur}`);
+                            };
+                            testImg2.src = olidCoverURL;
+                        } else {
+                            imgElement.src = fallbackURL;
+                            console.log(`Aucune couverture trouvée pour "${titre}" par ${auteur}`);
+                        }
+                    }
+                } else {
+                    // Aucun résultat de recherche
+                    imgElement.src = fallbackURL;
+                    console.log(`Aucun livre trouvé dans la recherche pour "${titre}" par ${auteur}`);
+                }
+            } catch (error) {
+                console.error('Erreur lors de la recherche de couverture:', error);
+                imgElement.src = fallbackURL;
+            }
+            
+            // Empêcher les erreurs en boucle
+            imgElement.onerror = null;
+        }
+        
+        // Fonction pour obtenir l'URL de la couverture
+        function getCoverURL(livre) {
+            const imageSize = 'M';
+            const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
+            
+            // Si l'ISBN existe et n'est pas vide, l'utiliser
+            if (livre.ISBN && livre.ISBN.trim() !== '') {
+                return {
+                    primaryURL: `https://covers.openlibrary.org/b/isbn/${livre.ISBN.trim()}-${imageSize}.jpg`,
+                    fallbackURL: fallbackURL
+                };
+            }
+            
+            // Sinon, utiliser l'auteur et le titre pour rechercher
+            if (livre.Auteur && livre.Titre) {
+                // Nettoyer et encoder les paramètres pour la recherche
+                const author = encodeURIComponent(livre.Auteur.trim());
+                const title = encodeURIComponent(livre.Titre.trim());
+                
+                // Utiliser la recherche OpenLibrary par titre et auteur
+                return {
+                    primaryURL: `https://covers.openlibrary.org/b/title/${title}-${imageSize}.jpg`,
+                    fallbackURL: fallbackURL,
+                    searchURL: `https://openlibrary.org/search.json?title=${title}&author=${author}&limit=1`
+                };
+            }
+            
+            // Si ni ISBN ni auteur/titre disponibles, utiliser directement le fallback
+            return {
+                primaryURL: fallbackURL,
+                fallbackURL: fallbackURL
+            };
+        }
+        
+        // Test avec un livre qui a un ISBN
+        function testBook1() {
+            const livre1 = {
+                ISBN: "9782070415274",
+                Titre: "Le Petit Prince",
+                Auteur: "Antoine de Saint-Exupéry"
+            };
+            
+            const coverInfo = getCoverURL(livre1);
+            const img1 = document.createElement('img');
+            img1.src = coverInfo.primaryURL;
+            img1.alt = `Couverture de ${livre1.Titre}`;
+            img1.style.maxWidth = '120px';
+            img1.style.maxHeight = '180px';
+            img1.onerror = function() {
+                this.src = coverInfo.fallbackURL;
+            };
+            
+            const div1 = document.getElementById('book1');
+            div1.innerHTML = `<p><strong>${livre1.Titre}</strong> par ${livre1.Auteur} (ISBN: ${livre1.ISBN})</p>`;
+            div1.appendChild(img1);
+        }
+        
+        // Test avec un livre qui n'a pas d'ISBN
+        function testBook2() {
+            const livre2 = {
+                ISBN: "",
+                Titre: "1984",
+                Auteur: "George Orwell"
+            };
+            
+            const coverInfo = getCoverURL(livre2);
+            const img2 = document.createElement('img');
+            img2.src = coverInfo.primaryURL;
+            img2.alt = `Couverture de ${livre2.Titre}`;
+            img2.style.maxWidth = '120px';
+            img2.style.maxHeight = '180px';
+            
+            const onErrorHandler = (!livre2.ISBN || livre2.ISBN.trim() === '') && coverInfo.searchURL 
+                ? () => handleImageError(img2, livre2.Auteur, livre2.Titre, coverInfo.fallbackURL)
+                : () => { img2.src = coverInfo.fallbackURL; };
+            
+            img2.onerror = onErrorHandler;
+            
+            const div2 = document.getElementById('book2');
+            div2.innerHTML = `<p><strong>${livre2.Titre}</strong> par ${livre2.Auteur} (ISBN: vide)</p>`;
+            div2.appendChild(img2);
+        }
+        
+        // Lancer les tests
+        testBook1();
+        testBook2();
+    </script>
+</body>
+</html>
