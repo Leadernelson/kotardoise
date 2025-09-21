@@ -46,46 +46,53 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const prompt = `
-Tu es un assistant bibliothécaire expert avec accès à une base de données complète de ${booksData.length} livres.
+    // Compress the dataset into a token-efficient form but still include ALL books.
+    // We use short keys and truncate long free-text fields. This preserves the
+    // full catalogue while drastically reducing token usage so the LLM can
+    // consume the entire dataset in one request.
 
-REQUÊTE UTILISATEUR : "${query}"
+    function compactBooks(books) {
+      return books.map(b => {
+        // Normalize common keys and fallbacks
+        const isbn = (b.isbn || b.ISBN || b.code || b.id || '') + '';
+        const title = (b.title || b.name || '').replace(/\s+/g, ' ').trim();
+        const author = (b.author || b.authors || b.writer || '').toString().replace(/\s+/g, ' ').trim();
+        const desc = (b.description || b.summary || b.notes || '').replace(/\s+/g, ' ').trim();
+        const chars = (Array.isArray(b.characters) ? b.characters.join(', ') : (b.characters || b.people || '')).toString().replace(/\s+/g, ' ').trim();
+        const tags = (b.tags || b.genres || b.categories || []).slice(0,6);
 
-INSTRUCTIONS POUR RECHERCHE EXHAUSTIVE :
-1. Analyse TOUS les livres fournis pour trouver les correspondances
-2. Sois très inclusif dans tes critères de correspondance
-3. Considère les synonymes, références indirectes, et descriptions créatives
-4. Pour les personnages/univers célèbres (Voldemort=Harry Potter), inclus TOUTE la série
-5. Pour les thèmes larges (magie, guerre, amour), sois généreux dans l'interprétation
-6. Inclus les correspondances partielles et les associations d'idées
+        return {
+          i: isbn || '',     // i = isbn
+          t: title.slice(0, 140), // t = title (truncate)
+          a: author.slice(0, 80), // a = author (truncate)
+          d: desc.slice(0, 300), // d = description (truncate)
+          c: chars.slice(0, 200), // c = characters (truncate)
+          g: tags // g = genres/tags (small array)
+        };
+      });
+    }
 
-CRITÈRES DE RECHERCHE EXHAUSTIFS :
-- Titres exacts et partiels
-- Noms d'auteurs complets et partiels  
-- Personnages principaux et secondaires
-- Univers, lieux et mondes fictifs
-- Tous genres et sous-genres
-- Thèmes, motifs, émotions et concepts
-- Périodes historiques et époques
-- Styles narratifs et tons
-- Références culturelles et mythologiques
-- Séries, cycles et collections
+    const compacted = compactBooks(booksData);
 
-EXEMPLES DE RECHERCHE INCLUSIVE :
-- "Voldemort" → TOUS Harry Potter + fantasy sombre
-- "magie" → Fantasy, contes, Harry Potter, urban fantasy, etc.
-- "guerre" → Historique, fantasy épique, science-fiction militaire
-- "amour" → Romance, drames, comédies romantiques, tragédies
-- "aventure" → Action, fantasy, science-fiction, jeunesse
+    // Minimal JSON string (no spacing) to reduce token count further
+    const compactJson = JSON.stringify(compacted);
 
-BASE DE DONNÉES COMPLÈTE :
-${JSON.stringify(booksData, null, 2)}
+    const prompt = `You are a precise librarian assistant. The user query: "${query}".
 
-Retourne un tableau JSON avec TOUS les ISBN pertinents, triés par pertinence décroissante.
-IMPORTANT: Sois généreux, il vaut mieux inclure trop que pas assez !
+Dataset format (compact):
+- i = ISBN
+- t = title
+- a = author
+- d = description (truncated)
+- c = characters
+- g = genres/tags
 
-Format de réponse :
-["ISBN1", "ISBN2", "ISBN3", ...]
+Analyze ALL the provided books (the full compact dataset below) and return a single JSON array of ISBN strings (e.g. ["978...","..."]), ordered by relevance descending. If none match, return an empty array [].
+
+Be strict: output ONLY valid JSON array (no commentary, no markdown).
+
+DATA:
+${compactJson}
 `;
 
     console.log(`🤖 Recherche IA EXHAUSTIVE pour "${query}" sur ${booksData.length} livres`);
@@ -102,10 +109,11 @@ Format de réponse :
           }]
         }],
         generationConfig: {
-          temperature: 0.5, // Augmenté pour plus de créativité et d'inclusion
-          topK: 60,
-          topP: 0.98,
-          maxOutputTokens: 4096, // Augmenté significativement pour plus de résultats
+          // Deterministic and conservative sampling to encourage strict JSON output
+          temperature: 0.0,
+          topK: 1,
+          topP: 0.2,
+          maxOutputTokens: 1024,
         }
       })
     });
