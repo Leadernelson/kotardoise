@@ -896,19 +896,9 @@
         align-items: flex-start;
       }
       
-      .book-cover {
-        flex-shrink: 0;
-      }
-      
       img {
         width: 90px;
         max-height: 130px;
-      }
-      
-      .info {
-        flex: 1;
-        min-width: 0;
-        gap: 0.5rem;
       }
       
       .info h2 {
@@ -916,11 +906,6 @@
         margin-bottom: 0.75rem;
         text-align: left;
         line-height: 1.2;
-      }
-      
-      .info h2::after {
-        width: 30px;
-        height: 1.5px;
       }
       
       .info-item {
@@ -1868,7 +1853,8 @@
         console.log(`🤖 Envoi de TOUS les livres à l'IA: ${allBooks.length} livres (requête: "${query}")`);
         
         // Envoyer tous les livres avec un maximum de détails pour une recherche optimale
-        booksToSend = allBooks.map(book => ({
+        booksToSend = allBooks.map((book, index) => ({
+          id: index, // Identifiant unique pour les livres sans ISBN
           titre: book.Titre,
           auteur: book.Auteur,
           isbn: book.ISBN,
@@ -1880,6 +1866,9 @@
           serie: book.Serie || '',
           tome: book.Tome || ''
         }));
+
+        // Debug: afficher quelques ISBNs pour vérifier le format
+        console.log('📚 Échantillon d\'ISBNs dans les données:', allBooks.slice(0, 5).map(b => b.ISBN));
 
         // Appel à notre fonction Netlify au lieu de Gemini directement
         const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
@@ -1904,21 +1893,62 @@
         const data = await response.json();
         
         if (!data.success) {
-          throw new Error(data.error || 'Erreur lors de la recherche IA');
+          const errorMsg = data.error || 'Erreur lors de la recherche IA';
+          console.error('Erreur API:', errorMsg);
+          
+          // Message d'erreur spécifique selon le type d'erreur
+          if (errorMsg.includes('API key not configured')) {
+            alert('Service de recherche IA temporairement indisponible. Veuillez utiliser la recherche classique.');
+          } else {
+            alert(`Erreur de recherche IA: ${errorMsg}`);
+          }
+          return;
         }
 
         const matchingISBNs = data.matchingISBNs || [];
-
-        // Filtrer les livres basés sur les ISBN retournés par l'IA
+        console.log(`🤖 IA a retourné ${matchingISBNs.length} ID(s):`, matchingISBNs.slice(0, 5), matchingISBNs.length > 5 ? '...' : '');
+        
+        // Filtrer les livres basés sur les IDs retournés par l'IA (ISBN ou index)
         if (Array.isArray(matchingISBNs) && matchingISBNs.length > 0) {
-          filteredBooks = allBooks.filter(book => 
-            matchingISBNs.includes(book.ISBN)
-          );
+          console.log('🔍 Filtrage par IDs IA...');
+          
+          // Fonction pour normaliser les IDs (ISBNs ou indices numériques)
+          const normalizeID = (id) => (id || '').toString().replace(/[-\s]/g, '').trim();
+          
+          filteredBooks = allBooks.filter((book, index) => {
+            // Essayer d'abord l'ISBN, puis l'index comme fallback
+            const bookISBN = normalizeID(book.ISBN);
+            const bookIndex = index.toString();
+            
+            const hasMatch = matchingISBNs.some(aiID => {
+              const normalizedAiID = normalizeID(aiID);
+              return normalizedAiID === bookISBN || normalizedAiID === bookIndex;
+            });
+            
+            if (hasMatch) {
+              console.log(`✅ Correspondance trouvée: "${book.Titre}" (ISBN: ${book.ISBN || 'N/A'}, Index: ${index})`);
+            }
+            return hasMatch;
+          });
+          
+          console.log(`📊 ${filteredBooks.length} livre(s) trouvé(s) sur ${matchingISBNs.length} ID(s) retournés`);
           
           // Réorganiser selon l'ordre de pertinence donné par l'IA
           filteredBooks.sort((a, b) => {
-            const indexA = matchingISBNs.indexOf(a.ISBN);
-            const indexB = matchingISBNs.indexOf(b.ISBN);
+            const getBookID = (book, index) => normalizeID(book.ISBN) || index.toString();
+            
+            const indexA = matchingISBNs.findIndex(aiID => {
+              const normalizedAiID = normalizeID(aiID);
+              const bookAID = getBookID(a, allBooks.indexOf(a));
+              return normalizedAiID === bookAID;
+            });
+            
+            const indexB = matchingISBNs.findIndex(aiID => {
+              const normalizedAiID = normalizeID(aiID);
+              const bookBID = getBookID(b, allBooks.indexOf(b));
+              return normalizedAiID === bookBID;
+            });
+            
             return indexA - indexB;
           });
         } else {
