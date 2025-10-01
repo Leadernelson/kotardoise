@@ -1473,6 +1473,12 @@
                 `${livre.Stock} ${(livre.Stock != 1) ? 'exemplaires' : 'exemplaire'}`
               }</span>
             </div>
+            ${livre.Genre && livre.Genre.trim() !== '' ? `
+            <div class="info-item">
+              <span class="info-label">Genre:</span>
+              <span class="info-value">${livre.Genre}</span>
+            </div>
+            ` : ''}
           </div>
         </div>
       `;
@@ -1649,6 +1655,12 @@
       const data = await response.json();
       const estimatedSize = JSON.stringify(data).length;
       console.log(`📊 Données reçues: ${data.length} livres (${Math.round(estimatedSize / 1024)}KB)`);
+      
+      // Debug: Afficher les clés du premier livre pour vérifier la structure
+      if (data.length > 0) {
+        console.log('🔍 Structure du premier livre:', Object.keys(data[0]));
+        console.log('🔍 Premier livre complet:', data[0]);
+      }
       
       // Tracking de bande passante
       trackBandwidthUsage('data', estimatedSize);
