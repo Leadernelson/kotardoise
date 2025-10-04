@@ -63,7 +63,14 @@ exports.handler = async (event, context) => {
         const author = (b.author || b.auteur || b.authors || b.writer || '').toString().replace(/\s+/g, ' ').trim();
         const desc = (b.description || b.desc || b.summary || b.notes || '').replace(/\s+/g, ' ').trim();
         const chars = (Array.isArray(b.characters) ? b.characters.join(', ') : (b.characters || b.people || '')).toString().replace(/\s+/g, ' ').trim();
-        const tags = (b.tags || b.genres || b.categories || b.genre || []).slice(0,6);
+        
+        // Gérer les genres qu'ils soient un tableau ou une chaîne de caractères
+        let tags = b.tags || b.genres || b.categories || b.genre || '';
+        if (!Array.isArray(tags)) {
+          // Si c'est une chaîne, la convertir en tableau (séparer par virgules si nécessaire)
+          tags = tags ? tags.toString().split(',').map(t => t.trim()).filter(t => t) : [];
+        }
+        tags = tags.slice(0, 6);
 
         return {
           i: id || isbn || '',     // i = id (primary) or isbn (fallback)
@@ -71,7 +78,7 @@ exports.handler = async (event, context) => {
           a: author.slice(0, 80), // a = author (truncate)
           d: desc.slice(0, 300), // d = description (truncate)
           c: chars.slice(0, 200), // c = characters (truncate)
-          g: tags // g = genres/tags (small array)
+          g: tags // g = genres/tags (array)
         };
       });
     }
