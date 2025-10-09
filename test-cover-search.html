@@ -110,10 +110,13 @@
                 };
             }
             
+            // Construire le nom complet de l'auteur à partir des colonnes séparées
+            const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).trim();
+            
             // Sinon, utiliser l'auteur et le titre pour rechercher
-            if (livre.Auteur && livre.Titre) {
+            if (nomComplet && livre.Titre) {
                 // Nettoyer et encoder les paramètres pour la recherche
-                const author = encodeURIComponent(livre.Auteur.trim());
+                const author = encodeURIComponent(nomComplet.trim());
                 const title = encodeURIComponent(livre.Titre.trim());
                 
                 // Utiliser la recherche OpenLibrary par titre et auteur
@@ -136,8 +139,11 @@
             const livre1 = {
                 ISBN: "9782070415274",
                 Titre: "Le Petit Prince",
-                Auteur: "Antoine de Saint-Exupéry"
+                Prénom: "Antoine de",
+                "Nom de Famille": "Saint-Exupéry"
             };
+            
+            const nomComplet = ((livre1.Prénom || '') + ' ' + (livre1['Nom de Famille'] || '')).trim();
             
             const coverInfo = getCoverURL(livre1);
             const img1 = document.createElement('img');
@@ -150,7 +156,7 @@
             };
             
             const div1 = document.getElementById('book1');
-            div1.innerHTML = `<p><strong>${livre1.Titre}</strong> par ${livre1.Auteur} (ISBN: ${livre1.ISBN})</p>`;
+            div1.innerHTML = `<p><strong>${livre1.Titre}</strong> par ${nomComplet} (ISBN: ${livre1.ISBN})</p>`;
             div1.appendChild(img1);
         }
         
@@ -159,8 +165,11 @@
             const livre2 = {
                 ISBN: "",
                 Titre: "1984",
-                Auteur: "George Orwell"
+                Prénom: "George",
+                "Nom de Famille": "Orwell"
             };
+            
+            const nomComplet = ((livre2.Prénom || '') + ' ' + (livre2['Nom de Famille'] || '')).trim();
             
             const coverInfo = getCoverURL(livre2);
             const img2 = document.createElement('img');
@@ -170,13 +179,13 @@
             img2.style.maxHeight = '180px';
             
             const onErrorHandler = (!livre2.ISBN || livre2.ISBN.trim() === '') && coverInfo.searchURL 
-                ? () => handleImageError(img2, livre2.Auteur, livre2.Titre, coverInfo.fallbackURL)
+                ? () => handleImageError(img2, nomComplet, livre2.Titre, coverInfo.fallbackURL)
                 : () => { img2.src = coverInfo.fallbackURL; };
             
             img2.onerror = onErrorHandler;
             
             const div2 = document.getElementById('book2');
-            div2.innerHTML = `<p><strong>${livre2.Titre}</strong> par ${livre2.Auteur} (ISBN: vide)</p>`;
+            div2.innerHTML = `<p><strong>${livre2.Titre}</strong> par ${nomComplet} (ISBN: vide)</p>`;
             div2.appendChild(img2);
         }
         

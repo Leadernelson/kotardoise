@@ -60,7 +60,21 @@ exports.handler = async (event, context) => {
         const isbn = (b.isbn || b.ISBN || b.code || b.id || '') + '';
         const id = b.id || b.index || ''; // ID unique pour les livres sans ISBN
         const title = (b.title || b.titre || b.name || '').replace(/\s+/g, ' ').trim();
-        const author = (b.author || b.auteur || b.authors || b.writer || '').toString().replace(/\s+/g, ' ').trim();
+        
+        // Gérer les colonnes d'auteur séparées et la colonne Auteur complète
+        let author = '';
+        if (b.prenom && b.nomDeFamille) {
+          // Nouvelle structure avec colonnes séparées
+          author = (b.prenom + ' ' + b.nomDeFamille).trim();
+        } else if (b.prénom && b['nom de famille']) {
+          // Variations possibles du nom des colonnes
+          author = (b.prénom + ' ' + b['nom de famille']).trim();
+        } else if (b.author || b.auteur) {
+          // Ancienne structure avec auteur complet
+          author = (b.author || b.auteur || '').toString();
+        }
+        author = author.replace(/\s+/g, ' ').trim();
+        
         const desc = (b.description || b.desc || b.summary || b.notes || '').replace(/\s+/g, ' ').trim();
         const chars = (Array.isArray(b.characters) ? b.characters.join(', ') : (b.characters || b.people || '')).toString().replace(/\s+/g, ' ').trim();
         
@@ -273,9 +287,20 @@ function performFallbackSearch(query, booksData) {
   
   for (let index = 0; index < booksData.length; index++) {
     const book = booksData[index];
+    
+    // Construire le nom complet de l'auteur
+    let auteur = '';
+    if (book.prenom && book.nomDeFamille) {
+      auteur = (book.prenom + ' ' + book.nomDeFamille).trim();
+    } else if (book.auteur || book.author) {
+      auteur = (book.auteur || book.author || '').toString();
+    }
+    
     const searchableText = [
       book.titre || book.title || '',
-      book.auteur || book.author || '',
+      auteur,
+      book.prenom || '',
+      book.nomDeFamille || '',
       book.genre || '',
       book.description || '',
       book.serie || ''

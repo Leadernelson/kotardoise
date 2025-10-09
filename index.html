@@ -1120,6 +1120,64 @@
       background: rgba(102, 126, 234, 0.3);
       color: inherit;
     }
+    
+    /* Styles pour les filtres de genre */
+    .genre-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin: 0 auto 2.5rem;
+      max-width: 900px;
+      padding: 0 1rem;
+    }
+    
+    .genre-btn {
+      padding: 0.65rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .genre-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .genre-btn.active {
+      background: rgba(255, 255, 255, 0.95);
+      color: #667eea;
+      border-color: white;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .genre-btn:active {
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 768px) {
+      .genre-filters {
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .genre-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1136,6 +1194,21 @@
       <div class="ai-search-loader" id="ai-search-loader"></div>
     </div>
     
+    <div class="genre-filters">
+      <button class="genre-btn active" data-genre="tous">📚 Tous</button>
+      <button class="genre-btn" data-genre="Horreur">🧛 Horreur</button>
+      <button class="genre-btn" data-genre="Romance">💕 Romance</button>
+      <button class="genre-btn" data-genre="Science-fiction">🚀 Science-fiction</button>
+      <button class="genre-btn" data-genre="Fantasy">🐉 Fantasy</button>
+      <button class="genre-btn" data-genre="Thriller">😱 Thriller</button>
+      <button class="genre-btn" data-genre="Aventure">⚔️ Aventure</button>
+      <button class="genre-btn" data-genre="Policier">🕵️ Policier</button>
+      <button class="genre-btn" data-genre="Historique">📜 Historique</button>
+      <button class="genre-btn" data-genre="Drame">🎭 Drame</button>
+      <button class="genre-btn" data-genre="Comédie">😄 Comédie</button>
+      <button class="genre-btn" data-genre="Inconnu">❓ Inconnu</button>
+    </div>
+    
     <div class="reset-container">
       <button id="reset-btn" class="reset-button">🔄 Afficher tous les livres</button>
     </div>
@@ -1150,6 +1223,7 @@
     let filteredBooks = [];
     let currentPage = 1;
     const booksPerPage = 10; // Nombre uniforme de livres par page partout (basé sur mobile optimisé)
+    let selectedGenre = 'tous'; // Genre sélectionné par défaut
 
     // Détection d'appareil mobile pour optimisations spécifiques (gardée pour autres optimisations)
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -1405,10 +1479,13 @@
         };
       }
       
+      // Construire le nom complet de l'auteur à partir des colonnes séparées
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).trim();
+      
       // Sinon, utiliser l'auteur et le titre pour rechercher
-      if (livre.Auteur && livre.Titre) {
+      if (nomComplet && livre.Titre) {
         // Nettoyer et encoder les paramètres pour la recherche
-        const author = encodeURIComponent(livre.Auteur.trim());
+        const author = encodeURIComponent(nomComplet.trim());
         const title = encodeURIComponent(livre.Titre.trim());
         
         // Utiliser la recherche OpenLibrary par titre et auteur
@@ -1432,6 +1509,9 @@
       div.className = "book";
       div.style.animationDelay = `${index * 0.1}s`;
 
+      // Construire le nom complet de l'auteur à partir des colonnes séparées
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).trim() || 'Auteur inconnu';
+
       // Obtenir l'URL de la couverture selon la disponibilité des données
       const coverInfo = getCoverURL(livre);
       const coverURL = coverInfo.primaryURL;
@@ -1442,7 +1522,7 @@
 
       // Créer une fonction de gestion d'erreur personnalisée
       const onErrorHandler = (!livre.ISBN || livre.ISBN.trim() === '') && coverInfo.searchURL 
-        ? `handleImageError(this, '${livre.Auteur}', '${livre.Titre}', '${fallbackURL}')`
+        ? `handleImageError(this, '${nomComplet}', '${livre.Titre}', '${fallbackURL}')`
         : `this.onerror=null; this.src='${fallbackURL}'; console.log('Fallback image loaded for: ${livre.Titre}');`;
 
       div.innerHTML = `
@@ -1461,16 +1541,15 @@
             <h2>${livre.Titre}</h2>
             <div class="info-item">
               <span class="info-label">Auteur:</span>
-              <span class="info-value">${livre.Auteur}</span>
+              <span class="info-value">${nomComplet}</span>
             </div>
             <div class="info-item">
               <span class="info-label">Stock:</span>
               <span class="stock-badge ${
                 (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
-                (livre.Stock == 0) ? 'out-of-stock' : ''
+                (livre.Stock == 0 || livre.Stock === '0') ? 'Emprunté' : ''
               }">${
-                (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : 
-                `${livre.Stock} ${(livre.Stock != 1) ? 'exemplaires' : 'exemplaire'}`
+                (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : livre.Stock
               }</span>
             </div>
             ${livre.Genre && livre.Genre.trim() !== '' ? `
@@ -1560,6 +1639,15 @@
       document.getElementById('search').value = '';
       document.getElementById('ai-search').value = '';
       
+      // Réinitialiser le genre sélectionné
+      selectedGenre = 'tous';
+      document.querySelectorAll('.genre-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.genre === 'tous') {
+          btn.classList.add('active');
+        }
+      });
+      
       // Réinitialiser la liste filtrée à tous les livres
       filteredBooks = [...allBooks];
       currentPage = 1;
@@ -1571,16 +1659,29 @@
     }
 
     function performSearch(query = '') {
+      let booksToFilter = [...allBooks];
+      
+      // Appliquer le filtre de genre d'abord
+      if (selectedGenre !== 'tous') {
+        booksToFilter = applyGenreFilter(booksToFilter, selectedGenre);
+      }
+      
+      // Appliquer la recherche textuelle ensuite
       if (!query.trim()) {
-        filteredBooks = [...allBooks];
+        filteredBooks = booksToFilter;
       } else {
         const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
         
         // Recherche exhaustive dans tous les livres chargés
-        filteredBooks = allBooks.filter(livre => {
+        filteredBooks = booksToFilter.filter(livre => {
+          // Construire le nom complet de l'auteur
+          const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).toLowerCase().trim();
+          
           const searchableText = [
             livre.Titre?.toLowerCase() || '',
-            livre.Auteur?.toLowerCase() || ''
+            nomComplet,
+            livre.Prénom?.toLowerCase() || '',
+            livre['Nom de Famille']?.toLowerCase() || ''
           ].join(' ');
           
           return searchTerms.every(term => searchableText.includes(term));
@@ -1589,6 +1690,51 @@
       
       currentPage = 1;
       renderBooks(filteredBooks, currentPage);
+    }
+
+    // Fonction pour appliquer le filtre par genre
+    function applyGenreFilter(books, genre) {
+      if (genre === 'tous') {
+        return books;
+      }
+      
+      if (genre === 'Inconnu') {
+        // Filtrer les livres sans genre, avec genre vide, ou avec genre "Inconnu"
+        return books.filter(livre => {
+          if (!livre.Genre || livre.Genre.trim() === '') return true;
+          const genres = livre.Genre.split(',').map(g => g.trim().toLowerCase());
+          return genres.includes('inconnu');
+        });
+      }
+      
+      // Filtrer les livres qui contiennent le genre sélectionné
+      return books.filter(livre => {
+        if (!livre.Genre) return false;
+        // Gérer les genres multiples séparés par des virgules
+        const genres = livre.Genre.split(',').map(g => g.trim().toLowerCase());
+        return genres.includes(genre.toLowerCase());
+      });
+    }
+
+    // Fonction pour filtrer par genre (appelée par les boutons)
+    function filterByGenre(genre) {
+      selectedGenre = genre;
+      
+      // Mettre à jour les boutons actifs
+      document.querySelectorAll('.genre-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.genre === genre) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Récupérer la valeur de recherche actuelle
+      const searchQuery = document.getElementById('search').value;
+      
+      // Réappliquer la recherche avec le nouveau filtre de genre
+      performSearch(searchQuery);
+      
+      console.log(`🎭 Filtrage par genre: ${genre}`);
     }
 
 
@@ -1646,7 +1792,7 @@
     // Fonction pour charger depuis l'API
     async function loadBooksFromAPI() {
       console.log('📡 Téléchargement des données depuis l\'API...');
-      const response = await fetch("https://opensheet.elk.sh/1LBcmGmEKOn8LscQunZrINNY8RWlKHkxT2qb6liInYuQ/1");
+      const response = await fetch("https://opensheet.elk.sh/1I8a83wLjYIDC-hWWH7yFj6i7R-GAwVy2SzORD_JNhgY/1");
       
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
@@ -1865,19 +2011,26 @@
         console.log(`🤖 Envoi de TOUS les livres à l'IA: ${allBooks.length} livres (requête: "${query}")`);
         
         // Envoyer tous les livres avec un maximum de détails pour une recherche optimale
-        booksToSend = allBooks.map((book, index) => ({
-          id: index, // Identifiant unique pour les livres sans ISBN
-          titre: book.Titre,
-          auteur: book.Auteur,
-          isbn: book.ISBN,
-          // Ajouter tous les champs disponibles pour maximiser les correspondances
-          genre: book.Genre || '',
-          editeur: book.Editeur || '',
-          description: book.Description || '',
-          annee: book.Annee || '',
-          serie: book.Serie || '',
-          tome: book.Tome || ''
-        }));
+        booksToSend = allBooks.map((book, index) => {
+          // Construire le nom complet de l'auteur
+          const nomComplet = ((book.Prénom || '') + ' ' + (book['Nom de Famille'] || '')).trim();
+          
+          return {
+            id: index, // Identifiant unique pour les livres sans ISBN
+            titre: book.Titre,
+            prenom: book.Prénom || '',
+            nomDeFamille: book['Nom de Famille'] || '',
+            auteur: nomComplet, // Garder aussi la version complète pour la compatibilité
+            isbn: book.ISBN,
+            // Ajouter tous les champs disponibles pour maximiser les correspondances
+            genre: book.Genre || '',
+            editeur: book.Editeur || '',
+            description: book.Description || '',
+            annee: book.Annee || '',
+            serie: book.Serie || '',
+            tome: book.Tome || ''
+          };
+        });
 
         // Debug: afficher quelques ISBNs pour vérifier le format
         console.log('📚 Échantillon d\'ISBNs dans les données:', allBooks.slice(0, 5).map(b => b.ISBN));
@@ -1920,6 +2073,13 @@
         const matchingISBNs = data.matchingISBNs || [];
         console.log(`🤖 IA a retourné ${matchingISBNs.length} ID(s):`, matchingISBNs.slice(0, 5), matchingISBNs.length > 5 ? '...' : '');
         
+        // Commencer avec tous les livres ou les livres filtrés par genre
+        let booksToSearch = [...allBooks];
+        if (selectedGenre !== 'tous') {
+          booksToSearch = applyGenreFilter(booksToSearch, selectedGenre);
+          console.log(`🎭 Application du filtre genre "${selectedGenre}": ${booksToSearch.length} livres`);
+        }
+        
         // Filtrer les livres basés sur les IDs retournés par l'IA (ISBN ou index)
         if (Array.isArray(matchingISBNs) && matchingISBNs.length > 0) {
           console.log('🔍 Filtrage par IDs IA...');
@@ -1927,10 +2087,10 @@
           // Fonction pour normaliser les IDs (ISBNs ou indices numériques)
           const normalizeID = (id) => (id || '').toString().replace(/[-\s]/g, '').trim();
           
-          filteredBooks = allBooks.filter((book, index) => {
+          filteredBooks = booksToSearch.filter((book, index) => {
             // Essayer d'abord l'ISBN, puis l'index comme fallback
             const bookISBN = normalizeID(book.ISBN);
-            const bookIndex = index.toString();
+            const bookIndex = allBooks.indexOf(book).toString(); // Utiliser l'index dans allBooks
             
             const hasMatch = matchingISBNs.some(aiID => {
               const normalizedAiID = normalizeID(aiID);
@@ -1938,7 +2098,7 @@
             });
             
             if (hasMatch) {
-              console.log(`✅ Correspondance trouvée: "${book.Titre}" (ISBN: ${book.ISBN || 'N/A'}, Index: ${index})`);
+              console.log(`✅ Correspondance trouvée: "${book.Titre}" (ISBN: ${book.ISBN || 'N/A'}, Index: ${allBooks.indexOf(book)})`);
             }
             return hasMatch;
           });
@@ -1947,7 +2107,7 @@
           
           // Réorganiser selon l'ordre de pertinence donné par l'IA
           filteredBooks.sort((a, b) => {
-            const getBookID = (book, index) => normalizeID(book.ISBN) || index.toString();
+            const getBookID = (book, index) => normalizeID(book.ISBN) || allBooks.indexOf(book).toString();
             
             const indexA = matchingISBNs.findIndex(aiID => {
               const normalizedAiID = normalizeID(aiID);
@@ -1968,10 +2128,15 @@
           console.log('🔍 Fallback: recherche textuelle large');
           const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
           
-          filteredBooks = allBooks.filter(livre => {
+          filteredBooks = booksToSearch.filter(livre => {
+            // Construire le nom complet de l'auteur
+            const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).toLowerCase().trim();
+            
             const searchableText = [
               livre.Titre?.toLowerCase() || '',
-              livre.Auteur?.toLowerCase() || '',
+              nomComplet,
+              livre.Prénom?.toLowerCase() || '',
+              livre['Nom de Famille']?.toLowerCase() || '',
               livre.Genre?.toLowerCase() || '',
               livre.Description?.toLowerCase() || ''
             ].join(' ');
@@ -2083,6 +2248,14 @@
     // Event listener pour le bouton de réinitialisation
     document.getElementById('reset-btn').addEventListener('click', function() {
       resetSearch();
+    });
+
+    // Event listeners pour les boutons de filtrage par genre
+    document.querySelectorAll('.genre-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const genre = this.dataset.genre;
+        filterByGenre(genre);
+      });
     });
 
     // Démarrer le chargement initial
