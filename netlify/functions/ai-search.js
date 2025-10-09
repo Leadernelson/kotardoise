@@ -63,12 +63,12 @@ exports.handler = async (event, context) => {
         
         // Gérer les colonnes d'auteur séparées et la colonne Auteur complète
         let author = '';
-        if (b.prenom && b.nomDeFamille) {
-          // Nouvelle structure avec colonnes séparées
-          author = (b.prenom + ' ' + b.nomDeFamille).trim();
-        } else if (b.prénom && b['nom de famille']) {
+        if (b.prenom && b.famille) {
+          // Nouvelle structure avec colonnes séparées (Prénom et Famille)
+          author = (b.prenom + ' ' + b.famille).trim();
+        } else if (b.prénom && b.famille) {
           // Variations possibles du nom des colonnes
-          author = (b.prénom + ' ' + b['nom de famille']).trim();
+          author = (b.prénom + ' ' + b.famille).trim();
         } else if (b.author || b.auteur) {
           // Ancienne structure avec auteur complet
           author = (b.author || b.auteur || '').toString();
@@ -290,8 +290,8 @@ function performFallbackSearch(query, booksData) {
     
     // Construire le nom complet de l'auteur
     let auteur = '';
-    if (book.prenom && book.nomDeFamille) {
-      auteur = (book.prenom + ' ' + book.nomDeFamille).trim();
+    if (book.prenom && book.famille) {
+      auteur = (book.prenom + ' ' + book.famille).trim();
     } else if (book.auteur || book.author) {
       auteur = (book.auteur || book.author || '').toString();
     }
@@ -300,7 +300,7 @@ function performFallbackSearch(query, booksData) {
       book.titre || book.title || '',
       auteur,
       book.prenom || '',
-      book.nomDeFamille || '',
+      book.famille || '',
       book.genre || '',
       book.description || '',
       book.serie || ''

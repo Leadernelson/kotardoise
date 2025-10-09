@@ -1480,7 +1480,7 @@
       }
       
       // Construire le nom complet de l'auteur à partir des colonnes séparées
-      const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).trim();
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim();
       
       // Sinon, utiliser l'auteur et le titre pour rechercher
       if (nomComplet && livre.Titre) {
@@ -1510,7 +1510,7 @@
       div.style.animationDelay = `${index * 0.1}s`;
 
       // Construire le nom complet de l'auteur à partir des colonnes séparées
-      const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).trim() || 'Auteur inconnu';
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim() || 'Auteur inconnu';
 
       // Obtenir l'URL de la couverture selon la disponibilité des données
       const coverInfo = getCoverURL(livre);
@@ -1675,13 +1675,13 @@
         // Recherche exhaustive dans tous les livres chargés
         filteredBooks = booksToFilter.filter(livre => {
           // Construire le nom complet de l'auteur
-          const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).toLowerCase().trim();
+          const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).toLowerCase().trim();
           
           const searchableText = [
             livre.Titre?.toLowerCase() || '',
             nomComplet,
             livre.Prénom?.toLowerCase() || '',
-            livre['Nom de Famille']?.toLowerCase() || ''
+            livre.Famille?.toLowerCase() || ''
           ].join(' ');
           
           return searchTerms.every(term => searchableText.includes(term));
@@ -2013,13 +2013,13 @@
         // Envoyer tous les livres avec un maximum de détails pour une recherche optimale
         booksToSend = allBooks.map((book, index) => {
           // Construire le nom complet de l'auteur
-          const nomComplet = ((book.Prénom || '') + ' ' + (book['Nom de Famille'] || '')).trim();
+          const nomComplet = ((book.Prénom || '') + ' ' + (book.Famille || '')).trim();
           
           return {
             id: index, // Identifiant unique pour les livres sans ISBN
             titre: book.Titre,
             prenom: book.Prénom || '',
-            nomDeFamille: book['Nom de Famille'] || '',
+            famille: book.Famille || '',
             auteur: nomComplet, // Garder aussi la version complète pour la compatibilité
             isbn: book.ISBN,
             // Ajouter tous les champs disponibles pour maximiser les correspondances
@@ -2130,13 +2130,13 @@
           
           filteredBooks = booksToSearch.filter(livre => {
             // Construire le nom complet de l'auteur
-            const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).toLowerCase().trim();
+            const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).toLowerCase().trim();
             
             const searchableText = [
               livre.Titre?.toLowerCase() || '',
               nomComplet,
               livre.Prénom?.toLowerCase() || '',
-              livre['Nom de Famille']?.toLowerCase() || '',
+              livre.Famille?.toLowerCase() || '',
               livre.Genre?.toLowerCase() || '',
               livre.Description?.toLowerCase() || ''
             ].join(' ');

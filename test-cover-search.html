@@ -111,7 +111,7 @@
             }
             
             // Construire le nom complet de l'auteur à partir des colonnes séparées
-            const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || '')).trim();
+            const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim();
             
             // Sinon, utiliser l'auteur et le titre pour rechercher
             if (nomComplet && livre.Titre) {
@@ -140,10 +140,10 @@
                 ISBN: "9782070415274",
                 Titre: "Le Petit Prince",
                 Prénom: "Antoine de",
-                "Nom de Famille": "Saint-Exupéry"
+                Famille: "Saint-Exupéry"
             };
             
-            const nomComplet = ((livre1.Prénom || '') + ' ' + (livre1['Nom de Famille'] || '')).trim();
+            const nomComplet = ((livre1.Prénom || '') + ' ' + (livre1.Famille || '')).trim();
             
             const coverInfo = getCoverURL(livre1);
             const img1 = document.createElement('img');
@@ -166,10 +166,10 @@
                 ISBN: "",
                 Titre: "1984",
                 Prénom: "George",
-                "Nom de Famille": "Orwell"
+                Famille: "Orwell"
             };
             
-            const nomComplet = ((livre2.Prénom || '') + ' ' + (livre2['Nom de Famille'] || '')).trim();
+            const nomComplet = ((livre2.Prénom || '') + ' ' + (livre2.Famille || '')).trim();
             
             const coverInfo = getCoverURL(livre2);
             const img2 = document.createElement('img');
