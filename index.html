@@ -65,37 +65,7 @@
       margin-right: auto;
     }
     
-    .ai-search-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 3.5rem;
-      position: relative;
-      width: 100%;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    
     #search {
-      padding: 1.25rem 1.75rem 1.25rem 3.5rem;
-      width: 100%;
-      max-width: 600px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 30px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      outline: none;
-      font-weight: 400;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    #ai-search {
       padding: 1.25rem 1.75rem 1.25rem 3.5rem;
       width: 100%;
       max-width: 600px;
@@ -121,20 +91,6 @@
       border: 1px solid rgba(102, 126, 234, 0.3);
     }
     
-    #ai-search:focus {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(102, 126, 234, 0.2);
-      background: white;
-      border: 1px solid rgba(102, 126, 234, 0.3);
-    }
-    
-    #ai-search.searching {
-      background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), rgba(255, 255, 255, 0.98), rgba(102, 126, 234, 0.05));
-      border: 1px solid rgba(102, 126, 234, 0.5);
-      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
-      transform: none;
-    }
-    
     .search-icon {
       position: absolute;
       left: 1.25rem;
@@ -146,51 +102,7 @@
       transition: all 0.3s ease;
     }
     
-    .ai-search-icon {
-      position: absolute;
-      left: 1.25rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.3rem;
-      color: #666;
-      pointer-events: none;
-      transition: all 0.3s ease;
-    }
-    
-    .ai-search-loader {
-      position: absolute;
-      right: 1.25rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #667eea;
-      border-radius: 50%;
-      animation: aiSearchSpin 1s linear infinite, aiSearchPulse 2s ease-in-out infinite;
-      display: none;
-      z-index: 10;
-      box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
-    }
-    
-    @keyframes aiSearchSpin {
-      0% { transform: translateY(-50%) rotate(0deg); }
-      100% { transform: translateY(-50%) rotate(360deg); }
-    }
-    
-    @keyframes aiSearchPulse {
-      0%, 100% { 
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-      }
-      50% { 
-        opacity: 0.7;
-        transform: translateY(-50%) scale(1.1);
-      }
-    }
-    
-    #search:focus + .search-icon,
-    #ai-search:focus + .ai-search-icon {
+    #search:focus + .search-icon {
       color: #667eea;
       transform: translateY(-50%) scale(1.1);
     }
@@ -713,12 +625,6 @@
         max-width: 100%;
       }
       
-      .ai-search-container {
-        margin-bottom: 2.5rem;
-        padding: 0 0.5rem;
-        max-width: 100%;
-      }
-      
       .reset-container {
         margin-bottom: 2rem;
         padding: 0 0.5rem;
@@ -736,19 +642,7 @@
         border-radius: 25px;
       }
       
-      #ai-search {
-        width: 100%;
-        font-size: 1rem;
-        padding: 1rem 1.5rem 1rem 3rem;
-        border-radius: 25px;
-      }
-      
       .search-icon {
-        left: 1rem;
-        font-size: 1.2rem;
-      }
-      
-      .ai-search-icon {
         left: 1rem;
         font-size: 1.2rem;
       }
@@ -839,11 +733,6 @@
         margin-bottom: 1.5rem;
       }
       
-      .ai-search-container {
-        padding: 0;
-        margin-bottom: 2rem;
-      }
-      
       .reset-container {
         padding: 0;
         margin-bottom: 1.5rem;
@@ -861,19 +750,7 @@
         border-radius: 25px;
       }
       
-      #ai-search {
-        width: 100%;
-        font-size: 1rem;
-        padding: 1rem 1.25rem 1rem 2.75rem;
-        border-radius: 25px;
-      }
-      
       .search-icon {
-        left: 1rem;
-        font-size: 1.1rem;
-      }
-      
-      .ai-search-icon {
         left: 1rem;
         font-size: 1.1rem;
       }
@@ -1066,8 +943,7 @@
         transition: transform 0.15s ease;
       }
       
-      #search:focus,
-      #ai-search:focus {
+      #search:focus {
         transform: none;
         animation: none;
       }
@@ -1093,8 +969,7 @@
       border-radius: 28px;
     }
     
-    #search:focus-visible,
-    #ai-search:focus-visible {
+    #search:focus-visible {
       outline: 3px solid rgba(102, 126, 234, 0.6);
       outline-offset: 3px;
     }
@@ -1186,12 +1061,6 @@
     <div class="search-container">
       <span class="search-icon">🔍</span>
       <input type="text" id="search" placeholder="Rechercher un livre ou un auteur...">
-    </div>
-    
-    <div class="ai-search-container">
-      <span class="ai-search-icon">🤖</span>
-      <input type="text" id="ai-search" placeholder="Décrivez le livre que vous cherchez...">
-      <div class="ai-search-loader" id="ai-search-loader"></div>
     </div>
     
     <div class="genre-filters">
@@ -1547,7 +1416,7 @@
               <span class="info-label">Stock:</span>
               <span class="stock-badge ${
                 (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
-                (livre.Stock == 0 || livre.Stock === '0') ? 'Emprunté' : ''
+                (livre.Stock == 0 || livre.Stock === '0') ? 'Emprunté ' : ''
               }">${
                 (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : livre.Stock
               }</span>
@@ -1637,7 +1506,6 @@
     function resetSearch() {
       // Vider les champs de recherche
       document.getElementById('search').value = '';
-      document.getElementById('ai-search').value = '';
       
       // Réinitialiser le genre sélectionné
       selectedGenre = 'tous';
@@ -1987,217 +1855,7 @@
 
 
 
-    // Configuration de l'API via Netlify Functions
-    async function performAISearch(query) {
-      if (!query.trim()) {
-        alert('Veuillez entrer une description du livre que vous cherchez.');
-        return;
-      }
 
-      const aiSearchInput = document.getElementById('ai-search');
-      const aiSearchLoader = document.getElementById('ai-search-loader');
-      const originalPlaceholder = aiSearchInput.placeholder;
-      
-      try {
-        // Afficher le loader et désactiver le champ
-        aiSearchInput.disabled = true;
-        aiSearchInput.classList.add('searching');
-        aiSearchInput.placeholder = 'Recherche IA en cours...';
-        aiSearchLoader.style.display = 'block';
-
-        // Approche pour gros volumes : envoyer TOUS les livres à l'IA pour des résultats optimaux
-        let booksToSend;
-        
-        console.log(`🤖 Envoi de TOUS les livres à l'IA: ${allBooks.length} livres (requête: "${query}")`);
-        
-        // Envoyer tous les livres avec un maximum de détails pour une recherche optimale
-        booksToSend = allBooks.map((book, index) => {
-          // Construire le nom complet de l'auteur
-          const nomComplet = ((book.Prénom || '') + ' ' + (book.Famille || '')).trim();
-          
-          return {
-            id: index, // Identifiant unique pour les livres sans ISBN
-            titre: book.Titre,
-            prenom: book.Prénom || '',
-            famille: book.Famille || '',
-            auteur: nomComplet, // Garder aussi la version complète pour la compatibilité
-            isbn: book.ISBN,
-            // Ajouter tous les champs disponibles pour maximiser les correspondances
-            genre: book.Genre || '',
-            editeur: book.Editeur || '',
-            description: book.Description || '',
-            annee: book.Annee || '',
-            serie: book.Serie || '',
-            tome: book.Tome || ''
-          };
-        });
-
-        // Debug: afficher quelques ISBNs pour vérifier le format
-        console.log('📚 Échantillon d\'ISBNs dans les données:', allBooks.slice(0, 5).map(b => b.ISBN));
-
-        // Appel à notre fonction Netlify au lieu de Gemini directement
-        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-          ? '/api/ai-search'  // Pour le développement local
-          : '/.netlify/functions/ai-search';  // Pour la production
-
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: query,
-            booksData: booksToSend
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erreur API: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        if (!data.success) {
-          const errorMsg = data.error || 'Erreur lors de la recherche IA';
-          console.error('Erreur API:', errorMsg);
-          
-          // Message d'erreur spécifique selon le type d'erreur
-          if (errorMsg.includes('API key not configured')) {
-            alert('Service de recherche IA temporairement indisponible. Veuillez utiliser la recherche classique.');
-          } else {
-            alert(`Erreur de recherche IA: ${errorMsg}`);
-          }
-          return;
-        }
-
-        const matchingISBNs = data.matchingISBNs || [];
-        console.log(`🤖 IA a retourné ${matchingISBNs.length} ID(s):`, matchingISBNs.slice(0, 5), matchingISBNs.length > 5 ? '...' : '');
-        
-        // Commencer avec tous les livres ou les livres filtrés par genre
-        let booksToSearch = [...allBooks];
-        if (selectedGenre !== 'tous') {
-          booksToSearch = applyGenreFilter(booksToSearch, selectedGenre);
-          console.log(`🎭 Application du filtre genre "${selectedGenre}": ${booksToSearch.length} livres`);
-        }
-        
-        // Filtrer les livres basés sur les IDs retournés par l'IA (ISBN ou index)
-        if (Array.isArray(matchingISBNs) && matchingISBNs.length > 0) {
-          console.log('🔍 Filtrage par IDs IA...');
-          
-          // Fonction pour normaliser les IDs (ISBNs ou indices numériques)
-          const normalizeID = (id) => (id || '').toString().replace(/[-\s]/g, '').trim();
-          
-          filteredBooks = booksToSearch.filter((book, index) => {
-            // Essayer d'abord l'ISBN, puis l'index comme fallback
-            const bookISBN = normalizeID(book.ISBN);
-            const bookIndex = allBooks.indexOf(book).toString(); // Utiliser l'index dans allBooks
-            
-            const hasMatch = matchingISBNs.some(aiID => {
-              const normalizedAiID = normalizeID(aiID);
-              return normalizedAiID === bookISBN || normalizedAiID === bookIndex;
-            });
-            
-            if (hasMatch) {
-              console.log(`✅ Correspondance trouvée: "${book.Titre}" (ISBN: ${book.ISBN || 'N/A'}, Index: ${allBooks.indexOf(book)})`);
-            }
-            return hasMatch;
-          });
-          
-          console.log(`📊 ${filteredBooks.length} livre(s) trouvé(s) sur ${matchingISBNs.length} ID(s) retournés`);
-          
-          // Réorganiser selon l'ordre de pertinence donné par l'IA
-          filteredBooks.sort((a, b) => {
-            const getBookID = (book, index) => normalizeID(book.ISBN) || allBooks.indexOf(book).toString();
-            
-            const indexA = matchingISBNs.findIndex(aiID => {
-              const normalizedAiID = normalizeID(aiID);
-              const bookAID = getBookID(a, allBooks.indexOf(a));
-              return normalizedAiID === bookAID;
-            });
-            
-            const indexB = matchingISBNs.findIndex(aiID => {
-              const normalizedAiID = normalizeID(aiID);
-              const bookBID = getBookID(b, allBooks.indexOf(b));
-              return normalizedAiID === bookBID;
-            });
-            
-            return indexA - indexB;
-          });
-        } else {
-          // Fallback: si l'IA ne trouve rien, faire une recherche textuelle large
-          console.log('🔍 Fallback: recherche textuelle large');
-          const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
-          
-          filteredBooks = booksToSearch.filter(livre => {
-            // Construire le nom complet de l'auteur
-            const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).toLowerCase().trim();
-            
-            const searchableText = [
-              livre.Titre?.toLowerCase() || '',
-              nomComplet,
-              livre.Prénom?.toLowerCase() || '',
-              livre.Famille?.toLowerCase() || '',
-              livre.Genre?.toLowerCase() || '',
-              livre.Description?.toLowerCase() || ''
-            ].join(' ');
-            
-            // Recherche flexible avec correspondances partielles
-            return searchTerms.some(term => {
-              // Recherche exacte
-              if (searchableText.includes(term)) return true;
-              
-              // Correspondances partielles pour mots longs
-              if (term.length >= 4) {
-                const words = searchableText.split(' ');
-                return words.some(word => 
-                  word.startsWith(term) || 
-                  (word.length >= 4 && term.includes(word.substring(0, 3)))
-                );
-              }
-              
-              // Recherche de similarité pour des mots comme "voldemort" -> "harry potter"
-              const synonymMap = {
-                'voldemort': ['harry', 'potter', 'poudlard', 'hogwarts', 'magic'],
-                'hermione': ['harry', 'potter', 'granger'],
-                'dumbledore': ['harry', 'potter', 'albus'],
-                'poudlard': ['harry', 'potter', 'hogwarts'],
-                'magie': ['fantasy', 'magic', 'wizard', 'sorcier'],
-                'guerre': ['battle', 'fight', 'combat', 'militaire'],
-                'amour': ['love', 'romance', 'romantic']
-              };
-              
-              if (synonymMap[term]) {
-                return synonymMap[term].some(synonym => searchableText.includes(synonym));
-              }
-              
-              return false;
-            });
-          });
-        }
-
-        currentPage = 1;
-        renderBooks(filteredBooks, currentPage);
-        
-        // Afficher un message de résultat amélioré
-        if (filteredBooks.length > 0) {
-          document.getElementById('search').value = ''; // Vider la recherche classique
-          const source = matchingISBNs && matchingISBNs.length > 0 ? 'IA' : 'recherche textuelle élargie';
-          console.log(`🤖 Recherche ${source}: ${filteredBooks.length} livre(s) trouvé(s) pour "${query}"`);
-        } else {
-          alert(`Aucun livre trouvé pour la description : "${query}". Essayez avec des mots-clés différents ou plus généraux.`);
-        }
-
-      } catch (error) {
-        console.error('Erreur lors de la recherche IA:', error);
-        alert('Erreur lors de la recherche IA. Veuillez réessayer.');
-      } finally {
-        // Masquer le loader et réactiver le champ dans tous les cas
-        aiSearchInput.disabled = false;
-        aiSearchInput.classList.remove('searching');
-        aiSearchInput.placeholder = originalPlaceholder;
-        aiSearchLoader.style.display = 'none';
-      }
-    }
 
     // Recherche optimisée avec cache et debounce intelligent
     let searchTimeout;
@@ -2235,14 +1893,6 @@
           }
         }
       }, debounceDelay);
-    });
-
-    // Event listeners pour la recherche IA
-    document.getElementById('ai-search').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        const query = this.value;
-        performAISearch(query);
-      }
     });
 
     // Event listener pour le bouton de réinitialisation

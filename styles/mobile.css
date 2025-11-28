@@ -47,8 +47,7 @@
   
   /* Optimiser le backdrop-filter */
   .book,
-  #search,
-  #ai-search {
+  #search {
     backdrop-filter: none; /* Supprimer backdrop-filter sur mobile */
     -webkit-backdrop-filter: none;
   }
@@ -93,15 +92,10 @@
     line-height: 1.15;
   }
   
-  .search-container,
-  .ai-search-container {
+  .search-container {
     margin-bottom: 1.75rem;
     padding: 0 0.5rem;
     max-width: 100%;
-  }
-  
-  .ai-search-container {
-    margin-bottom: 2.5rem;
   }
   
   .reset-container {
@@ -114,8 +108,7 @@
     padding: 0.875rem 1.5rem;
   }
   
-  #search,
-  #ai-search {
+  #search {
     max-width: 100%;
     font-size: 1rem;
     padding: 1rem 1.5rem 1rem 3rem;
