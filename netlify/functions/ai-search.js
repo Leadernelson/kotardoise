@@ -59,19 +59,18 @@ exports.handler = async (event, context) => {
         // Normalize common keys and fallbacks - support both French and English field names
         const isbn = (b.isbn || b.ISBN || b.code || b.id || '') + '';
         const id = b.id || b.index || ''; // ID unique pour les livres sans ISBN
-        const title = (b.title || b.titre || b.name || '').replace(/\s+/g, ' ').trim();
+        const title = (b.Titre || b.title || b.titre || b.name || '').replace(/\s+/g, ' ').trim();
         
         // Gérer les colonnes d'auteur séparées et la colonne Auteur complète
         let author = '';
-        if (b.prenom && b.famille) {
-          // Nouvelle structure avec colonnes séparées (Prénom et Famille)
-          author = (b.prenom + ' ' + b.famille).trim();
-        } else if (b.prénom && b.famille) {
-          // Variations possibles du nom des colonnes
-          author = (b.prénom + ' ' + b.famille).trim();
-        } else if (b.author || b.auteur) {
+        const prenom = b['Prénom'] || b.Prénom || b.prenom || b.prénom || '';
+        const famille = b['Nom de Famille'] || b.Famille || b.famille || '';
+        if (prenom || famille) {
+          // Nouvelle structure avec colonnes séparées (Prénom et Nom de Famille)
+          author = (prenom + ' ' + famille).trim();
+        } else if (b.author || b.auteur || b.Auteur) {
           // Ancienne structure avec auteur complet
-          author = (b.author || b.auteur || '').toString();
+          author = (b.author || b.auteur || b.Auteur || '').toString();
         }
         author = author.replace(/\s+/g, ' ').trim();
         
@@ -79,7 +78,7 @@ exports.handler = async (event, context) => {
         const chars = (Array.isArray(b.characters) ? b.characters.join(', ') : (b.characters || b.people || '')).toString().replace(/\s+/g, ' ').trim();
         
         // Gérer les genres qu'ils soient un tableau ou une chaîne de caractères
-        let tags = b.tags || b.genres || b.categories || b.genre || '';
+        let tags = b.Genre || b.tags || b.genres || b.categories || b.genre || '';
         if (!Array.isArray(tags)) {
           // Si c'est une chaîne, la convertir en tableau (séparer par virgules si nécessaire)
           tags = tags ? tags.toString().split(',').map(t => t.trim()).filter(t => t) : [];
@@ -289,19 +288,21 @@ function performFallbackSearch(query, booksData) {
     const book = booksData[index];
     
     // Construire le nom complet de l'auteur
+    const prenom = book['Prénom'] || book.Prénom || book.prenom || book.prénom || '';
+    const famille = book['Nom de Famille'] || book.Famille || book.famille || '';
     let auteur = '';
-    if (book.prenom && book.famille) {
-      auteur = (book.prenom + ' ' + book.famille).trim();
-    } else if (book.auteur || book.author) {
-      auteur = (book.auteur || book.author || '').toString();
+    if (prenom || famille) {
+      auteur = (prenom + ' ' + famille).trim();
+    } else if (book.Auteur || book.auteur || book.author) {
+      auteur = (book.Auteur || book.auteur || book.author || '').toString();
     }
     
     const searchableText = [
-      book.titre || book.title || '',
+      book.Titre || book.titre || book.title || '',
       auteur,
-      book.prenom || '',
-      book.famille || '',
-      book.genre || '',
+      prenom,
+      famille,
+      book.Genre || book.genre || '',
       book.description || '',
       book.serie || ''
     ].join(' ').toLowerCase();
