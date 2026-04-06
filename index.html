@@ -1079,11 +1079,11 @@
     </div>
     
     <div class="reset-container">
-      <button id="reset-btn" class="reset-button">🔄 Afficher tous les livres</button>
+      <button id="reset-btn" class="reset-button" aria-label="Afficher tous les livres">🔄 Afficher tous les livres</button>
     </div>
     
-    <div id="livres" class="books-grid"></div>
-    <div id="results-info" class="results-info"></div>
+    <div id="livres" class="books-grid" aria-live="polite" aria-atomic="true"></div>
+    <div id="results-info" class="results-info" aria-live="assertive"></div>
     <div id="pagination" class="pagination"></div>
   </div>
 
@@ -1349,7 +1349,7 @@
       }
       
       // Construire le nom complet de l'auteur à partir des colonnes séparées
-      const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || livre.Famille || '')).trim();
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim();
       
       // Sinon, utiliser l'auteur et le titre pour rechercher
       if (nomComplet && livre.Titre) {
@@ -1379,7 +1379,7 @@
       div.style.animationDelay = `${index * 0.1}s`;
 
       // Construire le nom complet de l'auteur à partir des colonnes séparées
-      const nomComplet = ((livre.Prénom || '') + ' ' + (livre['Nom de Famille'] || livre.Famille || '')).trim() || 'Auteur inconnu';
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim() || 'Auteur inconnu';
 
       // Obtenir l'URL de la couverture selon la disponibilité des données
       const coverInfo = getCoverURL(livre);
@@ -1407,7 +1407,7 @@
                  onload="if(typeof trackBandwidthUsage === 'function') trackBandwidthUsage('images', 25000)"> 
           </div>
           <div class="info">
-            <h2>${livre.Titre || 'Titre inconnu'}</h2>
+            <h2>${livre.Titre}</h2>
             <div class="info-item">
               <span class="info-label">Auteur:</span>
               <span class="info-value">${nomComplet}</span>
@@ -1543,14 +1543,13 @@
         // Recherche exhaustive dans tous les livres chargés
         filteredBooks = booksToFilter.filter(livre => {
           // Construire le nom complet de l'auteur
-          const famille = livre['Nom de Famille'] || livre.Famille || '';
-          const nomComplet = ((livre.Prénom || '') + ' ' + famille).toLowerCase().trim();
+          const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).toLowerCase().trim();
           
           const searchableText = [
             livre.Titre?.toLowerCase() || '',
             nomComplet,
             livre.Prénom?.toLowerCase() || '',
-            famille.toLowerCase() || ''
+            livre.Famille?.toLowerCase() || ''
           ].join(' ');
           
           return searchTerms.every(term => searchableText.includes(term));

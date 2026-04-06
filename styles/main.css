@@ -8,6 +8,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 112.5%; /* 18px de base sur mobile */
 }
 
 body {
@@ -36,7 +37,7 @@ h1 {
   color: white;
   text-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
   letter-spacing: -1px;
-  line-height: 1.1;
+  line-height: 1.3;
   position: relative;
   z-index: 1;
 }
@@ -70,6 +71,8 @@ h1 {
   -moz-appearance: none;
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  min-height: 44px;
+  min-width: 44px;
 }
 
 #search:focus {
@@ -121,6 +124,8 @@ h1 {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .reset-button::before {
@@ -271,7 +276,7 @@ img {
   font-size: 1.4rem;
   font-weight: 600;
   color: #2d3748;
-  line-height: 1.25;
+  line-height: 1.3;
   word-wrap: break-word;
   position: relative;
   padding-bottom: 0.5rem;
@@ -302,6 +307,7 @@ img {
   overflow: visible;
   width: 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin: 8px 0 !important;
 }
 
 .info-item:hover {
@@ -313,13 +319,14 @@ img {
 
 .info-label {
   font-weight: 600;
-  color: #4a5568;
+  color: #2d3748;
   min-width: 80px;
   font-size: 0.875rem;
   flex-shrink: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0.8;
+  line-height: 1.6;
 }
 
 .info-value {
@@ -331,7 +338,7 @@ img {
   hyphens: auto;
   width: 100%;
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
   overflow: visible;
   display: flex;
   align-items: center;
@@ -433,6 +440,7 @@ img {
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1.5;
 }
 
 .spinner {
@@ -463,6 +471,7 @@ img {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   backdrop-filter: blur(15px);
+  gap: 10px !important;
 }
 
 .pagination button {
@@ -480,6 +489,8 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .pagination button::before {
@@ -548,6 +559,7 @@ img {
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  line-height: 1.5;
 }
 
 .results-info strong {
@@ -569,6 +581,7 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.1);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   font-weight: 500;
+  line-height: 1.5;
 }
 
 /* Text Selection */
@@ -582,7 +595,7 @@ img {
   color: inherit;
 }
 
-/* Focus Styles */
+/* Focus Styles - Améliorés pour la conformité WCAG */
 .book:focus-within {
   outline: 3px solid rgba(102, 126, 234, 0.5);
   outline-offset: 4px;
@@ -591,12 +604,12 @@ img {
 
 #search:focus-visible,
 #ai-search:focus-visible {
-  outline: 3px solid rgba(102, 126, 234, 0.6);
-  outline-offset: 3px;
+  outline: 3px solid rgba(102, 126, 234, 0.7);
+  outline-offset: 2px;
 }
 
 .reset-button:focus-visible,
 .pagination button:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline: 3px solid rgba(102, 126, 234, 0.7);
   outline-offset: 2px;
 }

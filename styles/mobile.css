@@ -1,5 +1,40 @@
 /* Mobile-First Responsive Styles - Optimized for Performance */
 
+/* Genre filters - Touch-friendly spacing */
+.genre-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px !important;
+  justify-content: center;
+  margin: 0 auto 2.5rem;
+  max-width: 900px;
+  padding: 0 1rem;
+}
+
+/* Genre buttons - Touch-friendly size */
+.genre-btn {
+  padding: 0.65rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Genre button focus indicator - WCAG compliant */
+.genre-btn:focus-visible {
+  outline: 3px solid rgba(102, 126, 234, 0.7);
+  outline-offset: 2px;
+}
+
 /* Performance optimizations for mobile */
 @media (max-width: 768px) {
   /* Désactiver les animations coûteuses sur mobile */
@@ -498,15 +533,25 @@
   }
 }
 
-/* Reduced Motion Support */
+/* Reduced Motion Support - Amélioré pour la conformité WCAG */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  /* Désactiver spécifiquement les animations qui causent des problèmes */
+  .book,
+  .floating-element,
+  #search:focus,
+  .reset-button::after,
+  .pagination button::after {
+    animation: none !important;
+    transition: none !important;
   }
   
   .book:hover {

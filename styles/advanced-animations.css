@@ -439,15 +439,25 @@ body::before {
   will-change: transform, opacity;
 }
 
-/* Reduced Motion Support */
+/* Reduced Motion Support - Amélioré pour la conformité WCAG */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  /* Désactiver spécifiquement les animations qui causent des problèmes */
+  .book,
+  .floating-element,
+  #search:focus,
+  .reset-button::after,
+  .pagination button::after {
+    animation: none !important;
+    transition: none !important;
   }
   
   .book:hover {
