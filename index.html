@@ -1272,38 +1272,362 @@
         font-size: 1.5rem;
       }
     }
+    
+    /* Onglets de navigation */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+      position: relative;
+      z-index: 10;
+    }
+    .nav-tab {
+      padding: 0.8rem 1.8rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .nav-tab:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    .nav-tab.active {
+      background: white;
+      color: #764ba2;
+      border-color: white;
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Hero Section */
+    .digital-hero {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      color: white;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+    .digital-hero h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+    }
+    .info-alert {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(102, 126, 234, 0.25);
+      border-left: 4px solid #667eea;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+
+    /* Grille et Cartes de plateformes */
+    .platforms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+      width: 100%;
+    }
+    .platform-card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+    }
+    .platform-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      background: white;
+    }
+    .platform-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+    }
+    .platform-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+    .platform-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      background: #eef2ff;
+      color: #4f46e5;
+      white-space: nowrap;
+    }
+    .platform-catalog {
+      font-size: 0.92rem;
+      color: #555;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+    .platform-formats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .format-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    .platform-potential {
+      background: rgba(102, 126, 234, 0.05);
+      border: 1px dashed rgba(102, 126, 234, 0.3);
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+    .platform-potential strong {
+      color: #4f46e5;
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .platform-btn {
+      width: 100%;
+      text-align: center;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    .platform-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.45);
+      filter: brightness(1.05);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>📚 La bibliothèque du KotArdoise 📚</h1>
-    <div class="search-container">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search" placeholder="Rechercher un livre ou un auteur...">
+    
+    <!-- Onglets de navigation -->
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="tab-library" aria-label="Voir la bibliothèque physique">📚 Notre Bibliothèque</button>
+      <button class="nav-tab" id="tab-digital" aria-label="Voir les ressources numériques du domaine public">🌐 Livres Numériques</button>
     </div>
     
-    <div class="genre-filters">
-      <button class="genre-btn active" data-genre="tous">📚 Tous</button>
-      <button class="genre-btn" data-genre="Horreur">🧛 Horreur</button>
-      <button class="genre-btn" data-genre="Romance">💕 Romance</button>
-      <button class="genre-btn" data-genre="Science-fiction">🚀 Science-fiction</button>
-      <button class="genre-btn" data-genre="Fantasy">🐉 Fantasy</button>
-      <button class="genre-btn" data-genre="Thriller">😱 Thriller</button>
-      <button class="genre-btn" data-genre="Aventure">⚔️ Aventure</button>
-      <button class="genre-btn" data-genre="Policier">🕵️ Policier</button>
-      <button class="genre-btn" data-genre="Historique">📜 Historique</button>
-      <button class="genre-btn" data-genre="Drame">🎭 Drame</button>
-      <button class="genre-btn" data-genre="Comédie">😄 Comédie</button>
-      <button class="genre-btn" data-genre="Inconnu">❓ Inconnu</button>
+    <!-- Vue Bibliothèque -->
+    <div id="library-view">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="Rechercher un livre ou un auteur...">
+      </div>
+      
+      <div class="genre-filters">
+        <button class="genre-btn active" data-genre="tous">📚 Tous</button>
+        <button class="genre-btn" data-genre="Horreur">🧛 Horreur</button>
+        <button class="genre-btn" data-genre="Romance">💕 Romance</button>
+        <button class="genre-btn" data-genre="Science-fiction">🚀 Science-fiction</button>
+        <button class="genre-btn" data-genre="Fantasy">🐉 Fantasy</button>
+        <button class="genre-btn" data-genre="Thriller">😱 Thriller</button>
+        <button class="genre-btn" data-genre="Aventure">⚔️ Aventure</button>
+        <button class="genre-btn" data-genre="Policier">🕵️ Policier</button>
+        <button class="genre-btn" data-genre="Historique">📜 Historique</button>
+        <button class="genre-btn" data-genre="Drame">🎭 Drame</button>
+        <button class="genre-btn" data-genre="Comédie">😄 Comédie</button>
+        <button class="genre-btn" data-genre="Inconnu">❓ Inconnu</button>
+      </div>
+      
+      <div class="reset-container">
+        <button id="reset-btn" class="reset-button" aria-label="Afficher tous les livres">🔄 Afficher tous les livres</button>
+      </div>
+      
+      <div id="livres" class="books-grid" aria-live="polite" aria-atomic="true"></div>
+      <div id="results-info" class="results-info" aria-live="assertive"></div>
+      <div id="pagination" class="pagination"></div>
     </div>
-    
-    <div class="reset-container">
-      <button id="reset-btn" class="reset-button" aria-label="Afficher tous les livres">🔄 Afficher tous les livres</button>
+
+    <!-- Vue Livres Numériques -->
+    <div id="digital-view" style="display: none;">
+      <div class="digital-hero">
+        <h2>📖 Domaine Public & Livres Numériques Gratuits</h2>
+        <p>En Belgique et en Europe, les œuvres littéraires entrent dans le <strong>Domaine Public 70 ans après la mort de leur auteur</strong>. Elles deviennent alors libres de droits et accessibles gratuitement pour tous sous format numérique.</p>
+        <div class="info-alert">
+          💡 <strong>Intégration UCLouvain :</strong> Ces plateformes constituent d'excellentes ressources pour les étudiants de premier cycle et les cercles de lecture afin d'obtenir gratuitement et en toute légalité les classiques recommandés.
+        </div>
+      </div>
+      
+      <div class="platforms-grid">
+        <!-- Project Gutenberg -->
+        <div class="platform-card">
+          <div>
+            <div class="platform-header">
+              <h3 class="platform-title">Project Gutenberg</h3>
+              <span class="platform-badge">Pionnier Mondial</span>
+            </div>
+            <p class="platform-catalog">Bibliothèque pionnière mondiale offrant des dizaines de milliers de grands classiques littéraires libres de droits, dont une vaste sélection francophone.</p>
+            <div class="platform-formats">
+              <span class="format-tag">EPUB</span>
+              <span class="format-tag">Kindle</span>
+              <span class="format-tag">PDF</span>
+              <span class="format-tag">HTML</span>
+            </div>
+            <div class="platform-potential">
+              <strong>Potentiel opérationnel :</strong>
+              Exportation directe et stockage automatisé des fichiers vers Dropbox, Google Drive ou OneDrive pour l'association.
+            </div>
+          </div>
+          <a href="https://www.gutenberg.org/" target="_blank" class="platform-btn" aria-label="Visiter Project Gutenberg">🌐 Visiter Gutenberg</a>
+        </div>
+
+        <!-- Wikisource -->
+        <div class="platform-card">
+          <div>
+            <div class="platform-header">
+              <h3 class="platform-title">Wikisource</h3>
+              <span class="platform-badge">Collaboratif</span>
+            </div>
+            <p class="platform-catalog">Projet collaboratif de la fondation Wikimedia basé sur la numérisation, la relecture et la correction communautaire de textes du domaine public.</p>
+            <div class="platform-formats">
+              <span class="format-tag">EPUB</span>
+              <span class="format-tag">PDF</span>
+            </div>
+            <div class="platform-potential">
+              <strong>Potentiel opérationnel :</strong>
+              Opportunité d'ateliers participatifs où les étudiants de l'UCLouvain contribuent directement à la correction de textes rares.
+            </div>
+          </div>
+          <a href="https://fr.wikisource.org/" target="_blank" class="platform-btn" aria-label="Visiter Wikisource">🌐 Visiter Wikisource</a>
+        </div>
+
+        <!-- Gallica (BnF) -->
+        <div class="platform-card">
+          <div>
+            <div class="platform-header">
+              <h3 class="platform-title">Gallica (BnF)</h3>
+              <span class="platform-badge">Patrimonial</span>
+            </div>
+            <p class="platform-catalog">Portail numérique de la Bibliothèque Nationale de France, offrant un accès à des millions de documents, livres et manuscrits historiques numérisés.</p>
+            <div class="platform-formats">
+              <span class="format-tag">EPUB</span>
+              <span class="format-tag">PDF</span>
+              <span class="format-tag">Images HD</span>
+            </div>
+            <div class="platform-potential">
+              <strong>Potentiel opérationnel :</strong>
+              Extraction de métadonnées riches et téléchargement de sélections de pages ou d'ouvrages complets pour les travaux d'études.
+            </div>
+          </div>
+          <a href="https://gallica.bnf.fr/" target="_blank" class="platform-btn" aria-label="Visiter Gallica">🌐 Visiter Gallica</a>
+        </div>
+
+        <!-- TV5Monde -->
+        <div class="platform-card">
+          <div>
+            <div class="platform-header">
+              <h3 class="platform-title">TV5Monde</h3>
+              <span class="platform-badge">Francophonie</span>
+            </div>
+            <p class="platform-catalog">Espace dédié à la promotion de la francophonie proposant plus de 500 grands classiques de la littérature française rigoureusement mis en page.</p>
+            <div class="platform-formats">
+              <span class="format-tag">EPUB</span>
+              <span class="format-tag">PDF</span>
+              <span class="format-tag">Fichiers Audio IA</span>
+            </div>
+            <div class="platform-potential">
+              <strong>Potentiel opérationnel :</strong>
+              Interface épurée et moderne facilitant la prescription et la lecture immédiate d'œuvres pour les étudiants de premier cycle.
+            </div>
+          </div>
+          <a href="https://bibliothequenumerique.tv5monde.com/" target="_blank" class="platform-btn" aria-label="Visiter la Bibliothèque TV5Monde">🌐 Visiter TV5Monde</a>
+        </div>
+
+        <!-- NumaBib -->
+        <div class="platform-card">
+          <div>
+            <div class="platform-header">
+              <h3 class="platform-title">NumaBib (APEDA)</h3>
+              <span class="platform-badge">Social / Adapté</span>
+            </div>
+            <p class="platform-catalog">Plateforme solidaire belge fournissant des versions numériques spécifiquement adaptées aux personnes présentant des troubles de la lecture (dyslexie).</p>
+            <div class="platform-formats">
+              <span class="format-tag">PDF Accessible</span>
+              <span class="format-tag">EPUB Adapté</span>
+            </div>
+            <div class="platform-potential">
+              <strong>Potentiel opérationnel :</strong>
+              Relais social précieux pour les étudiants dyslexiques de l'UCLouvain (nécessite une attestation officielle pour la gratuité).
+            </div>
+          </div>
+          <a href="https://numabib.be/" target="_blank" class="platform-btn" aria-label="Visiter NumaBib">🌐 Visiter NumaBib</a>
+        </div>
+
+        <!-- Noslivres.net -->
+        <div class="platform-card">
+          <div>
+            <div class="platform-header">
+              <h3 class="platform-title">Noslivres.net</h3>
+              <span class="platform-badge">Agrégateur</span>
+            </div>
+            <p class="platform-catalog">Agrégateur unifié regroupant et indexant les catalogues de plusieurs bibliothèques numériques francophones libres de droits.</p>
+            <div class="platform-formats">
+              <span class="format-tag">Multi-formats</span>
+            </div>
+            <div class="platform-potential">
+              <strong>Potentiel opérationnel :</strong>
+              Recherche centralisée multi-sources (BEQ, ELG, BNR, Wikisource, Gallica) via un moteur de recherche unique et très léger.
+            </div>
+          </div>
+          <a href="https://www.noslivres.net/" target="_blank" class="platform-btn" aria-label="Visiter Noslivres.net">🌐 Visiter Noslivres.net</a>
+        </div>
+      </div>
     </div>
-    
-    <div id="livres" class="books-grid" aria-live="polite" aria-atomic="true"></div>
-    <div id="results-info" class="results-info" aria-live="assertive"></div>
-    <div id="pagination" class="pagination"></div>
   </div>
 
   <!-- Modale de détails du livre (Cinemeta-like) -->
@@ -2362,6 +2686,31 @@
       if (e.key === "Escape" && document.getElementById("book-modal").classList.contains("open")) {
         closeBookModal();
       }
+    });
+
+    // Gestion du basculement d'onglets (Notre Bibliothèque vs Livres Numériques)
+    const tabLibrary = document.getElementById('tab-library');
+    const tabDigital = document.getElementById('tab-digital');
+    const libraryView = document.getElementById('library-view');
+    const digitalView = document.getElementById('digital-view');
+
+    tabLibrary.addEventListener('click', () => {
+      tabLibrary.classList.add('active');
+      tabDigital.classList.remove('active');
+      libraryView.style.display = 'block';
+      digitalView.style.display = 'none';
+      
+      // Remonter en haut de page pour un meilleur confort de lecture
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    tabDigital.addEventListener('click', () => {
+      tabDigital.classList.add('active');
+      tabLibrary.classList.remove('active');
+      libraryView.style.display = 'none';
+      digitalView.style.display = 'block';
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
 </body>
