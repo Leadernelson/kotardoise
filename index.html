@@ -1501,6 +1501,224 @@
     .legal-modal-body ul {
       padding-left: 1.25rem;
     }
+    
+    /* Onglet Critiques - Feed */
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      width: 100%;
+    }
+    .review-card {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+    .review-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+      background: white;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    .review-book-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #764ba2;
+      cursor: pointer;
+      text-decoration: underline;
+      margin: 0;
+    }
+    .review-book-title:hover {
+      color: #667eea;
+    }
+    .review-rating {
+      color: #fbbf24;
+      font-weight: 700;
+      white-space: nowrap;
+      font-size: 1.1rem;
+    }
+    .review-comment {
+      font-size: 0.92rem;
+      color: #4b5563;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    .review-meta {
+      font-size: 0.8rem;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 0.75rem;
+      margin-top: auto;
+    }
+    .review-author {
+      font-weight: 600;
+      color: #374151;
+    }
+
+    /* Formulaire d'avis */
+    .reviews-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    @media (max-width: 768px) {
+      .reviews-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .review-form-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      align-self: start;
+      position: sticky;
+      top: 2rem;
+    }
+    .review-form-card h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.3rem;
+      border-bottom: 2px solid #eef2ff;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 0.5rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    }
+    select.form-control {
+      background-color: white;
+    }
+    
+    /* Etoiles interactives */
+    .star-select {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #d1d5db;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .star-btn:hover {
+      transform: scale(1.15);
+    }
+    .star-btn.active {
+      color: #fbbf24;
+    }
+    
+    .btn-submit-review {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .btn-submit-review:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.45);
+      filter: brightness(1.05);
+    }
+
+    /* Note moyenne sur les cartes */
+    .book-rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    /* Liste des avis dans la modale */
+    .modal-reviews-section {
+      margin-top: 2rem;
+      border-top: 1px solid #eef2ff;
+      padding-top: 1.5rem;
+      text-align: left;
+      width: 100%;
+    }
+    .modal-reviews-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    .modal-review-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .modal-review-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -1511,6 +1729,7 @@
     <div class="nav-tabs">
       <button class="nav-tab active" id="tab-library" aria-label="Voir la bibliothèque physique">📚 Notre Bibliothèque</button>
       <button class="nav-tab" id="tab-digital" aria-label="Voir les ressources numériques du domaine public">🌐 Livres Numériques</button>
+      <button class="nav-tab" id="tab-reviews" aria-label="Voir les avis et critiques des étudiants">💬 Avis & Critiques</button>
     </div>
     
     <!-- Vue Bibliothèque -->
@@ -1649,6 +1868,66 @@
             </div>
           </div>
           <a href="https://www.noslivres.net/" target="_blank" class="platform-btn" aria-label="Visiter Noslivres.net">🌐 Visiter Noslivres.net</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vue Avis & Critiques (Nouveau V2) -->
+    <div id="reviews-view" style="display: none;">
+      <div class="reviews-layout">
+        <!-- Feed des avis (à gauche) -->
+        <div>
+          <h2 style="color: white; margin-top: 0; margin-bottom: 0.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">💬 Le Fil des Critiques</h2>
+          <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem;">Découvrez ce que pensent les autres étudiants des livres de la bibliothèque.</p>
+          
+          <div id="reviews-feed-container" class="reviews-grid">
+            <!-- Rempli dynamiquement par JS -->
+            <div class="loading" style="color: white; grid-column: 1/-1;">Chargement des critiques...</div>
+          </div>
+        </div>
+        
+        <!-- Formulaire d'ajout d'avis (à droite) -->
+        <div class="review-form-card">
+          <h3>✍️ Laisser un avis</h3>
+          <form id="add-review-form">
+            <div class="form-group">
+              <label for="review-book-select">Choisir un livre</label>
+              <select id="review-book-select" class="form-control" required>
+                <option value="">-- Sélectionnez un livre --</option>
+                <!-- Rempli en JS par la liste des livres -->
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Votre note</label>
+              <div class="star-select" id="star-select-container">
+                <button type="button" class="star-btn" data-star="1">★</button>
+                <button type="button" class="star-btn" data-star="2">★</button>
+                <button type="button" class="star-btn" data-star="3">★</button>
+                <button type="button" class="star-btn" data-star="4">★</button>
+                <button type="button" class="star-btn" data-star="5">★</button>
+              </div>
+              <input type="hidden" id="review-rating-value" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="review-author-input">Votre nom / pseudo</label>
+              <input type="text" id="review-author-input" class="form-control" placeholder="Ex: Jean UCL" required maxlength="50">
+            </div>
+            
+            <div class="form-group">
+              <label for="review-comment-input">Votre commentaire</label>
+              <textarea id="review-comment-input" class="form-control" rows="4" placeholder="Qu'avez-vous pensé de ce livre ?" required maxlength="1000"></textarea>
+            </div>
+            
+            <div class="form-group" style="background: rgba(102, 126, 234, 0.05); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(102, 126, 234, 0.15);">
+              <label for="review-captcha-input" id="review-captcha-label">Anti-Robot...</label>
+              <input type="text" id="review-captcha-input" class="form-control" placeholder="Votre réponse" required>
+              <input type="hidden" id="review-captcha-id">
+            </div>
+            
+            <button type="submit" class="btn-submit-review">Publier mon avis</button>
+          </form>
         </div>
       </div>
     </div>
@@ -2693,12 +2972,15 @@
               ${livre.Genre && livre.Genre !== 'Inconnu' ? `<span class="modal-badge badge-genre">🏷️ ${livre.Genre}</span>` : ''}
               <span class="modal-badge stock-badge ${stockClass}">📦 Stock: ${stockText}</span>
             </div>
-            
             <div class="modal-desc-title">Description</div>
             <div class="modal-description">${descriptionHTML}</div>
           </div>
         </div>
       `;
+      
+      // V2: Charger et afficher les critiques du livre en arrière-plan
+      const slug = slugify(livre.Titre);
+      loadBookModalReviews(slug, modalBody);
       
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
@@ -2732,27 +3014,46 @@
       }
     });
 
-    // Gestion du basculement d'onglets (Notre Bibliothèque vs Livres Numériques)
+    // Gestion du basculement d'onglets (Notre Bibliothèque vs Livres Numériques vs Critiques)
     const tabLibrary = document.getElementById('tab-library');
     const tabDigital = document.getElementById('tab-digital');
+    const tabReviews = document.getElementById('tab-reviews');
     const libraryView = document.getElementById('library-view');
     const digitalView = document.getElementById('digital-view');
+    const reviewsView = document.getElementById('reviews-view');
 
     tabLibrary.addEventListener('click', () => {
       tabLibrary.classList.add('active');
       tabDigital.classList.remove('active');
+      tabReviews.classList.remove('active');
       libraryView.style.display = 'block';
       digitalView.style.display = 'none';
-      
-      // Remonter en haut de page pour un meilleur confort de lecture
+      reviewsView.style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     tabDigital.addEventListener('click', () => {
       tabDigital.classList.add('active');
       tabLibrary.classList.remove('active');
+      tabReviews.classList.remove('active');
       libraryView.style.display = 'none';
       digitalView.style.display = 'block';
+      reviewsView.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    tabReviews.addEventListener('click', () => {
+      tabReviews.classList.add('active');
+      tabLibrary.classList.remove('active');
+      tabDigital.classList.remove('active');
+      libraryView.style.display = 'none';
+      digitalView.style.display = 'none';
+      reviewsView.style.display = 'block';
+      
+      // Charger les données de la V2
+      loadReviewsFeed();
+      populateBookSelect();
+      loadCaptchaChallenge();
       
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -2839,6 +3140,254 @@
     window.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && legalModal.classList.contains('open')) {
         closeLegalModal();
+      }
+    });
+
+    // --- V2: LOGIQUE DU SYSTÈME DE CRITIQUES & AVIS COMMUNAUTAIRES ---
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Charger et afficher les avis dans la modale de détails d'un livre
+    async function loadBookModalReviews(slug, modalBody) {
+      const reviewsSection = document.createElement('div');
+      reviewsSection.className = 'modal-reviews-section';
+      reviewsSection.innerHTML = `
+        <div class="modal-reviews-title">💬 Avis des lecteurs</div>
+        <div class="modal-reviews-list">Chargement des avis...</div>
+      `;
+      modalBody.appendChild(reviewsSection);
+      
+      const reviewsList = reviewsSection.querySelector('.modal-reviews-list');
+      
+      try {
+        const response = await fetch(`/api/reviews?slug=${encodeURIComponent(slug)}`);
+        if (!response.ok) throw new Error();
+        const resData = await response.json();
+        const reviews = resData.data || [];
+        
+        if (reviews.length === 0) {
+          reviewsList.innerHTML = '<p style="color: #64748b; font-style: italic; font-size: 0.9rem;">Aucun avis pour le moment. Soyez le premier à donner votre avis dans l\'onglet "Critiques" !</p>';
+          return;
+        }
+        
+        // Calculer la moyenne
+        const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+        const avg = (sum / reviews.length).toFixed(1);
+        
+        // Afficher la note moyenne à côté du titre dans la modale
+        const modalTitle = document.querySelector('.modal-title');
+        if (modalTitle && !modalTitle.querySelector('.book-rating-badge')) {
+          const ratingBadge = document.createElement('span');
+          ratingBadge.className = 'book-rating-badge';
+          ratingBadge.innerHTML = `⭐ ${avg}/5 (${reviews.length})`;
+          modalTitle.appendChild(ratingBadge);
+        }
+        
+        reviewsList.innerHTML = reviews.map(r => `
+          <div class="modal-review-item">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: #334155; font-size: 0.95rem;">${escapeHTML(r.author_name)}</span>
+              <span style="color: #fbbf24; font-weight: 700;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+            </div>
+            <p style="margin: 0; color: #475569; font-size: 0.9rem; line-height: 1.5; font-style: italic;">"${escapeHTML(r.comment)}"</p>
+            <div class="modal-review-meta">
+              <span>Posté le ${new Date(r.created_at).toLocaleDateString('fr-FR')}</span>
+            </div>
+          </div>
+        `).join('');
+        
+      } catch (err) {
+        reviewsList.innerHTML = '<p style="color: #ef4444; font-size: 0.9rem;">Impossible de charger les avis pour le moment.</p>';
+      }
+    }
+
+    // Charger le fil global de toutes les critiques
+    async function loadReviewsFeed() {
+      const feedContainer = document.getElementById('reviews-feed-container');
+      
+      try {
+        const response = await fetch('/api/reviews');
+        if (!response.ok) throw new Error();
+        const resData = await response.json();
+        const reviews = resData.data || [];
+        
+        if (reviews.length === 0) {
+          feedContainer.innerHTML = '<div style="color: white; font-style: italic; grid-column: 1/-1; text-align: center; padding: 2rem;">Aucune critique publiée pour le moment. Soyez le premier !</div>';
+          return;
+        }
+        
+        feedContainer.innerHTML = reviews.map(r => {
+          const starsHTML = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+          const dateStr = new Date(r.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+          return `
+            <div class="review-card">
+              <div>
+                <div class="review-header">
+                  <h4 class="review-book-title" onclick="openBookFromReview('${r.book_slug}')">${escapeHTML(r.book_title)}</h4>
+                  <span class="review-rating">${starsHTML}</span>
+                </div>
+                <p class="review-comment">"${escapeHTML(r.comment)}"</p>
+              </div>
+              <div class="review-meta">
+                <span class="review-author">Par ${escapeHTML(r.author_name)}</span>
+                <span>${dateStr}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (err) {
+        feedContainer.innerHTML = '<div style="color: #fca5a5; grid-column: 1/-1; text-align: center; padding: 2rem;">Erreur de chargement du fil des critiques. Veuillez vérifier la configuration de votre base Supabase.</div>';
+      }
+    }
+
+    // Ouvrir la modale d'un livre à partir du clic sur son titre dans le fil des critiques
+    window.openBookFromReview = function(slug) {
+      const book = allBooks.find(b => slugify(b.Titre) === slug);
+      if (book) {
+        openBookModal(book);
+      } else {
+        alert("Ce livre n'est pas présent dans l'inventaire actuel.");
+      }
+    };
+
+    // Remplir le menu déroulant des livres dans le formulaire
+    let isBookSelectPopulated = false;
+    function populateBookSelect() {
+      if (isBookSelectPopulated) return;
+      const select = document.getElementById('review-book-select');
+      
+      if (!allBooks || allBooks.length === 0) return;
+      
+      // Trier les livres par titre par ordre alphabétique
+      const sortedBooks = [...allBooks].sort((a, b) => a.Titre.localeCompare(b.Titre));
+      
+      select.innerHTML = '<option value="">-- Sélectionnez un livre --</option>' + 
+        sortedBooks.map(b => `<option value="${escapeHTML(b.Titre)}|${slugify(b.Titre)}">${escapeHTML(b.Titre)}</option>`).join('');
+        
+      isBookSelectPopulated = true;
+    }
+
+    // Charger le challenge CAPTCHA anti-robot depuis la fonction serverless
+    async function loadCaptchaChallenge() {
+      const label = document.getElementById('review-captcha-label');
+      const inputId = document.getElementById('review-captcha-id');
+      const inputAnswer = document.getElementById('review-captcha-input');
+      
+      label.textContent = "Chargement du test de sécurité...";
+      inputAnswer.value = "";
+      
+      try {
+        const response = await fetch('/api/reviews?challenge=true');
+        if (!response.ok) throw new Error();
+        const data = await response.json();
+        
+        label.innerHTML = `🛡️ <strong>Sécurité :</strong> ${escapeHTML(data.question)}`;
+        inputId.value = data.id;
+      } catch (err) {
+        label.innerHTML = "🛡️ <strong>Sécurité :</strong> Quel est le nom de notre Kot ? (en minuscule)";
+        inputId.value = "kap";
+      }
+    }
+
+    // Gestion du système d'étoiles interactif
+    const starContainer = document.getElementById('star-select-container');
+    const hiddenRatingInput = document.getElementById('review-rating-value');
+    
+    starContainer.addEventListener('click', function(e) {
+      const starBtn = e.target.closest('.star-btn');
+      if (!starBtn) return;
+      
+      const rating = parseInt(starBtn.dataset.star);
+      hiddenRatingInput.value = rating;
+      
+      // Mettre à jour l'affichage des boutons d'étoiles
+      starContainer.querySelectorAll('.star-btn').forEach(btn => {
+        const starVal = parseInt(btn.dataset.star);
+        if (starVal <= rating) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    });
+
+    // Gestion de la soumission du formulaire d'avis
+    document.getElementById('add-review-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const bookSelectValue = document.getElementById('review-book-select').value;
+      if (!bookSelectValue) {
+        alert("Veuillez sélectionner un livre.");
+        return;
+      }
+      
+      const [book_title, book_slug] = bookSelectValue.split('|');
+      const rating = document.getElementById('review-rating-value').value;
+      if (!rating) {
+        alert("Veuillez donner une note sous forme d'étoiles.");
+        return;
+      }
+      
+      const author_name = document.getElementById('review-author-input').value;
+      const comment = document.getElementById('review-comment-input').value;
+      const captchaId = document.getElementById('review-captcha-id').value;
+      const captchaAnswer = document.getElementById('review-captcha-input').value;
+      
+      const submitBtn = this.querySelector('.btn-submit-review');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Publication en cours...";
+      
+      try {
+        const response = await fetch('/api/reviews', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            book_slug,
+            book_title,
+            author_name,
+            rating: parseInt(rating),
+            comment,
+            captchaId,
+            captchaAnswer
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de la publication de la critique.");
+        }
+        
+        alert("🎉 Votre critique a été publiée avec succès !");
+        
+        // Réinitialiser le formulaire
+        document.getElementById('review-comment-input').value = "";
+        document.getElementById('review-author-input').value = "";
+        document.getElementById('review-rating-value').value = "";
+        document.getElementById('review-book-select').value = "";
+        starContainer.querySelectorAll('.star-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Recharger le feed et le CAPTCHA
+        loadReviewsFeed();
+        loadCaptchaChallenge();
+        
+      } catch (err) {
+        alert("❌ Erreur : " + err.message);
+        loadCaptchaChallenge(); // Recharger un nouveau CAPTCHA en cas d'erreur
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Publier mon avis";
       }
     });
   </script>
