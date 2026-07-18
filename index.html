@@ -1433,6 +1433,74 @@
       box-shadow: 0 8px 25px rgba(102, 126, 234, 0.45);
       filter: brightness(1.05);
     }
+    
+    /* Footer */
+    .site-footer {
+      margin-top: auto;
+      padding: 2rem 0 1rem 0;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      align-items: center;
+    }
+    .footer-link {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+      padding: 0;
+    }
+    .footer-link:hover {
+      color: white;
+    }
+    .footer-separator {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Spécificités Modale Légale */
+    .legal-modal-content {
+      max-width: 800px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .legal-modal-body {
+      color: #333;
+      padding: 1rem;
+      text-align: left;
+    }
+    .legal-modal-body h2 {
+      font-size: 1.6rem;
+      margin-top: 0;
+      color: #764ba2;
+      border-bottom: 2px solid #eef2ff;
+      padding-bottom: 0.5rem;
+    }
+    .legal-modal-body h3 {
+      font-size: 1.15rem;
+      color: #4f46e5;
+      margin-top: 1.5rem;
+    }
+    .legal-modal-body p, .legal-modal-body li {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #4b5563;
+    }
+    .legal-modal-body ul {
+      padding-left: 1.25rem;
+    }
   </style>
 </head>
 <body>
@@ -1584,6 +1652,16 @@
         </div>
       </div>
     </div>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+      <p>© 2026 KotArdoise. Tous droits réservés.</p>
+      <div class="footer-links">
+        <button class="footer-link" id="link-legal" aria-label="Voir les mentions légales et la politique RGPD">Mentions Légales & RGPD</button>
+        <span class="footer-separator">|</span>
+        <button class="footer-link" id="link-cgu" aria-label="Voir les conditions générales d'emprunt">Conditions d'Emprunt (CGU)</button>
+      </div>
+    </footer>
   </div>
 
   <!-- Modale de détails du livre (Cinemeta-like) -->
@@ -1592,6 +1670,16 @@
       <button class="modal-close" aria-label="Fermer la fenêtre">&times;</button>
       <div class="modal-body">
         <!-- Rempli dynamiquement par JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale Légale (RGPD / CGU) -->
+  <div id="legal-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-content legal-modal-content">
+      <button class="modal-close" id="legal-close-btn" aria-label="Fermer la fenêtre">&times;</button>
+      <div class="modal-body legal-modal-body" id="legal-modal-body-content">
+        <!-- Rempli dynamiquement en JS -->
       </div>
     </div>
   </div>
@@ -2667,6 +2755,90 @@
       digitalView.style.display = 'block';
       
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // --- FONCTIONS ET ÉVÉNEMENTS POUR LA MODALE LÉGALE (RGPD / CGU) ---
+    const LEGAL_TEXTS = {
+      legal: `
+        <h2>Mentions Légales & RGPD</h2>
+        <p>Conformément au Code de droit économique belge et au Règlement Général sur la Protection des Données (RGPD), cette page présente les informations d'identification de l'éditeur ainsi que notre politique de confidentialité.</p>
+        
+        <h3>1. Éditeur du site</h3>
+        <p>Ce site internet est édité par le <strong>KotArdoise</strong>, un Kot-à-projet (KAP) étudiant agréé par l'Université catholique de Louvain (UCLouvain).</p>
+        <ul>
+          <li><strong>Adresse du local :</strong> Louvain-la-Neuve, Belgique (Kot-à-projet UCLouvain)</li>
+          <li><strong>Email de contact :</strong> <a href="mailto:kotardoise@gmail.com">kotardoise@gmail.com</a></li>
+          <li><strong>Hébergeur :</strong> Vercel Inc. (ou Netlify Inc. selon votre hébergement)</li>
+        </ul>
+        
+        <h3>2. Protection des données (RGPD)</h3>
+        <p>We accordons une importance primordiale à votre vie privée. Ce site est conçu de manière à minimiser la collecte et le traitement de vos données personnelles :</p>
+        <ul>
+          <li><strong>Absence de compte ou d'inscription :</strong> Aucune inscription n'est requise. Nous ne collectons aucun nom, prénom ou mot de passe.</li>
+          <li><strong>Absence de traceurs publicitaires :</strong> Nous n'utilisons aucun cookie de pistage, de profilage ou de ciblage publicitaire.</li>
+          <li><strong>Intégration d'API tierces :</strong> Pour charger le catalogue de livres et les images de couverture, le site effectue des appels techniques directs vers Google Sheets, Google Books et Open Library. Lors de ces requêtes, votre adresse IP est brièvement transmise à ces tiers pour des raisons purement techniques de chargement.</li>
+          <li><strong>Journaux d'accès (Logs) :</strong> L'hébergeur du site (Netlify/Vercel) collecte de manière automatisée des journaux d'accès techniques (comprenant l'adresse IP et le type de navigateur) afin de garantir la sécurité, la stabilité du site et la prévention d'éventuelles attaques. Ces logs ne sont jamais utilisés à des fins de marketing.</li>
+        </ul>
+        <p>Pour toute question relative à notre gestion de la confidentialité, vous pouvez nous écrire à notre adresse email de contact.</p>
+      `,
+      cgu: `
+        <h2>Conditions Générales d'Emprunt (CGU)</h2>
+        <p>La consultation du catalogue en ligne du KotArdoise est ouverte à tous. L'utilisation de notre service de bibliothèque physique est régie par les règles d'emprunt ci-dessous.</p>
+        
+        <h3>1. Conditions d'accès et d'emprunt</h3>
+        <p>Bien que le catalogue numérique soit accessible publiquement, l'emprunt physique d'ouvrages est <strong>exclusivement réservé aux étudiants et membres de la communauté de l'UCLouvain</strong>.</p>
+        
+        <h3>2. Disponibilité et exactitude des stocks</h3>
+        <ul>
+          <li>Les informations relatives aux stocks de livres ("Disponible", "Emprunté") affichées sur le site proviennent de notre base de données. Cependant, des décalages temporels ou des erreurs humaines d'inventaire peuvent se produire.</li>
+          <li>Les informations de disponibilité sont données à titre purement indicatif et ne constituent pas une réservation ferme.</li>
+          <li>Les modalités pratiques (durée maximale de prêt, retours, dépôts éventuels) sont fixées directement avec notre équipe d'étudiants lors de votre passage dans notre local.</li>
+        </ul>
+        
+        <h3>3. Propriété intellectuelle</h3>
+        <p>Les descriptions et couvertures de livres proviennent de sources ouvertes (Google Books API et Open Library API) ou sont ajoutées manuellement par nos soins. Si vous êtes l'ayant-droit d'un contenu apparaissant sur ce site et souhaitez sa suppression, veuillez nous contacter à l'adresse de contact.</p>
+        
+        <h3>4. Responsabilité</h3>
+        <p>Le KotArdoise met tout en œuvre pour assurer la disponibilité du site. Cependant, nous ne pouvons être tenus responsables d'interruptions techniques ou d'informations incomplètes.</p>
+      `
+    };
+
+    const legalModal = document.getElementById('legal-modal');
+    const legalModalBody = document.getElementById('legal-modal-body-content');
+    const legalCloseBtn = document.getElementById('legal-close-btn');
+
+    function openLegalModal(type) {
+      if (!LEGAL_TEXTS[type]) return;
+      legalModalBody.innerHTML = LEGAL_TEXTS[type];
+      legalModal.classList.add('open');
+      legalModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      
+      setTimeout(() => {
+        legalCloseBtn.focus();
+      }, 50);
+    }
+
+    function closeLegalModal() {
+      legalModal.classList.remove('open');
+      legalModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('link-legal').addEventListener('click', () => openLegalModal('legal'));
+    document.getElementById('link-cgu').addEventListener('click', () => openLegalModal('cgu'));
+    legalCloseBtn.addEventListener('click', closeLegalModal);
+    
+    legalModal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLegalModal();
+      }
+    });
+    
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && legalModal.classList.contains('open')) {
+        closeLegalModal();
+      }
     });
   </script>
 </body>
