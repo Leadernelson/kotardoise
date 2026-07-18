@@ -193,7 +193,15 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // Mode Supabase
+      // Mode Supabase - on laisse PostgreSQL générer l'id (UUID) et created_at automatiquement
+      const supabasePayload = {
+        book_slug: newReview.book_slug,
+        book_title: newReview.book_title,
+        author_name: newReview.author_name,
+        rating: newReview.rating,
+        comment: newReview.comment
+      };
+
       const url = `${SUPABASE_URL}/rest/v1/reviews`;
       const response = await supabaseFetch(url, {
         method: 'POST',
@@ -203,7 +211,7 @@ exports.handler = async (event, context) => {
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
-        body: JSON.stringify(newReview)
+        body: JSON.stringify(supabasePayload)
       });
 
       if (!response.ok) {
