@@ -1053,6 +1053,225 @@
         font-size: 0.85rem;
       }
     }
+    
+    /* Conteneur de tags sous le titre du livre */
+    .book-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.25rem 0 0.75rem 0;
+    }
+    
+    /* Style d'un tag de genre */
+    .genre-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+    
+    /* Variations par genre */
+    .tag-romance { background-color: #ffeef2; color: #b83280; }
+    .tag-science-fiction { background-color: #eef2ff; color: #4f46e5; }
+    .tag-fantasy { background-color: #f0fdf4; color: #16a34a; }
+    .tag-policier { background-color: #f1f5f9; color: #475569; }
+    .tag-thriller { background-color: #f8fafc; color: #334155; border-color: #cbd5e1; }
+    .tag-aventure { background-color: #fff7ed; color: #ea580c; }
+    .tag-horreur { background-color: #fef2f2; color: #dc2626; }
+    .tag-historique { background-color: #fdf6e2; color: #b7791f; }
+    .tag-drame { background-color: #faf5ff; color: #7e22ce; }
+    .tag-comedie { background-color: #ecfeff; color: #0891b2; }
+    .tag-inconnu { background-color: #f8fafc; color: #64748b; }
+    
+    .book {
+      cursor: pointer;
+    }
+    
+    /* Styles pour la modale de détails */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 28px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      padding: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.open .modal-content {
+      transform: scale(1);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #4a5568;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      transform: rotate(90deg);
+    }
+    .modal-details {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 1rem;
+    }
+    .modal-cover {
+      flex-shrink: 0;
+      width: 200px;
+      height: auto;
+      border-radius: 18px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.4);
+      object-fit: contain;
+    }
+    .modal-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-width: 0;
+    }
+    .modal-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .modal-author {
+      font-size: 1.2rem;
+      color: #4a5568;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .modal-meta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .modal-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge-type {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+    .badge-genre {
+      background: rgba(118, 75, 162, 0.1);
+      color: #764ba2;
+      border: 1px solid rgba(118, 75, 162, 0.2);
+    }
+    .modal-desc-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 1rem 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .modal-description {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #4a5568;
+      background: rgba(248, 250, 252, 0.5);
+      padding: 1.25rem;
+      border-radius: 16px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+    
+    @media (max-width: 640px) {
+      .modal-content {
+        padding: 1.75rem;
+        max-height: 90vh;
+        border-radius: 24px;
+      }
+      .modal-details {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        text-align: center;
+      }
+      .modal-cover {
+        width: 140px;
+      }
+      .modal-meta-badges {
+        justify-content: center;
+      }
+      .modal-description {
+        text-align: left;
+        max-height: 300px;
+      }
+      .modal-close {
+        width: 38px;
+        height: 38px;
+        font-size: 1.75rem;
+        top: 1rem;
+        right: 1rem;
+      }
+      .modal-title {
+        font-size: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1087,6 +1306,16 @@
     <div id="pagination" class="pagination"></div>
   </div>
 
+  <!-- Modale de détails du livre (Cinemeta-like) -->
+  <div id="book-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Fermer la fenêtre">&times;</button>
+      <div class="modal-body">
+        <!-- Rempli dynamiquement par JS -->
+      </div>
+    </div>
+  </div>
+
   <script>
     let allBooks = [];
     let filteredBooks = [];
@@ -1099,8 +1328,42 @@
 
     // Cache localStorage pour optimiser la bande passante
     const CACHE_KEY = 'kotardoise_books_cache';
-    const CACHE_VERSION = '1.3'; // Version mise à jour pour optimisations mobile
+    const CACHE_VERSION = '2.0'; // Version mise à jour pour le cache enrichi
     const CACHE_DURATION = isMobile ? 60 * 60 * 1000 : 30 * 60 * 1000; // Cache plus long sur mobile (1h vs 30min)
+
+    // Helper pour normaliser et faire correspondre les slugs des livres
+    function slugify(text) {
+      if (!text) return '';
+      return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-_]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    // Associer l'émoji correspondant à chaque genre pour les tags
+    function getGenreEmoji(genre) {
+      if (!genre) return '❓';
+      const clean = genre.toLowerCase().trim();
+      switch (clean) {
+        case 'romance': return '💕';
+        case 'science-fiction': return '🚀';
+        case 'fantasy': return '🐉';
+        case 'policier': return '🕵️';
+        case 'thriller': return '😱';
+        case 'aventure': return '⚔️';
+        case 'horreur': return '🧛';
+        case 'historique': return '📜';
+        case 'drame': return '🎭';
+        case 'comedie':
+        case 'comédie': return '😄';
+        default: return '🏷️';
+      }
+    }
 
     // Fonction pour nettoyer les anciens caches problématiques
     function cleanupOldCache() {
@@ -1382,17 +1645,29 @@
       const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim() || 'Auteur inconnu';
 
       // Obtenir l'URL de la couverture selon la disponibilité des données
-      const coverInfo = getCoverURL(livre);
-      const coverURL = coverInfo.primaryURL;
-      const fallbackURL = coverInfo.fallbackURL;
+      let coverURL = livre.CoverURL;
+      const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
+      let onErrorHandler = `this.onerror=null; this.src='${fallbackURL}';`;
+      
+      if (!coverURL || coverURL.trim() === '') {
+        const coverInfo = getCoverURL(livre);
+        coverURL = coverInfo.primaryURL;
+        
+        onErrorHandler = (!livre.ISBN || livre.ISBN.trim() === '') && coverInfo.searchURL 
+          ? `handleImageError(this, '${nomComplet}', '${livre.Titre}', '${fallbackURL}')`
+          : `this.onerror=null; this.src='${fallbackURL}'; console.log('Fallback image loaded for: ${livre.Titre}');`;
+      }
       
       // Mêmes paramètres de chargement partout
       const loadingAttribute = 'loading="lazy" decoding="async"';
 
-      // Créer une fonction de gestion d'erreur personnalisée
-      const onErrorHandler = (!livre.ISBN || livre.ISBN.trim() === '') && coverInfo.searchURL 
-        ? `handleImageError(this, '${nomComplet}', '${livre.Titre}', '${fallbackURL}')`
-        : `this.onerror=null; this.src='${fallbackURL}'; console.log('Fallback image loaded for: ${livre.Titre}');`;
+      // Générer l'HTML pour les badges de genre (ex: "Policier, Thriller")
+      const genresList = livre.Genre ? livre.Genre.split(',').map(g => g.trim()).filter(g => g && g !== 'Inconnu') : [];
+      const tagsHTML = genresList.map(genre => {
+        const emoji = getGenreEmoji(genre);
+        const slugClass = slugify(genre);
+        return `<span class="genre-tag tag-${slugClass}">${emoji} ${genre}</span>`;
+      }).join('');
 
       div.innerHTML = `
         <div class="book-content">
@@ -1408,6 +1683,7 @@
           </div>
           <div class="info">
             <h2>${livre.Titre}</h2>
+            ${genresList.length > 0 ? `<div class="book-tags">${tagsHTML}</div>` : ''}
             <div class="info-item">
               <span class="info-label">Auteur:</span>
               <span class="info-value">${nomComplet}</span>
@@ -1416,20 +1692,20 @@
               <span class="info-label">Stock:</span>
               <span class="stock-badge ${
                 (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
-                (livre.Stock == 0 || livre.Stock === '0') ? 'Emprunté ' : ''
+                (livre.Stock == 0 || livre.Stock === '0') ? 'out-of-stock' : ''
               }">${
-                (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : livre.Stock
+                (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : 
+                (livre.Stock == 0 || livre.Stock === '0') ? 'Emprunté' : livre.Stock
               }</span>
             </div>
-            ${livre.Genre && livre.Genre.trim() !== '' ? `
-            <div class="info-item">
-              <span class="info-label">Genre:</span>
-              <span class="info-value">${livre.Genre}</span>
-            </div>
-            ` : ''}
           </div>
         </div>
       `;
+      
+      // Ajouter un écouteur de clic pour ouvrir la modale de détails
+      div.addEventListener('click', () => {
+        openBookModal(livre);
+      });
       
       return div;
     }
@@ -1660,21 +1936,49 @@
     // Fonction pour charger depuis l'API
     async function loadBooksFromAPI() {
       console.log('📡 Téléchargement des données depuis l\'API...');
-      const response = await fetch("https://opensheet.elk.sh/1I8a83wLjYIDC-hWWH7yFj6i7R-GAwVy2SzORD_JNhgY/1");
       
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
+      // Lancer les chargements en parallèle pour de meilleures performances
+      const sheetPromise = fetch("https://opensheet.elk.sh/1I8a83wLjYIDC-hWWH7yFj6i7R-GAwVy2SzORD_JNhgY/1");
+      const metadataPromise = fetch("./books-metadata.json").catch(e => {
+        console.warn("Échec du chargement de books-metadata.json, continuation sans métadonnées :", e);
+        return null;
+      });
+
+      const [sheetRes, metadataRes] = await Promise.all([sheetPromise, metadataPromise]);
+      
+      if (!sheetRes.ok) {
+        throw new Error(`Erreur HTTP Google Sheet: ${sheetRes.status} - ${sheetRes.statusText}`);
       }
       
-      const data = await response.json();
+      const rawData = await sheetRes.json();
+      
+      let metadata = {};
+      if (metadataRes && metadataRes.ok) {
+        try {
+          metadata = await metadataRes.json();
+          console.log(`📦 Métadonnées cache chargées: ${Object.keys(metadata).length} livres.`);
+        } catch (e) {
+          console.warn("Erreur lors de la lecture des métadonnées:", e);
+        }
+      }
+
+      // Fusionner les données en direct du Google Sheet avec les métadonnées statiques
+      const data = rawData.map(livre => {
+        const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim() || livre.Auteur || '';
+        const slug = slugify(livre.Titre + ' ' + nomComplet);
+        const meta = metadata[slug] || {};
+        
+        return {
+          ...livre,
+          Description: meta.description || '',
+          Genre: (livre.Genre && livre.Genre.trim() !== '') ? livre.Genre : (meta.genre || 'Inconnu'),
+          CoverURL: meta.coverUrl || '',
+          ISBN: meta.isbn || livre.ISBN || ''
+        };
+      });
+
       const estimatedSize = JSON.stringify(data).length;
-      console.log(`📊 Données reçues: ${data.length} livres (${Math.round(estimatedSize / 1024)}KB)`);
-      
-      // Debug: Afficher les clés du premier livre pour vérifier la structure
-      if (data.length > 0) {
-        console.log('🔍 Structure du premier livre:', Object.keys(data[0]));
-        console.log('🔍 Premier livre complet:', data[0]);
-      }
+      console.log(`📊 Données reçues & enrichies: ${data.length} livres (${Math.round(estimatedSize / 1024)}KB)`);
       
       // Tracking de bande passante
       trackBandwidthUsage('data', estimatedSize);
@@ -1979,6 +2283,86 @@
     console.log('- window.clearAllCache() : Nettoie complètement le cache');
     console.log('- window.debugCache() : Affiche les informations de cache');
     console.log('- window.forceDataRefresh() : Force le rechargement des données');
+
+    // --- FONCTIONS ET ÉVÉNEMENTS POUR LA MODALE DE DÉTAILS ---
+    
+    function openBookModal(livre) {
+      const modal = document.getElementById("book-modal");
+      const modalBody = modal.querySelector(".modal-body");
+      
+      const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim() || 'Auteur inconnu';
+      
+      // Essayer d'utiliser la couverture résolue ou la recherche locale
+      let coverURL = livre.CoverURL;
+      const fallbackURL = 'https://via.placeholder.com/120x160/667eea/white?text=📚';
+      
+      if (!coverURL || coverURL.trim() === '') {
+        coverURL = getCoverURL(livre).primaryURL;
+      }
+      
+      const descriptionHTML = livre.Description 
+        ? livre.Description 
+        : "Aucune description n'est disponible pour ce livre pour le moment. 📚";
+        
+      const stockClass = (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
+                         (livre.Stock == 0 || livre.Stock === '0') ? 'out-of-stock' : '';
+                        
+      const stockText = (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'Non défini' : 
+                        (livre.Stock == 0 || livre.Stock === '0') ? 'Emprunté' : livre.Stock;
+      
+      modalBody.innerHTML = `
+        <div class="modal-details">
+          <img class="modal-cover" 
+               src="${coverURL}" 
+               alt="Couverture de ${livre.Titre}" 
+               onerror="this.onerror=null; this.src='${fallbackURL}';">
+          <div class="modal-info">
+            <h2 class="modal-title">${livre.Titre}</h2>
+            <div class="modal-author">par ${nomComplet}</div>
+            
+            <div class="modal-meta-badges">
+              ${livre.Type ? `<span class="modal-badge badge-type">📖 ${livre.Type}</span>` : ''}
+              ${livre.Genre && livre.Genre !== 'Inconnu' ? `<span class="modal-badge badge-genre">🏷️ ${livre.Genre}</span>` : ''}
+              <span class="modal-badge stock-badge ${stockClass}">📦 Stock: ${stockText}</span>
+            </div>
+            
+            <div class="modal-desc-title">Description</div>
+            <div class="modal-description">${descriptionHTML}</div>
+          </div>
+        </div>
+      `;
+      
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden"; // Empêcher le scroll du body en arrière-plan
+      
+      // Placer le focus sur le bouton de fermeture
+      setTimeout(() => {
+        modal.querySelector(".modal-close").focus();
+      }, 50);
+    }
+    
+    function closeBookModal() {
+      const modal = document.getElementById("book-modal");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = ""; // Réactiver le scroll
+    }
+    
+    // Événements de fermeture
+    document.querySelector("#book-modal .modal-close").addEventListener("click", closeBookModal);
+    
+    document.getElementById("book-modal").addEventListener("click", function(e) {
+      if (e.target === this) {
+        closeBookModal();
+      }
+    });
+    
+    window.addEventListener("keydown", function(e) {
+      if (e.key === "Escape" && document.getElementById("book-modal").classList.contains("open")) {
+        closeBookModal();
+      }
+    });
   </script>
 </body>
 </html>

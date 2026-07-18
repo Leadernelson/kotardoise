@@ -6,6 +6,7 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "build": "echo 'No build process needed'"
+    "build": "echo 'No build process needed'",
+    "enrich": "node scripts/enrich-books.js"
   }
 }
