@@ -1719,6 +1719,51 @@
       color: #64748b;
       margin-top: 0.5rem;
     }
+
+    /* Optimisation des onglets, des grilles et du footer sur mobile */
+    @media (max-width: 768px) {
+      .nav-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 0.6rem;
+        margin-bottom: 2.5rem;
+        padding-bottom: 0.25rem;
+      }
+      .nav-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .nav-tab {
+        flex-shrink: 0;
+        padding: 0.65rem 1.1rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+      .nav-tab.active {
+        transform: none; /* Désactiver le scale(1.05) pour éviter l'overflow horizontal */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .platforms-grid {
+        grid-template-columns: 1fr;
+      }
+      .reviews-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .footer-separator {
+        display: none;
+      }
+      .site-footer {
+        padding: 1.5rem 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
   </style>
 </head>
 <body>

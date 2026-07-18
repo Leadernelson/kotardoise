@@ -432,13 +432,6 @@ body::before {
   }
 }
 
-/* Performance Optimizations */
-.book,
-.btn,
-.search-input {
-  will-change: transform, opacity;
-}
-
 /* Reduced Motion Support - Amélioré pour la conformité WCAG */
 @media (prefers-reduced-motion: reduce) {
   *,

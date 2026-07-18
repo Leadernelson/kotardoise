@@ -83,3 +83,27 @@
     background: rgba(255, 255, 255, 1) !important;
   }
 }
+
+/* Désactiver backdrop-filter et pseudo-éléments décoratifs sur mobile */
+@media (max-width: 768px) {
+  .book,
+  #search,
+  .pagination,
+  .loading,
+  .results-info,
+  .genre-btn,
+  .nav-tab,
+  .digital-hero,
+  .no-results {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .book::after,
+  .book-cover::before,
+  .stock-badge::before,
+  .reset-button::before,
+  .pagination button::before {
+    display: none !important;
+  }
+}
