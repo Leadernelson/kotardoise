@@ -3,7 +3,7 @@ name: Keep Supabase Alive
 on:
   schedule:
     # Exécuter tous les 3 jours à 04:00 UTC pour s'assurer que Supabase ne s'arrête jamais (seuil 7j)
-    - cron: '0 4 */3 * *'
+    - cron: '0 4 * * *'
   workflow_dispatch: # Permet de lancer le ping manuellement depuis l'onglet Actions sur GitHub
 
 jobs:
