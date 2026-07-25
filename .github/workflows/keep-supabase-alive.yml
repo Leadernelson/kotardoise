@@ -1,0 +1,28 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Exécuter tous les 3 jours à 04:00 UTC pour s'assurer que Supabase ne s'arrête jamais (seuil 7j)
+    - cron: '0 4 */3 * *'
+  workflow_dispatch: # Permet de lancer le ping manuellement depuis l'onglet Actions sur GitHub
+
+jobs:
+  keep-alive:
+    name: Ping Supabase REST API
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Run Supabase Keep-Alive Ping
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: node scripts/keep-supabase-alive.js
