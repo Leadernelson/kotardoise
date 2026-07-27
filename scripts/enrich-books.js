@@ -173,45 +173,57 @@ function classifyBookText(title, description, categoryText = '') {
 }
 
 
+// Helper: Détecter les textes en anglais
+function isEnglishText(text) {
+  if (!text || typeof text !== 'string') return false;
+  const matches = text.match(/\b(the|and|was|with|this|from|that|for|his|her|their|about|been|which|who|have|has|had|jacket|publisher|novel|story|written)\b/gi);
+  return matches && matches.length >= 3;
+}
+
 // Fonction pour interroger Google Books API
 async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
   let url = '';
   
   if (googleBooksId) {
-    url = `https://www.googleapis.com/books/v1/volumes/${googleBooksId}`;
+    url = `https://www.googleapis.com/books/v1/volumes/${googleBooksId}?hl=fr`;
   } else if (isbn) {
-    url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
+    url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&langRestrict=fr&hl=fr`;
   } else {
     // Nettoyer un peu les termes de recherche pour éviter les échecs liés aux caractères spéciaux
     const cleanTitle = title.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
     const cleanAuthor = author.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
     const query = encodeURIComponent(`${cleanTitle} ${cleanAuthor}`);
-    url = `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`;
+    url = `https://www.googleapis.com/books/v1/volumes?q=${query}&langRestrict=fr&hl=fr&maxResults=1`;
   }
   
   if (GOOGLE_BOOKS_API_KEY) {
-    url += (url.includes('?') ? '&' : '?') + `key=${GOOGLE_BOOKS_API_KEY}`;
+    url += `&key=${GOOGLE_BOOKS_API_KEY}`;
   }
   
   try {
-    const res = await httpGet(url);
+    let res = await httpGet(url);
     if (res.statusCode === 429) {
       throw new Error("RATE_LIMIT_EXCEEDED");
     }
-    if (res.statusCode !== 200) {
-      return null;
+    if (res.statusCode === 200) {
+      const data = JSON.parse(res.body);
+      if (googleBooksId && data.id) return data;
+      if (data.items && data.items.length > 0) return data.items[0];
     }
     
-    const data = JSON.parse(res.body);
-    
-    // Si c'est un appel par ID direct
-    if (googleBooksId) {
-      return data;
-    }
-    
-    // Si c'est une recherche textuelle
-    if (data.items && data.items.length > 0) {
-      return data.items[0];
+    // Si la recherche restreinte en français n'a rien renvoyé, tenter avec hl=fr seul sans langRestrict
+    if (!googleBooksId && !isbn) {
+      const cleanTitle = title.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
+      const cleanAuthor = author.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
+      const query = encodeURIComponent(`${cleanTitle} ${cleanAuthor}`);
+      let fallbackUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}&hl=fr&maxResults=1`;
+      if (GOOGLE_BOOKS_API_KEY) fallbackUrl += `&key=${GOOGLE_BOOKS_API_KEY}`;
+      
+      const fallbackRes = await httpGet(fallbackUrl);
+      if (fallbackRes.statusCode === 200) {
+        const fallbackData = JSON.parse(fallbackRes.body);
+        if (fallbackData.items && fallbackData.items.length > 0) return fallbackData.items[0];
+      }
     }
     
     return null;
@@ -232,21 +244,31 @@ async function fetchOpenLibrary(title, author, isbn = '') {
   } else {
     const cleanTitle = title.replace(/['’"()]/g, ' ').trim();
     const cleanAuthor = author.replace(/['’"()]/g, ' ').trim();
-    const query = encodeURIComponent(`title:${cleanTitle} author:${cleanAuthor}`);
+    const query = encodeURIComponent(`title:${cleanTitle} author:${cleanAuthor} language:fre`);
     searchUrl = `https://openlibrary.org/search.json?q=${query}&limit=1`;
   }
   
   try {
-    const searchRes = await httpGet(searchUrl);
+    let searchRes = await httpGet(searchUrl);
     if (searchRes.statusCode !== 200) return null;
     
-    const searchData = JSON.parse(searchRes.body);
+    let searchData = JSON.parse(searchRes.body);
+    // Si la recherche avec language:fre ne retourne rien, essayer sans le filtre
+    if ((!searchData.docs || searchData.docs.length === 0) && !isbn) {
+      const cleanTitle = title.replace(/['’"()]/g, ' ').trim();
+      const cleanAuthor = author.replace(/['’"()]/g, ' ').trim();
+      const query = encodeURIComponent(`title:${cleanTitle} author:${cleanAuthor}`);
+      searchUrl = `https://openlibrary.org/search.json?q=${query}&limit=1`;
+      searchRes = await httpGet(searchUrl);
+      if (searchRes.statusCode === 200) {
+        searchData = JSON.parse(searchRes.body);
+      }
+    }
+
     if (!searchData.docs || searchData.docs.length === 0) return null;
     
     const doc = searchData.docs[0];
     
-    // OpenLibrary n'inclut pas les descriptions complètes dans le search.json.
-    // Nous devons récupérer les détails du "Work" pour cela.
     let description = '';
     if (doc.key) {
       const workUrl = `https://openlibrary.org${doc.key}.json`;
@@ -366,12 +388,13 @@ async function enrich() {
     // A-t-on un override pour ce slug ?
     const hasOverride = overrides[slug];
     
-    // Est-il déjà enrichi ? (On le considère enrichi s'il a une description ou s'il a déjà été résolu avec succès)
-    const alreadyEnriched = metadata[slug] && 
-                            (
-                              (metadata[slug].description && metadata[slug].description.trim() !== '') ||
-                              (metadata[slug].source && ['google_books', 'open_library', 'override'].includes(metadata[slug].source))
-                            );
+    // Est-il déjà enrichi en français ?
+    const alreadyEnrichedInFrench = metadata[slug] && 
+                                    !isEnglishText(metadata[slug].description) &&
+                                    (
+                                      (metadata[slug].description && metadata[slug].description.trim() !== '') ||
+                                      (metadata[slug].source && ['google_books', 'open_library', 'override'].includes(metadata[slug].source))
+                                    );
 
 
     // Si on a un override, on met à jour les données du cache statique sans appeler l'API
@@ -391,8 +414,8 @@ async function enrich() {
       continue;
     }
     
-    // Si déjà enrichi et correct, on passe
-    if (alreadyEnriched) {
+    // Si déjà enrichi et correct en français, on passe
+    if (alreadyEnrichedInFrench) {
       skipCount++;
       continue;
     }

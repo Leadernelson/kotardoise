@@ -1,1 +1,72 @@
-{}
+{
+  "la-repudiee-eliette-abecassis": {
+    "title": "La répudiée",
+    "author": "Eliette Abécassis",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10559775-L.jpg",
+    "isbn": "",
+    "enrichedAt": "2026-07-27T16:17:51.370Z",
+    "source": "override"
+  },
+  "marco-et-ngalula-gerard-adam": {
+    "title": "Marco et Ngalula",
+    "author": "Gérard Adam (scrittore.)",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "9782804015848",
+    "enrichedAt": "2026-07-27T16:18:31.941Z",
+    "source": "override"
+  },
+  "battement-dailes-milena-agus": {
+    "title": "Battement d'ailes",
+    "author": "Milena Agus",
+    "description": "Madame, appelée ainsi par ses proches, refuse de vendre ses terres en Sardaigne et de voir son pays natal se transformer en un lieu touristique. Les avis autour d'elle sont partagés quant à sa naïve résistance. Ses amants se succèdent, tandis qu'elle rêve à l'amour galant.",
+    "genre": "Inconnu",
+    "coverUrl": "https://covers.openlibrary.org/b/id/8195895-L.jpg",
+    "isbn": "",
+    "enrichedAt": "2026-07-27T16:18:49.839Z",
+    "source": "override"
+  },
+  "langoisse-du-roi-salomon-emilie-ajar": {
+    "title": "L'Angoisse du roi Salomon",
+    "author": "Emile Ajar, Romain Gary",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "9782235007658",
+    "enrichedAt": "2026-07-27T16:19:10.918Z",
+    "source": "override"
+  },
+  "qui-a-peur-de-virginia-de-woolf-edward-albee": {
+    "title": "Qui a peur de Virginia Woolf ?",
+    "author": "Edward Albee",
+    "description": "Dans le petit monde clos d'un campus universitaire de Nouvelle-Angleterre, l'affrontement se passe entre deux couples : Georges et Martha, Honey et Nick 2 hommes, 2 femmes / durée : 3 h",
+    "genre": "Inconnu",
+    "coverUrl": "https://books.google.com/books/content?id=l1iNDgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+    "isbn": "9782330078713",
+    "enrichedAt": "2026-07-27T16:19:48.484Z",
+    "source": "override"
+  },
+  "poesie-totale-vincente-aleixandre": {
+    "title": "Poésie totale",
+    "author": "Vicente Aleixandre",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "enrichedAt": "2026-07-27T16:22:50.047Z",
+    "source": "override"
+  },
+  "amours-delices-et-orgues-alphonse-allais": {
+    "title": "Amours, délices et Orgues",
+    "author": "Alphonse Allais",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "enrichedAt": "2026-07-27T16:23:05.892Z",
+    "source": "override"
+  }
+}
