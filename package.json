@@ -8,6 +8,8 @@
   "scripts": {
     "build": "echo 'No build process needed'",
     "enrich": "node scripts/enrich-books.js",
-    "enrich:interactive": "node scripts/interactive-enrich.js"
+    "enrich:interactive": "node scripts/interactive-enrich.js",
+    "ping": "node scripts/keep-supabase-alive.js",
+    "keep-alive": "node scripts/keep-supabase-alive.js"
   }
 }
