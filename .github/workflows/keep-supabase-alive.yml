@@ -6,6 +6,9 @@ on:
     - cron: '0 4,16 * * *'
   workflow_dispatch: # Permet de lancer le ping manuellement depuis l'onglet Actions sur GitHub
 
+permissions:
+  contents: write
+
 jobs:
   keep-alive:
     name: Ping Supabase REST & GraphQL API
@@ -28,5 +31,7 @@ jobs:
         run: node scripts/keep-supabase-alive.js
 
       - name: Prevent GitHub from Disabling Scheduled Workflow
+        continue-on-error: true
         uses: gautamkrishnar/keepalive-workflow@v2
+
 

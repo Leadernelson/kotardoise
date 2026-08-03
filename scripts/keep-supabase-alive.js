@@ -66,9 +66,10 @@ async function run() {
 
   // Supabase URL avec valeur par défaut sur l'ID de projet indiqué (avtiilzkumsivkmofjaf)
   const defaultProjectUrl = 'https://avtiilzkumsivkmofjaf.supabase.co';
-  const supabaseUrl = (process.env.SUPABASE_URL || defaultProjectUrl).replace(/\/$/, '');
-  const supabaseKey = process.env.SUPABASE_ANON_KEY || process.argv[2];
-  const siteUrl = process.env.SITE_URL;
+  const supabaseUrl = (process.env.SUPABASE_URL || defaultProjectUrl).trim().replace(/\/$/, '');
+  const rawKey = process.env.SUPABASE_ANON_KEY || process.argv[2] || '';
+  const supabaseKey = rawKey.trim();
+  const siteUrl = (process.env.SITE_URL || '').trim();
 
   console.log(`📌 Target Supabase Project: ${supabaseUrl}`);
 
