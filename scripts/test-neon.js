@@ -61,7 +61,7 @@ function queryNeon(url, connectionString, sql, params = []) {
     const reqOptions = {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${connectionString}`,
+        'Neon-Connection-String': connectionString,
         'Content-Type': 'application/json'
       }
     };

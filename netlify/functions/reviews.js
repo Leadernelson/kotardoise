@@ -84,7 +84,7 @@ async function neonQuery(connectionString, sql, params = []) {
   const response = await httpFetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${connectionString}`,
+      'Neon-Connection-String': connectionString,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ query: sql, params })
