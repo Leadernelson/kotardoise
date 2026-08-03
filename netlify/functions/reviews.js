@@ -8,7 +8,7 @@ const CAPTCHA_CHALLENGES = [
   { id: 'pays', question: "Dans quel pays se trouve Louvain-la-Neuve ? (minuscule)", answer: "belgique" }
 ];
 
-// En-mémoire temporaire si Supabase n'est pas encore configuré (pour test immédiat)
+// En-mémoire temporaire si aucune base de données n'est configurée
 let mockReviews = [
   {
     id: "mock-1",
@@ -30,8 +30,10 @@ let mockReviews = [
   }
 ];
 
-// Fonction fetch universelle compatible toutes versions de Node (sans npm install)
-async function supabaseFetch(url, options = {}) {
+/**
+ * Fonction HTTP Fetch universelle (compatible avec toutes les versions de Node.js)
+ */
+async function httpFetch(url, options = {}) {
   const fetchFn = typeof global.fetch === 'function' ? global.fetch : null;
   if (fetchFn) {
     return fetchFn(url, options);
@@ -68,13 +70,68 @@ async function supabaseFetch(url, options = {}) {
   });
 }
 
+/**
+ * Exécute une requête SQL sur la base de données Neon via l'API HTTP Serverless
+ */
+async function neonQuery(connectionString, sql, params = []) {
+  const match = connectionString.match(/@([^/:]+)/);
+  if (!match) {
+    throw new Error("Format de NEON_DATABASE_URL invalide. Doit être de la forme: postgresql://user:pass@ep-host.neon.tech/neondb");
+  }
+  const host = match[1];
+  const url = `https://${host}/sql`;
+
+  const response = await httpFetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${connectionString}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query: sql, params })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    console.error("Neon DB Error:", errText);
+    throw new Error(`Erreur Neon DB (${response.status}): ${errText}`);
+  }
+
+  const json = await response.json();
+  return json.rows || [];
+}
+
+/**
+ * Initialise automatiquement la table 'reviews' dans Neon si elle n'existe pas encore
+ */
+async function ensureNeonTable(connectionString) {
+  const createTableSql = `
+    CREATE TABLE IF NOT EXISTS reviews (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      book_slug VARCHAR(255) NOT NULL,
+      book_title VARCHAR(255) NOT NULL,
+      author_name VARCHAR(100) NOT NULL,
+      rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+      comment TEXT NOT NULL
+    );
+  `;
+  try {
+    await neonQuery(connectionString, createTableSql);
+  } catch (err) {
+    console.warn("Table initialization note:", err.message);
+  }
+}
+
 exports.handler = async (event, context) => {
   const method = event.httpMethod;
+  const NEON_URL = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL;
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-  const isConfigured = SUPABASE_URL && SUPABASE_ANON_KEY;
 
-  // CORS headers
+  const isNeonConfigured = !!NEON_URL;
+  const isSupabaseConfigured = !isNeonConfigured && (SUPABASE_URL && SUPABASE_ANON_KEY);
+
+  // En-têtes CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -102,42 +159,58 @@ exports.handler = async (event, context) => {
     if (method === 'GET') {
       const slug = event.queryStringParameters ? event.queryStringParameters.slug : null;
 
-      if (!isConfigured) {
-        // Mode Mock si Supabase n'est pas configuré
-        const data = slug 
-          ? mockReviews.filter(r => r.book_slug === slug)
-          : mockReviews;
+      // --- Option A: Neon Serverless Postgres ---
+      if (isNeonConfigured) {
+        await ensureNeonTable(NEON_URL);
+        const sql = slug 
+          ? `SELECT id, created_at, book_slug, book_title, author_name, rating, comment FROM reviews WHERE book_slug = $1 ORDER BY created_at DESC`
+          : `SELECT id, created_at, book_slug, book_title, author_name, rating, comment FROM reviews ORDER BY created_at DESC LIMIT 50`;
+        const params = slug ? [slug] : [];
+        const rows = await neonQuery(NEON_URL, sql, params);
+
         return {
           statusCode: 200,
           headers,
-          body: JSON.stringify({ source: "mock", data })
+          body: JSON.stringify({ source: "neon", data: rows })
         };
       }
 
-      // Mode Supabase
-      let url = `${SUPABASE_URL}/rest/v1/reviews?select=*&order=created_at.desc`;
-      if (slug) {
-        url += `&book_slug=eq.${encodeURIComponent(slug)}`;
-      } else {
-        url += `&limit=50`; // Limiter le flux global aux 50 dernières critiques
-      }
-
-      const response = await supabaseFetch(url, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      // --- Option B: Supabase (Fallback) ---
+      if (isSupabaseConfigured) {
+        let url = `${SUPABASE_URL}/rest/v1/reviews?select=*&order=created_at.desc`;
+        if (slug) {
+          url += `&book_slug=eq.${encodeURIComponent(slug)}`;
+        } else {
+          url += `&limit=50`;
         }
-      });
 
-      if (!response.ok) {
-        throw new Error(`Erreur Supabase: ${response.status}`);
+        const response = await httpFetch(url, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur Supabase: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ source: "supabase", data })
+        };
       }
 
-      const data = await response.json();
+      // --- Option C: Mode Mock (Demo) ---
+      const data = slug 
+        ? mockReviews.filter(r => r.book_slug === slug)
+        : mockReviews;
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ source: "supabase", data })
+        body: JSON.stringify({ source: "mock", data })
       };
     }
 
@@ -146,7 +219,7 @@ exports.handler = async (event, context) => {
       const body = JSON.parse(event.body || '{}');
       const { book_slug, book_title, author_name, rating, comment, captchaId, captchaAnswer } = body;
 
-      // Validation de base des données
+      // Validation des données
       if (!book_slug || !book_title || !author_name || !rating || !comment || !captchaId || !captchaAnswer) {
         return {
           statusCode: 400,
@@ -173,58 +246,85 @@ exports.handler = async (event, context) => {
         };
       }
 
+      const cleanAuthor = author_name.trim().substring(0, 50);
+      const cleanComment = comment.trim().substring(0, 1000);
+      const parsedRating = parseInt(rating);
+
+      // --- Option A: Neon Serverless Postgres ---
+      if (isNeonConfigured) {
+        await ensureNeonTable(NEON_URL);
+        const insertSql = `
+          INSERT INTO reviews (book_slug, book_title, author_name, rating, comment)
+          VALUES ($1, $2, $3, $4, $5)
+          RETURNING id, created_at, book_slug, book_title, author_name, rating, comment;
+        `;
+        const insertedRows = await neonQuery(NEON_URL, insertSql, [
+          book_slug,
+          book_title,
+          cleanAuthor,
+          parsedRating,
+          cleanComment
+        ]);
+
+        return {
+          statusCode: 201,
+          headers,
+          body: JSON.stringify({ source: "neon", data: insertedRows[0] })
+        };
+      }
+
+      // --- Option B: Supabase (Fallback) ---
+      if (isSupabaseConfigured) {
+        const supabasePayload = {
+          book_slug,
+          book_title,
+          author_name: cleanAuthor,
+          rating: parsedRating,
+          comment: cleanComment
+        };
+
+        const url = `${SUPABASE_URL}/rest/v1/reviews`;
+        const response = await httpFetch(url, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(supabasePayload)
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Supabase error detail:", errorText);
+          throw new Error(`Erreur d'insertion Supabase: ${response.status}`);
+        }
+
+        const inserted = await response.json();
+        return {
+          statusCode: 201,
+          headers,
+          body: JSON.stringify({ source: "supabase", data: inserted[0] })
+        };
+      }
+
+      // --- Option C: Mode Mock (Demo) ---
       const newReview = {
         id: Math.random().toString(36).substring(2, 11),
         created_at: new Date().toISOString(),
         book_slug,
         book_title,
-        author_name: author_name.trim().substring(0, 50),
-        rating: parseInt(rating),
-        comment: comment.trim().substring(0, 1000)
+        author_name: cleanAuthor,
+        rating: parsedRating,
+        comment: cleanComment
       };
 
-      if (!isConfigured) {
-        // Enregistrer temporairement dans le mock en local memory
-        mockReviews.unshift(newReview);
-        return {
-          statusCode: 201,
-          headers,
-          body: JSON.stringify({ source: "mock", data: newReview })
-        };
-      }
-
-      // Mode Supabase - on laisse PostgreSQL générer l'id (UUID) et created_at automatiquement
-      const supabasePayload = {
-        book_slug: newReview.book_slug,
-        book_title: newReview.book_title,
-        author_name: newReview.author_name,
-        rating: newReview.rating,
-        comment: newReview.comment
-      };
-
-      const url = `${SUPABASE_URL}/rest/v1/reviews`;
-      const response = await supabaseFetch(url, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(supabasePayload)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Supabase error detail:", errorText);
-        throw new Error(`Erreur d'insertion Supabase: ${response.status}`);
-      }
-
-      const inserted = await response.json();
+      mockReviews.unshift(newReview);
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify({ source: "supabase", data: inserted[0] })
+        body: JSON.stringify({ source: "mock", data: newReview })
       };
     }
 
@@ -243,3 +343,4 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
