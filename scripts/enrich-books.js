@@ -47,6 +47,18 @@ const GOOGLE_DAILY_CAP = parseInt(process.env.GOOGLE_DAILY_CAP || '900', 10);
 const QUOTA_STATE_FILE = path.join(__dirname, '../.quota-state.json');
 const RETRY_ON_5XX = 3; // Nombre de tentatives sur erreur serveur transitoire (503 notamment)
 
+// --- Durée maximale d'un run ---
+// 0 = illimité. Sinon le script s'arrête proprement entre deux livres,
+// sauvegarde, et quitte avec le code 0. Il peut dépasser de quelques secondes
+// le temps imparti, le temps de terminer le livre en cours.
+const RUN_MAX_MINUTES = parseFloat(process.env.RUN_MAX_MINUTES || '0') || 0;
+const RUN_DEADLINE = RUN_MAX_MINUTES > 0 ? Date.now() + RUN_MAX_MINUTES * 60000 : null;
+
+function timeLeftMs() {
+  if (!RUN_DEADLINE) return Infinity;
+  return RUN_DEADLINE - Date.now();
+}
+
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 function todayKey() {
@@ -762,6 +774,7 @@ async function enrich() {
   let bnfConfirmedCount = 0;
   let needsReviewCount = 0;
   let quotaReached = false;
+  let timeUp = false;
 
   console.log(`📊 Quota Google Books du jour : ${quotaState.googleCalls}/${GOOGLE_DAILY_CAP} utilisé(s).`);
 
@@ -828,6 +841,15 @@ async function enrich() {
       console.log(`\n🛑 Quota quotidien Google Books atteint (${GOOGLE_DAILY_CAP}). Enregistrement et arrêt...`);
       console.log('   Relancer demain pour reprendre là où le run s’est arrêté.');
       quotaReached = true;
+      break;
+    }
+
+    // Le temps imparti est-il écoulé ?
+    if (timeLeftMs() <= 0) {
+      const overrun = Math.round((Date.now() - RUN_DEADLINE) / 1000);
+      console.log(`\n⏱️  Temps imparti atteint (${RUN_MAX_MINUTES} min). Enregistrement et arrêt...`);
+      if (overrun > 5) console.log(`   Dépassement de ${overrun} s sur le dernier livre traité.`);
+      timeUp = true;
       break;
     }
     
@@ -1040,6 +1062,9 @@ async function enrich() {
   }
   if (quotaReached) {
     console.log("⚠️ Quota quotidien de l'API Google Books atteint : relancez demain pour reprendre.");
+  }
+  if (timeUp) {
+    console.log(`⏱️  Temps imparti de ${RUN_MAX_MINUTES} min atteint : relancez pour reprendre.`);
   }
   console.log("==========================================");
 }
