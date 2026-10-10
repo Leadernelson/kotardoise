@@ -9,6 +9,10 @@
     "build": "echo 'No build process needed'",
     "enrich": "node scripts/enrich-books.js",
     "enrich:interactive": "node scripts/interactive-enrich.js",
+    "audit": "node scripts/audit-covers.js",
+    "recover": "node scripts/recover-covers.js",
+    "review": "node scripts/review-queue.js",
+    "review:all": "node scripts/review-queue.js --template",
     "ping": "node scripts/keep-supabase-alive.js",
     "keep-alive": "node scripts/keep-supabase-alive.js"
   }

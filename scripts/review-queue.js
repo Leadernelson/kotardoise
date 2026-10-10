@@ -101,7 +101,10 @@ async function main() {
   console.log('================ FILE DE REVUE ================');
   console.log(`  ${queue.length} livre(s) à vérifier\n`);
 
-  const shown = queue.slice(0, LIMIT);
+  // --limit=0 : n'afficher que les totaux (utile dans un journal de CI)
+  const summaryOnly = LIMIT === 0;
+  const shown = summaryOnly ? [] : queue.slice(0, LIMIT);
+
   for (const q of shown) {
     const line = sheetRows && sheetRows[q.slug] ? sheetRows[q.slug].row : '?';
     console.log(`  ${q.slug}`);
@@ -113,7 +116,7 @@ async function main() {
     else console.log(`     couverture : AUCUNE (placeholder affiché)`);
     console.log('');
   }
-  if (queue.length > shown.length) {
+  if (!summaryOnly && queue.length > shown.length) {
     console.log(`  ... et ${queue.length - shown.length} autres (utiliser --limit=N)\n`);
   }
 
