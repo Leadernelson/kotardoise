@@ -71,11 +71,14 @@
   },
   "interface-m-t-anderson": {
     "description": "",
-    "coverUrl": "",
-    "isbn": "",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/2070557774-M.jpg",
+    "isbn": "2070557774",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T18:45:51.445Z",
+    "publisher": "Gallimard",
+    "publishedDate": "2004",
+    "bnfRef": "ark:/12148/cb392658478"
   },
   "un-jour-jirai-a-new-york-avec-toi-bruno-et-al-belvaux-et-al": {
     "description": "",

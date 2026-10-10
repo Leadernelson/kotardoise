@@ -9,3 +9,4 @@ dist/
 audit-report.json
 recover-covers-report.json
 audit-sample.json
+.quota-state.json

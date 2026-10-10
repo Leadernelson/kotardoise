@@ -39,6 +39,54 @@ const OVERRIDES_FILE = path.join(__dirname, '../metadata-overrides.json');
 const MAX_API_CALLS = 600; // Limite par run pour ne pas dépasser le quota quotidien de 1000 de Google
 const REQUEST_DELAY = 100; // Délai en ms entre les requêtes pour respecter les serveurs
 
+// --- Pilotage du quota Google Books ---
+// Le quota par défaut est de 1000 requêtes/jour/projet. On s'arrête volontairement
+// en dessous pour garder une marge, et on mémorise la consommation du jour dans un
+// fichier afin qu'un run interrompu puisse reprendre le lendemain sans recalculer.
+const GOOGLE_DAILY_CAP = parseInt(process.env.GOOGLE_DAILY_CAP || '900', 10);
+const QUOTA_STATE_FILE = path.join(__dirname, '../.quota-state.json');
+const RETRY_ON_5XX = 3; // Nombre de tentatives sur erreur serveur transitoire (503 notamment)
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function loadQuotaState() {
+  try {
+    if (fs.existsSync(QUOTA_STATE_FILE)) {
+      const state = JSON.parse(fs.readFileSync(QUOTA_STATE_FILE, 'utf-8'));
+      // La consommation est remise à zéro chaque jour
+      if (state.date === todayKey()) {
+        return { date: state.date, googleCalls: state.googleCalls || 0 };
+      }
+    }
+  } catch (e) {
+    console.warn('⚠️ État de quota illisible, il repart de zéro :', e.message);
+  }
+  return { date: todayKey(), googleCalls: 0 };
+}
+
+function saveQuotaState(state) {
+  try {
+    fs.writeFileSync(QUOTA_STATE_FILE, JSON.stringify(state, null, 2));
+  } catch (e) {
+    console.warn('⚠️ Impossible de sauvegarder l’état de quota :', e.message);
+  }
+}
+
+const quotaState = loadQuotaState();
+
+function countGoogleCall() {
+  quotaState.googleCalls++;
+  saveQuotaState(quotaState);
+}
+
+function googleQuotaLeft() {
+  return Math.max(0, GOOGLE_DAILY_CAP - quotaState.googleCalls);
+}
+
 // Genres autorisés dans le KotArdoise
 const VALID_GENRES = [
   'Horreur', 'Romance', 'Science-fiction', 'Fantasy', 
@@ -60,8 +108,10 @@ function slugify(text) {
     .replace(/-+/g, '-'); // Supprimer les tirets consécutifs
 }
 
-// Helper: Faire une requête HTTP GET
-function httpGet(url, headers = {}) {
+// Helper: Faire une requête HTTP GET, avec réessais sur erreur transitoire.
+// Google Books renvoie régulièrement des 503 sur son endpoint de recherche :
+// les retry avec backoff évitent de marquer ces livres comme "introuvables".
+function httpGet(url, headers = {}, retries = RETRY_ON_5XX) {
   return new Promise((resolve, reject) => {
     https.get(url, {
       headers: {
@@ -72,6 +122,13 @@ function httpGet(url, headers = {}) {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
+        // 5xx = erreur serveur temporaire : on réessaie avec un délai croissant
+        if (res.statusCode >= 500 && retries > 0) {
+          const wait = 1000 * Math.pow(2, RETRY_ON_5XX - retries);
+          console.warn(`   ⚠️  HTTP ${res.statusCode} — nouvel essai dans ${wait} ms`);
+          setTimeout(() => resolve(httpGet(url, headers, retries - 1)), wait);
+          return;
+        }
         resolve({
           statusCode: res.statusCode,
           headers: res.headers,
@@ -79,6 +136,12 @@ function httpGet(url, headers = {}) {
         });
       });
     }).on('error', (err) => {
+      // Erreur réseau : on réessaie aussi, puis on abandonne
+      if (retries > 0) {
+        const wait = 1000 * Math.pow(2, RETRY_ON_5XX - retries);
+        setTimeout(() => resolve(httpGet(url, headers, retries - 1)), wait);
+        return;
+      }
       reject(err);
     });
   });
@@ -316,9 +379,14 @@ async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
   }
   
   try {
+    countGoogleCall();
     let res = await httpGet(url);
     if (res.statusCode === 429) {
       throw new Error("RATE_LIMIT_EXCEEDED");
+    }
+    if (res.statusCode >= 500) {
+      // Le serveur est momentanément indisponible : ce n'est pas un "livre absent"
+      throw new Error("TEMPORARY_ERROR");
     }
     if (res.statusCode === 200) {
       const data = JSON.parse(res.body);
@@ -341,6 +409,12 @@ async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
       if (GOOGLE_BOOKS_API_KEY) fallbackUrl += `&key=${GOOGLE_BOOKS_API_KEY}`;
       
       const fallbackRes = await httpGet(fallbackUrl);
+      if (fallbackRes.statusCode === 429) {
+        throw new Error("RATE_LIMIT_EXCEEDED");
+      }
+      if (fallbackRes.statusCode >= 500) {
+        throw new Error("TEMPORARY_ERROR");
+      }
       if (fallbackRes.statusCode === 200) {
         const fallbackData = JSON.parse(fallbackRes.body);
         if (fallbackData.items && fallbackData.items.length > 0) {
@@ -353,7 +427,8 @@ async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
     // plutôt que d'enregistrer une couverture qui appartient à un autre livre
     return null;
   } catch (err) {
-    if (err.message === "RATE_LIMIT_EXCEEDED") {
+    // Le quota est épuisé ou le serveur est saturé : à remonter à l'appelant
+    if (err.message === "RATE_LIMIT_EXCEEDED" || err.message === "TEMPORARY_ERROR") {
       throw err;
     }
     console.error(`❌ Erreur Google Books pour "${title}":`, err.message);
@@ -441,6 +516,171 @@ async function fetchOpenLibrary(title, author, isbn = '') {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Phase C — la BnF comme référence francophone
+//
+// La Sheet ne contient aucun ISBN : toute recherche est donc approximative et
+// risque d'associer la couverture d'un autre ouvrage (cf. "Interface" de
+// M. T. Anderson). La BnF est le catalogue national francophone : une notice
+// qui correspond au couple titre + auteur confirme que l'ouvrage existe bien
+// dans sa version française, et fournit parfois l'ISBN — ce qui rend ensuite
+// la recherche Google entièrement déterministe.
+//
+// La BnF ne sert PAS de filtre bloquant : son taux de rappel est d'environ
+// 76 %, un livre absent de la BnF n'est pas forcément introuvable. Elle sert
+// donc de signal : un livre non confirmé est marqué pour revue humaine.
+// ---------------------------------------------------------------------------
+
+const BNF_SRU = 'https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve';
+const BNF_MAX_RECORDS = 10;
+
+// Décoder les entités XML
+function decodeXml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&#(\d+);/g, (m, d) => String.fromCharCode(parseInt(d, 10)))
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Extraire tous les champs UNIMARC d'un tag donné, avec leurs sous-champs
+function bnfFields(record, tag) {
+  const out = [];
+  const re = new RegExp('<mxc:datafield tag="' + tag + '"[^>]*>([\\s\\S]*?)</mxc:datafield>', 'g');
+  let m;
+  while ((m = re.exec(record)) !== null) {
+    const subs = {};
+    const sre = /<mxc:subfield code="([^"]+)">([\s\S]*?)<\/mxc:subfield>/g;
+    let s;
+    while ((s = sre.exec(m[1])) !== null) {
+      const code = s[1];
+      const value = decodeXml(s[2]);
+      subs[code] = subs[code] ? subs[code] + ' ' + value : value;
+    }
+    if (Object.keys(subs).length > 0) out.push(subs);
+  }
+  return out;
+}
+
+// Normaliser un ISBN : la BnF le publie au format "978-2-9580761-1-5"
+function normalizeIsbn(value) {
+  if (!value) return '';
+  const cleaned = value.replace(/[^0-9Xx]/g, '').toUpperCase();
+  if (/^\d{13}$/.test(cleaned)) return cleaned;
+  if (/^\d{9}[\dX]$/.test(cleaned)) return cleaned;
+  return '';
+}
+
+// L'index CQL de la BnF se comporte de façon imprévisible sur certaines
+// combinaisons de mots ("petite syrène" renvoie 0 alors que "syrène" seul
+// renvoie 25 notices). On construit donc une liste de requêtes de plus en
+// plus larges et on s'arrête à la première qui donne des résultats.
+// C'est sans danger : chaque notice renvoyée est ensuite filtrée par matchScore.
+function bnfQueryVariants(title) {
+  const clean = title.replace(/['’"()]/g, ' ').replace(/\s+/g, ' ').trim();
+  const variants = [clean];
+
+  const noArticle = clean.replace(/^(le|la|les|l'|un|une|des|du|de|son|sa|ses)\s+/i, '').trim();
+  if (noArticle && noArticle !== clean) variants.push(noArticle);
+
+  // Les mots les plus longs sont les plus discriminants
+  const words = noArticle.split(' ').filter((w) => w.length > 2).sort((a, b) => b.length - a.length);
+  if (words.length >= 2) variants.push(words.slice(0, 2).join(' '));
+  if (words.length >= 1) variants.push(words[0]);
+
+  return [...new Set(variants)].filter(Boolean);
+}
+
+// Requête BnF, avec repli progressif sur le titre puis sur l'auteur
+async function bnfSearch(title, author) {
+  const variants = bnfQueryVariants(title);
+  const cleanAuthor = author.replace(/['’"()]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  for (let attempt = 0; attempt < variants.length; attempt++) {
+    const titlePart = variants[attempt];
+
+    // On tente d'abord avec l'auteur : la contrainte la plus forte.
+    // La BnF indexe souvent les auteurs sous forme inversée ("Andersen, H. C."),
+    // ce qui fait échouer une recherche sur le prénom complet.
+    const attempts = [];
+    if (cleanAuthor) attempts.push(`bib.title all "${titlePart}" and bib.author all "${cleanAuthor}"`);
+    attempts.push(`bib.title all "${titlePart}"`);
+
+    for (const query of attempts) {
+      const url = `${BNF_SRU}&query=${encodeURIComponent(query)}&recordSchema=unimarcxchange&maximumRecords=${BNF_MAX_RECORDS}`;
+      let res;
+      try {
+        res = await httpGet(url, {}, 2);
+      } catch (e) {
+        console.warn(`   ⚠️ BnF injoignable pour "${title}" : ${e.message}`);
+        return null;
+      }
+      if (!res || res.statusCode !== 200) continue;
+
+      const total = Number((/<srw:numberOfRecords>(\d+)<\/srw:numberOfRecords>/.exec(res.body) || [])[1] || 0);
+      if (!total) continue;
+
+      return { body: res.body, variant: titlePart, attempt };
+    }
+  }
+  return null;
+}
+
+// Interroger la BnF et retourner la notice la plus proche du livre demandé
+async function fetchBnF(title, author) {
+  const found = await bnfSearch(title, author);
+  if (!found) return null;
+
+  const records = found.body.split('<srw:record>').slice(1);
+  let best = null;
+
+  for (const record of records) {
+    // Titre : 200$a (titre propre) ou 225$a (titre porté par la notice)
+    const f200 = bnfFields(record, '200')[0] || {};
+    const f225 = bnfFields(record, '225')[0] || {};
+    const notifTitle = f200.a || f225.a || '';
+    if (!notifTitle) continue;
+
+    // Auteur : 200$f (responsabilité) ou 700$a (notice d'autorité)
+    let notifAuthor = f200.f || '';
+    if (!notifAuthor) {
+      const f700 = bnfFields(record, '700')[0];
+      if (f700 && f700.a) {
+        // On retire les dates de naissance/décès ("Abécassis Agnès 1972-....")
+        notifAuthor = f700.a.replace(/\d{4}[-–.].*$/, '').trim();
+      }
+    }
+
+    // Éditeur et date : 214 (notices récentes) ou 210 (notices anciennes)
+    const f214 = bnfFields(record, '214')[0] || {};
+    const f210 = bnfFields(record, '210')[0] || {};
+    const publisher = f214.c || f210.c || '';
+    const pubDate = f214.d || f210.d || '';
+
+    // ISBN : champ 010$a
+    const f010 = bnfFields(record, '010')[0] || {};
+    const isbn = normalizeIsbn(f010.a || '');
+
+    const ark = (/\sid="(ark:\/12148\/[a-z0-9]+)"/i.exec(record) || [])[1] || '';
+
+    const m = matchScore(title, author, notifTitle, notifAuthor);
+    const candidate = { notifTitle, notifAuthor, publisher, pubDate, isbn, ark, match: m };
+    if (!best || (m.titleScore + m.authorScore) > (best.match.titleScore + best.match.authorScore)) {
+      best = candidate;
+    }
+  }
+
+  if (!best) return null;
+  // Même exigence de score que les autres sources : on ne retient que les notices plausibles
+  const confirmed = best.match.titleScore >= MATCH_THRESHOLD.title && best.match.authorScore >= MATCH_THRESHOLD.author;
+  return { ...best, confirmed, searchedOn: found.variant, relaxed: found.attempt > 0 };
+}
+
 // Fonction principale d'enrichissement
 async function enrich() {
   console.log("🚀 Démarrage du script d'enrichissement...");
@@ -458,9 +698,27 @@ async function enrich() {
     console.log("🆕 books-metadata.json inexistant. Création d'un nouveau cache.");
   }
   
-  // 1.5. Mettre à jour les genres des livres déjà en cache à l'aide de l'analyse textuelle locale
+  // 2. Lire le fichier d'override si disponible
+  // Doit précéder l'analyse textuelle locale : un genre validé à la main
+  // ne doit jamais être remplacé par une heuristique automatique.
+  let overrides = {};
+  if (fs.existsSync(OVERRIDES_FILE)) {
+    try {
+      overrides = JSON.parse(fs.readFileSync(OVERRIDES_FILE, 'utf-8'));
+      console.log(`🛡️ Fichier d'overrides détecté : ${Object.keys(overrides).length} overrides définis.`);
+    } catch (e) {
+      console.error("❌ Erreur de lecture de metadata-overrides.json :", e.message);
+    }
+  } else {
+    // Initialiser un fichier d'override vide pour simplifier la vie de l'utilisateur
+    fs.writeFileSync(OVERRIDES_FILE, JSON.stringify({}, null, 2));
+    console.log("🛡️ Initialisation d'un fichier d'overrides vide : metadata-overrides.json");
+  }
+
+  // 3. Mettre à jour les genres des livres déjà en cache à l'aide de l'analyse textuelle locale
   let localUpdates = 0;
   Object.keys(metadata).forEach(slug => {
+    if (overrides[slug]) return; // décision humaine : ne pas y toucher
     const book = metadata[slug];
     if (book && book.description && (!book.genre || book.genre === 'Inconnu')) {
       const resolvedGenre = classifyBookText(book.title || '', book.description, book.genre || '');
@@ -479,22 +737,7 @@ async function enrich() {
     }
   }
   
-  // 2. Lire le fichier d'override si disponible
-  let overrides = {};
-  if (fs.existsSync(OVERRIDES_FILE)) {
-    try {
-      overrides = JSON.parse(fs.readFileSync(OVERRIDES_FILE, 'utf-8'));
-      console.log(`🛡️ Fichier d'overrides détecté : ${Object.keys(overrides).length} overrides définis.`);
-    } catch (e) {
-      console.error("❌ Erreur de lecture de metadata-overrides.json :", e.message);
-    }
-  } else {
-    // Initialiser un fichier d'override vide pour simplifier la vie de l'utilisateur
-    fs.writeFileSync(OVERRIDES_FILE, JSON.stringify({}, null, 2));
-    console.log("🛡️ Initialisation d'un fichier d'overrides vide : metadata-overrides.json");
-  }
-
-  // 3. Télécharger les livres depuis le Google Sheet
+  // 4. Télécharger les livres depuis le Google Sheet
   console.log(`📡 Téléchargement des livres depuis : ${SHEET_URL}`);
   let books = [];
   try {
@@ -515,9 +758,14 @@ async function enrich() {
   let failureCount = 0;
   let skipCount = 0;
   let overrideCount = 0;
+  let temporaryErrorCount = 0;
+  let bnfConfirmedCount = 0;
+  let needsReviewCount = 0;
   let quotaReached = false;
 
-  // 4. Parcourir et enrichir
+  console.log(`📊 Quota Google Books du jour : ${quotaState.googleCalls}/${GOOGLE_DAILY_CAP} utilisé(s).`);
+
+  // 5. Parcourir et enrichir
   for (let i = 0; i < books.length; i++) {
     const book = books[i];
     const titre = book.Titre ? book.Titre.trim() : '';
@@ -544,15 +792,19 @@ async function enrich() {
 
     // Si on a un override, on met à jour les données du cache statique sans appeler l'API
     if (hasOverride) {
-      // Mettre à jour avec l'override
+      // L'override est une décision humaine : il est prioritaire sur les données
+      // du Sheet, et sa date n'est pas réécrite à chaque run.
+      const o = overrides[slug];
       metadata[slug] = {
-        title: titre,
-        author: auteur,
-        description: overrides[slug].description || metadata[slug]?.description || '',
-        genre: overrides[slug].genre || metadata[slug]?.genre || 'Inconnu',
-        coverUrl: overrides[slug].coverUrl || metadata[slug]?.coverUrl || '',
-        isbn: overrides[slug].isbn || metadata[slug]?.isbn || book.ISBN || '',
-        enrichedAt: new Date().toISOString(),
+        ...metadata[slug],
+        title: o.title || titre,
+        author: o.author || auteur,
+        description: o.description || metadata[slug]?.description || '',
+        genre: o.genre || metadata[slug]?.genre || 'Inconnu',
+        coverUrl: o.coverUrl || metadata[slug]?.coverUrl || '',
+        isbn: o.isbn || metadata[slug]?.isbn || book.ISBN || '',
+        verified: o.verified !== undefined ? o.verified : (metadata[slug]?.verified ?? true),
+        enrichedAt: o.enrichedAt || metadata[slug]?.enrichedAt || new Date().toISOString(),
         source: 'override'
       };
       overrideCount++;
@@ -570,6 +822,14 @@ async function enrich() {
       console.log(`\n🛑 Limite de requêtes API atteinte pour ce run (${MAX_API_CALLS}). Enregistrement et arrêt...`);
       break;
     }
+
+    // A-t-on consommé le quota quotidien Google Books ?
+    if (googleQuotaLeft() <= 0) {
+      console.log(`\n🛑 Quota quotidien Google Books atteint (${GOOGLE_DAILY_CAP}). Enregistrement et arrêt...`);
+      console.log('   Relancer demain pour reprendre là où le run s’est arrêté.');
+      quotaReached = true;
+      break;
+    }
     
     // Attendre un court instant entre les requêtes
     if (apiCallsCount > 0) {
@@ -579,9 +839,28 @@ async function enrich() {
     console.log(`\n🔍 [${i+1}/${books.length}] Enrichissement de: "${titre}" par "${auteur}"`);
     
     // Extraction des clés d'identifiants prioritaires depuis la ligne Google Sheet
-    const isbn = (book.ISBN || '').toString().trim();
+    let isbn = (book.ISBN || '').toString().trim();
     const googleBooksId = (book.ID_GoogleBooks || '').toString().trim();
-    
+
+    // Phase C : la BnF est interrogée en priorité pour les livres sans ISBN.
+    // Elle confirme l'existence de l'ouvrage dans sa version française et fournit
+    // souvent l'ISBN, ce qui rend la recherche Google ci-dessous déterministe.
+    // La BnF n'a aucun quota : elle est toujours tentée en premier.
+    let bnf = null;
+    if (!isbn) {
+      bnf = await fetchBnF(titre, auteur);
+      if (!bnf) {
+        console.log('   📚 Aucune notice BnF — le livre sera marqué pour revue humaine');
+      } else if (!bnf.confirmed) {
+        console.log(`   📚 Notice BnF non confirmée (titre ${bnf.match.titleScore}, auteur ${bnf.match.authorScore}) — recherche sans ISBN BnF`);
+      } else if (bnf.isbn) {
+        isbn = bnf.isbn;
+        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}" (${bnf.publisher || 'éditeur inconnu'}${bnf.pubDate ? ', ' + bnf.pubDate : ''}) — ISBN ${isbn}`);
+      } else {
+        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}" (${bnf.publisher || 'éditeur inconnu'}${bnf.pubDate ? ', ' + bnf.pubDate : ''}) — mais sans ISBN dans la notice`);
+      }
+    }
+
     let enrichedData = null;
     apiCallsCount++;
     
@@ -634,6 +913,12 @@ async function enrich() {
           isbn: resolvedIsbn,
           verified: true,
           matchScore: match,
+          // Données de référence ajoutées par la BnF
+          publisher: bnf?.publisher || '',
+          publishedDate: bnf?.pubDate || '',
+          bnfRef: bnf?.ark || '',
+          // Un livre non confirmé par la BnF et non trouvé par les API est à revoir
+          needsReview: false,
           enrichedAt: new Date().toISOString(),
           source: 'google_books'
         };
@@ -644,6 +929,14 @@ async function enrich() {
         quotaReached = true;
         apiCallsCount--;
         break;
+      }
+      if (err.message === "TEMPORARY_ERROR") {
+        // Google est saturé (503) : le livre n'est pas "absent", on le laisse intact
+        // pour qu'un run ultérieur le retente, plutôt que de le marquer not_found.
+        console.error("⚠️ Google Books temporairement indisponible — livre laissé intact pour un nouvel essai.");
+        temporaryErrorCount++;
+        apiCallsCount--;
+        continue;
       }
     }
     
@@ -672,6 +965,10 @@ async function enrich() {
           isbn: olResult.isbn || isbn || '',
           verified: true,
           matchScore: olResult.match,
+          publisher: bnf?.publisher || '',
+          publishedDate: bnf?.pubDate || '',
+          bnfRef: bnf?.ark || '',
+          needsReview: false,
           enrichedAt: new Date().toISOString(),
           source: 'open_library'
         };
@@ -681,8 +978,11 @@ async function enrich() {
     if (enrichedData) {
       metadata[slug] = enrichedData;
       successCount++;
+      if (bnf && bnf.confirmed) bnfConfirmedCount++;
       console.log(`   ✅ Trouvé! Genre: ${enrichedData.genre} | Source: ${enrichedData.source}`);
     } else {
+      // Rien trouvé : la BnF permet de distinguer un livre réellement inconnu
+      // d'une simple lacune de catalogue, et l'ISBN de la BnF est conservé.
       metadata[slug] = {
         title: titre,
         author: auteur,
@@ -690,11 +990,17 @@ async function enrich() {
         genre: 'Inconnu',
         coverUrl: '',
         isbn: isbn || '',
+        publisher: bnf?.publisher || '',
+        publishedDate: bnf?.pubDate || '',
+        bnfRef: bnf?.ark || '',
+        // Signalé à la revue humaine : la BnF ne confirme pas cet ouvrage
+        needsReview: !bnf,
         enrichedAt: new Date().toISOString(),
         source: 'not_found'
       };
       failureCount++;
-      console.log(`   ❌ Aucun résultat trouvé.`);
+      needsReviewCount++;
+      console.log(bnf ? `   ❌ Aucun résultat sur les API, mais la notice BnF existe (ISBN ${isbn || 'inconnu'}).` : '   ❌ Aucun résultat nulle part — à vérifier manuellement.');
     }
 
     // Sauvegarder périodiquement pour ne pas perdre la progression
@@ -709,7 +1015,7 @@ async function enrich() {
     }
   }
 
-  // 5. Sauvegarder les métadonnées dans books-metadata.json
+  // 6. Sauvegarder les métadonnées dans books-metadata.json
   console.log("\n💾 Sauvegarde du cache dans books-metadata.json...");
   try {
     fs.writeFileSync(METADATA_FILE, JSON.stringify(metadata, null, 2), 'utf-8');
@@ -721,12 +1027,19 @@ async function enrich() {
   console.log("\n================ Résumé ==================");
   console.log(`Livres déjà en cache (ignorés) : ${skipCount}`);
   console.log(`Livres mis à jour via overrides: ${overrideCount}`);
-  console.log(`Appels API effectués           : ${apiCallsCount}`);
+  console.log(`Appels Google Books effectués   : ${quotaState.googleCalls}/${GOOGLE_DAILY_CAP}`);
+  console.log(`Appels API effectués            : ${apiCallsCount}`);
   console.log(`Recherches API réussies        : ${successCount}`);
   console.log(`Recherches sans résultat       : ${failureCount}`);
+  console.log(`Confirmés par la BnF          : ${bnfConfirmedCount}`);
+  console.log(`À vérifier manuellement       : ${needsReviewCount}`);
+  console.log(`Erreurs temporaires (à retenter): ${temporaryErrorCount}`);
   console.log(`Total livres dans le cache     : ${Object.keys(metadata).length}`);
+  if (temporaryErrorCount > 0) {
+    console.log("ℹ️  Les livres en erreur temporaire n'ont pas été modifiés : relancez le script pour les retenter.");
+  }
   if (quotaReached) {
-    console.log("⚠️ Quota de l'API Google Books dépassé.");
+    console.log("⚠️ Quota quotidien de l'API Google Books atteint : relancez demain pour reprendre.");
   }
   console.log("==========================================");
 }
