@@ -162,7 +162,10 @@ function slugify(text) {
 // Helper: Faire une requête HTTP GET, avec réessais sur erreur transitoire.
 // Google Books renvoie régulièrement des 503 sur son endpoint de recherche :
 // les retry avec backoff évitent de marquer ces livres comme "introuvables".
-function httpGet(url, headers = {}, retries = RETRY_ON_5XX) {
+//
+// Les redirections sont suivies : openlibrary.org/isbn/{isbn}.json répond 302
+// pour un ISBN valide, et sans suivi on croyait le livre absent.
+function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0) {
   return new Promise((resolve, reject) => {
     https.get(url, {
       headers: {
@@ -170,6 +173,16 @@ function httpGet(url, headers = {}, retries = RETRY_ON_5XX) {
         ...headers
       }
     }, (res) => {
+      const isRedirect = [301, 302, 303, 307, 308].includes(res.statusCode);
+      if (isRedirect && res.headers.location && redirectHops < 5) {
+        res.resume(); // on libère la socket avant de suivre
+        const cible = res.headers.location.startsWith('http')
+          ? res.headers.location
+          : new URL(res.headers.location, url).href;
+        httpGet(cible, headers, retries, redirectHops + 1).then(resolve, reject);
+        return;
+      }
+
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
@@ -427,6 +440,60 @@ function scoreTitle(want, got) {
   return (2 * hits) / (a.length + b.length);
 }
 
+// Correspondance approximative sur les noms d'auteur.
+//
+// La Sheet contient des fautes de frappe : "Lafcabio Hearb" pour
+// "Lafcadio Hearn", "Particia Macdonald" pour "Patricia Macdonald".
+// Sans similarité, ces livres ne sont jamais rattachés à leur notice, alors
+// que le titre correspond parfaitement. On n'applique ceTolérance qu'au-delà
+// de 0,84, et toujours combiné au contrôle de titre, ce qui évite de
+// rapprocher deux auteurs différents ("Anne Plichota" / "Anne Plichon").
+const AUTHOR_FUZZY_MIN = 0.84;
+
+function bigrams(text) {
+  const t = text.replace(/\s+/g, ' ').trim();
+  const out = [];
+  for (let i = 0; i < t.length - 1; i++) out.push(t.slice(i, i + 2));
+  return out;
+}
+
+// Coefficient de Dice sur les bigrammes
+function diceCoefficient(a, b) {
+  const A = bigrams(a);
+  const B = bigrams(b);
+  if (A.length === 0 || B.length === 0) return 0;
+  const reste = new Map();
+  for (const x of B) reste.set(x, (reste.get(x) || 0) + 1);
+  let communs = 0;
+  for (const x of A) {
+    const c = reste.get(x) || 0;
+    if (c > 0) { communs++; reste.set(x, c - 1); }
+  }
+  return (2 * communs) / (A.length + B.length);
+}
+
+// Distance de Levenshtein normalisée
+function levenshteinRatio(a, b) {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n === 0 ? 1 : 0;
+  if (n === 0) return 0;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return 1 - prev[n] / Math.max(m, n);
+}
+
+function nameSimilarity(a, b) {
+  if (!a || !b) return 0;
+  return Math.max(diceCoefficient(a, b), levenshteinRatio(a, b));
+}
+
 // Score de similarité entre deux auteurs (le nom de famille prime)
 function scoreAuthor(want, got) {
   const a = significantTokens(want);
@@ -447,7 +514,13 @@ function scoreAuthor(want, got) {
   const partial = (2 * hits) / (a.length + b.length);
   // Nom de famille retrouvé dans une chaîne plus longue : indice réel mais partiel
   const surnameShared = (b.includes(lastA) || a.includes(lastB)) ? 0.7 : 0;
-  return Math.max(partial, surnameShared);
+  const exact = Math.max(partial, surnameShared);
+  if (exact > 0) return exact;
+
+  // Aucune superposition de mots : on tente une correspondance approximative
+  // pour rattraper les fautes de frappe de la Sheet sur les noms d'auteur.
+  const similarite = nameSimilarity(normalizeText(want), normalizeText(got));
+  return similarite >= AUTHOR_FUZZY_MIN ? similarite : 0;
 }
 
 // Vérifie qu'un résultat d'API correspond bien au livre demandé
@@ -956,13 +1029,25 @@ async function enrich() {
     // A-t-on un override pour ce slug ?
     const hasOverride = overrides[slug];
     
-    // Est-il déjà enrichi en français ?
-    const alreadyEnrichedInFrench = metadata[slug] &&
-                                    !isEnglishText(metadata[slug].description) &&
-                                    (
-                                      (metadata[slug].description && metadata[slug].description.trim() !== '') ||
-                                      (metadata[slug].source && ['google_books', 'open_library', 'override'].includes(metadata[slug].source))
-                                    );
+    // Faut-il retraiter ce livre ?
+    //
+    // L'ancien test suffisait à dire "source: google_books donc c'est fait",
+    // ce qui écartait 182 livres qui n'ont toujours aucune couverture : ils
+    // ne seraient jamais repris. On ne saute donc plus que ce qui est
+    // réellement complet, ou ce qui relève d'une décision humaine.
+    const entree = metadata[slug];
+    const aUneCouverture = !!(entree && entree.coverUrl);
+    const aUneDescription = !!(entree && entree.description && entree.description.trim() !== ''
+      && acceptDescription(entree.description).keep);
+    const dejaComplet = !!entree && (
+      entree.source === 'override'      // décision humaine, on n'y touche pas
+      || (aUneCouverture && aUneDescription)
+      || (aUneCouverture && !!(entree.publisher || entree.publishedDate) && aUneDescription)
+    );
+    // Un livre pour lequel on a déjà une description française mais pas de
+    // couverture est repris : la BnF et Open Library sont gratuits, et c'est
+    // précisément la couverture qui manque.
+    const alreadyEnrichedInFrench = dejaComplet;
 
 
     // Si on a un override, on met à jour les données du cache statique sans appeler l'API
@@ -1027,11 +1112,32 @@ async function enrich() {
     const googleBooksId = (book.ID_GoogleBooks || '').toString().trim();
     const sheetIsbn = isbn;
 
+    // La BnF a peut-être déjà répondu lors d'un run précédent : on réutilise
+    // son ISBN au lieu de refaire la requête, qui est le principal coût du run.
+    let bnf = null;
+    if (!isbn && entree && entree.bnfRef) {
+      if (entree.isbn) {
+        isbn = entree.isbn;
+        bnf = {
+          confirmed: true,
+          notifTitle: entree.resolvedTitle || entree.title || titre,
+          notifAuthor: entree.resolvedAuthor || entree.author || auteur,
+          publisher: entree.publisher || '',
+          pubDate: entree.publishedDate || '',
+          isbn: entree.isbn,
+          ark: entree.bnfRef,
+          match: { titleScore: 1, authorScore: 1, ok: true },
+          fromCache: true
+        };
+      }
+    }
+
+    // La BnF est interrogée en priorité pour les livres sans ISBN.
+    // Elle confirme l'existence de l'ouvrage dans sa version française et fournit
     // La BnF est interrogée en priorité pour les livres sans ISBN.
     // Elle confirme l'existence de l'ouvrage dans sa version française et fournit
     // souvent l'ISBN, ce qui rend la recherche Google ci-dessous déterministe.
     // La BnF n'a aucun quota : elle est toujours tentée en premier.
-    let bnf = null;
     if (!isbn) {
       bnf = await fetchBnF(titre, auteur);
       if (!bnf) {
@@ -1044,6 +1150,8 @@ async function enrich() {
       } else {
         console.log(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — mais sans ISBN dans la notice`);
       }
+    } else if (bnf && bnf.fromCache) {
+      console.log(`   📚 Référence BnF réutilisée du cache (ISBN ${isbn})`);
     }
 
     // Ce que la BnF a permis d'établir sur ce livre, indépendamment des API
@@ -1247,31 +1355,52 @@ async function enrich() {
     }
     
     if (enrichedData) {
-      metadata[slug] = enrichedData;
+      // Point unique de fusion : la nouvelle réponse n'écrase jamais un champ
+      // déjà rempli. Une source qui ne renvoie pas d'image ne doit pas faire
+      // disparaître une couverture obtenue ailleurs.
+      const dejaConnu = metadata[slug] || {};
+      const descriptionExistante = dejaConnu.description && acceptDescription(dejaConnu.description).keep
+        ? dejaConnu.description : '';
+      metadata[slug] = Object.assign({}, dejaConnu, enrichedData, {
+        coverUrl: enrichedData.coverUrl || dejaConnu.coverUrl || '',
+        description: enrichedData.description || descriptionExistante,
+        genre: (enrichedData.genre && enrichedData.genre !== 'Inconnu')
+          ? enrichedData.genre : (dejaConnu.genre || 'Inconnu'),
+        publisher: enrichedData.publisher || dejaConnu.publisher || '',
+        publishedDate: enrichedData.publishedDate || dejaConnu.publishedDate || '',
+        bnfRef: enrichedData.bnfRef || dejaConnu.bnfRef || '',
+        isbn: enrichedData.isbn || dejaConnu.isbn || sheetIsbn || ''
+      });
       successCount++;
       if (bnf && bnf.confirmed) bnfConfirmedCount++;
-      console.log(`   ✅ Trouvé! Genre: ${enrichedData.genre} | Source: ${enrichedData.source}`);
+      console.log(`   ✅ Trouvé! Genre: ${metadata[slug].genre} | Source: ${metadata[slug].source}`);
     } else {
-      // Rien trouvé : la BnF permet de distinguer un livre réellement inconnu
-      // d'une simple lacune de catalogue, et l'ISBN de la BnF est conservé.
-      metadata[slug] = {
+      // Rien trouvé de neuf. On ne remplace PAS l'existant : un livre qui avait
+      // déjà une couverture ou une description française la garde, et on se
+      // contente d'ajouter ce que la BnF a permis d'établir. Écraser ici
+      // vidait les données des livres repris et a fait perdre 5 couvertures
+      // et 7 descriptions lors d'un test.
+      const dejaConnu = metadata[slug] || {};
+      const gardeDescription = dejaConnu.description && acceptDescription(dejaConnu.description).keep
+        ? dejaConnu.description : '';
+      metadata[slug] = Object.assign({}, dejaConnu, {
         title: titre,
         author: auteur,
-        description: '',
-        genre: 'Inconnu',
-        coverUrl: '',
-        isbn: isbn || '',
-        publisher: bnf?.publisher || '',
-        publishedDate: bnf?.pubDate || '',
-        bnfRef: bnf?.ark || '',
-        // Signalé à la revue humaine : la BnF ne confirme pas cet ouvrage
-        needsReview: !bnf,
+        description: gardeDescription,
+        genre: dejaConnu.genre && dejaConnu.genre !== 'Inconnu' ? dejaConnu.genre : 'Inconnu',
+        coverUrl: dejaConnu.coverUrl || '',
+        isbn: isbn || dejaConnu.isbn || sheetIsbn || '',
+        publisher: (bnf && bnf.confirmed ? bnf.publisher : '') || dejaConnu.publisher || '',
+        publishedDate: (bnf && bnf.confirmed ? bnf.pubDate : '') || dejaConnu.publishedDate || '',
+        bnfRef: (bnf && bnf.confirmed ? bnf.ark : '') || dejaConnu.bnfRef || '',
+        // Signalé à la revue humaine : ni la BnF ni les API n'ont trouvé d'ouvrage
+        needsReview: !bnf || !bnf.confirmed,
         enrichedAt: new Date().toISOString(),
-        source: 'not_found'
-      };
+        source: dejaConnu.coverUrl || gardeDescription ? dejaConnu.source || 'not_found' : 'not_found'
+      });
       failureCount++;
-      needsReviewCount++;
-      console.log(bnf ? `   ❌ Aucun résultat sur les API, mais la notice BnF existe (ISBN ${isbn || 'inconnu'}).` : '   ❌ Aucun résultat nulle part — à vérifier manuellement.');
+      if (metadata[slug].needsReview) needsReviewCount++;
+      console.log(`   ❌ Rien de neuf. ${metadata[slug].coverUrl ? 'Couverture conservée.' : 'Toujours sans couverture.'}${bnf && bnf.confirmed ? ' Référence BnF conservée.' : ''}`);
     }
 
     // Sauvegarder périodiquement pour ne pas perdre la progression
