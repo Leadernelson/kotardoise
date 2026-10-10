@@ -276,7 +276,7 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/446546-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
     "source": "override",
     "verified": true
   },
@@ -287,7 +287,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:03:52.427Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb37779101s",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:53:50.387Z",
     "source": "not_found"
   },
   "interface-m-t-anderson": {
@@ -297,7 +301,7 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/isbn/2070557774-M.jpg",
     "isbn": "2070557774",
-    "enrichedAt": "2026-10-10T18:45:51.445Z",
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
     "source": "override",
     "verified": true
   },
@@ -399,18 +403,31 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/261865-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:03:58.581Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "le-rendez-vous-de-senlis-suivi-de-leocardia-jean-anouilh": {
     "title": "Le rendez-vous de Senlis suivi de Léocardia",
     "author": "Jean Anouilh",
+    "resolvedTitle": "Le Rendez-vous de Senlis",
+    "resolvedAuthor": "Jean Anouilh",
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:03.719Z",
-    "source": "not_found"
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 0.9,
+      "authorScore": 1
+    },
+    "publisher": "Livre de poche",
+    "publishedDate": "1962",
+    "bnfRef": "ark:/12148/cb32904263m",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:53:52.185Z",
+    "source": "google_books"
   },
   "dossiers-dinterpol-3-bellemare-pierre-antoine-jacques": {
     "title": "Dossiers d'interpol 3",
@@ -559,7 +576,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:06.982Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb300269508",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:48:48.064Z",
     "source": "not_found"
   },
   "une-dose-de-poison-charlotte-armstrong": {
@@ -665,7 +686,7 @@
     "publishedDate": "",
     "bnfRef": "ark:/12148/cb500011781",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:09:19.896Z",
+    "enrichedAt": "2026-10-10T19:48:49.999Z",
     "source": "not_found"
   },
   "pp-cul-vert-detective-prive-jean-philippe-arrou-vignod": {
@@ -826,8 +847,12 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:21.134Z",
+    "isbn": "9782081200845",
+    "publisher": "Flammarion",
+    "publishedDate": "2007",
+    "bnfRef": "ark:/12148/cb41127970j",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:21.906Z",
     "source": "not_found"
   },
   "tara-duncan-le-dragon-renegat-sophie-audouin-mamikonian": {
@@ -857,8 +882,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/4036809-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:41:53.507Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "poemes-de-la-lumiere-anne-autrique": {
     "title": "Poèmes de la lumière",
@@ -881,7 +907,7 @@
     "publishedDate": "1972",
     "bnfRef": "ark:/12148/cb34235378v",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:09:55.253Z",
+    "enrichedAt": "2026-10-10T19:54:23.221Z",
     "source": "not_found"
   },
   "lecoute-anne-autrique": {
@@ -1016,7 +1042,7 @@
     "publishedDate": "2002",
     "bnfRef": "ark:/12148/cb388202015",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:10:04.611Z",
+    "enrichedAt": "2026-10-10T19:54:24.088Z",
     "source": "not_found"
   },
   "le-couple-conscient-lydie-bader": {
@@ -1067,7 +1093,7 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/981802-L.jpg",
     "isbn": "9782277230298",
-    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
     "source": "override",
     "verified": true
   },
@@ -1128,8 +1154,9 @@
     "genre": "Comédie",
     "coverUrl": "https://covers.openlibrary.org/b/id/8237025-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:42:23.090Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "pierette-le-cure-de-tours-honore-balzac-de": {
     "title": "Pierette- Le curé de Tours",
@@ -1197,8 +1224,12 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:30.192Z",
+    "isbn": "9782824913063",
+    "publisher": "la République des lettres",
+    "publishedDate": "2024",
+    "bnfRef": "ark:/12148/cb47444204v",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:25.347Z",
     "source": "not_found"
   },
   "la-nuit-des-temps-rene-barjavel": {
@@ -1268,8 +1299,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=4wS3qNkfvJsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9788858810590",
-    "enrichedAt": "2026-07-27T15:42:39.156Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "la-traille-france-bastia": {
     "title": "La traille",
@@ -1302,7 +1334,7 @@
     "publishedDate": "2025",
     "bnfRef": "ark:/12148/cb486167366",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:10:18.644Z",
+    "enrichedAt": "2026-10-10T19:54:26.471Z",
     "source": "not_found"
   },
   "heureux-les-deliants-henry-bauchau": {
@@ -1396,7 +1428,7 @@
     "publishedDate": "2014",
     "bnfRef": "ark:/12148/cb451192008",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:10:29.830Z",
+    "enrichedAt": "2026-10-10T19:54:27.599Z",
     "source": "not_found"
   },
   "la-mort-du-petit-cheval-herve-bazin": {
@@ -1490,8 +1522,8 @@
     "publishedDate": "1980",
     "bnfRef": "ark:/12148/cb34638296x",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:10:42.335Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override"
   },
   "la-femme-rompue-simone-beauvoir-de": {
     "title": "La femme rompue",
@@ -1554,8 +1586,8 @@
     "publishedDate": "1979",
     "bnfRef": "ark:/12148/cb42155537w",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:10:46.445Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override"
   },
   "o-les-beaux-jours-samuel-beckett": {
     "title": "Ô les beaux jours",
@@ -1675,7 +1707,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:39.690Z",
+    "publisher": "Seghers",
+    "publishedDate": "1990",
+    "bnfRef": "ark:/12148/cb351060778",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:28.838Z",
     "source": "not_found"
   },
   "april-may-june-robin-benway": {
@@ -1927,12 +1963,24 @@
   "un-crime-george-bernanos": {
     "title": "Un crime",
     "author": "George Bernanos",
-    "description": "",
-    "genre": "Inconnu",
-    "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:50.773Z",
-    "source": "not_found"
+    "resolvedTitle": "Un crime",
+    "resolvedAuthor": "Georges Bernanos",
+    "description": "Dans cet extrait de \"Un crime\" de Georges Bernanos, le lecteur est plongé dans l'univers des Pelléastres, un groupe d'esthètes et de mondains parisiens fascinés par l'art et la musique, inspirés par l'œuvre de Claude Debussy. Le protagoniste, accompagné de son ami Meyran, est invité à une réunion chez sir Edward Ytter, un jeune dandy connu pour sa main ornée de bagues et sa collection de bibelots du XVIIe siècle. À travers une série de rencontres avec des personnages excentriques, tels que Maxence Damora, Pierre Yvanis, et Grégory Popescu, l'auteur dépeint un monde où l'apparence et la singularité sont primordiales. Chaque personnage se distingue par une \"lionnerie\" ou une obsession particulière, allant de la collection de chapelets musulmans à l'élevage d'une panthère. La duchesse d'Iddleton, une figure maternelle pour ces jeunes hommes, incarne le lien entre les générations. L'extrait met en lumière les changements sociaux et les extravagances de cette élite, tout en soulignant l'influence de la musique et de l'art sur leur mode de vie. À travers une prose fluide et détaillée, Bernanos offre une critique subtile de la superficialité et de la quête de reconnaissance dans les cercles artistiques de l'époque.",
+    "genre": "Policier",
+    "coverUrl": "https://books.google.com/books/content?id=jKaZEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+    "isbn": "9782382743287",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:49:49.414Z",
+    "source": "google_books"
   },
   "une-histoire-de-mouchette-georges-bernanos": {
     "title": "Une histoire de Mouchette",
@@ -2012,7 +2060,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:56.150Z",
+    "publisher": "Hugo & Desinge",
+    "publishedDate": "2014",
+    "bnfRef": "ark:/12148/cb43811358v",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:29.964Z",
     "source": "not_found"
   },
   "ce-que-la-nuit-raconte-au-jour-hector-bianciotti": {
@@ -2122,8 +2174,9 @@
     "genre": "Romance",
     "coverUrl": "",
     "isbn": "9782211028172",
-    "enrichedAt": "2026-07-27T16:04:57.498Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "contes-boccace": {
     "title": "Contes",
@@ -2345,7 +2398,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:06.446Z",
+    "publisher": "Marjolaine Boudeau",
+    "publishedDate": "2025",
+    "bnfRef": "ark:/12148/cb48786419d",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:31.845Z",
     "source": "not_found"
   },
   "henry-dupuis-jardinier-de-louis-xiv-patricia-bouchenot-dechin": {
@@ -2426,7 +2483,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:09.170Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": true,
+    "enrichedAt": "2026-10-10T19:54:43.432Z",
     "source": "not_found"
   },
   "le-sacrement-de-lamour-ivan-bounine": {
@@ -2604,7 +2665,7 @@
     "publishedDate": "1987",
     "bnfRef": "ark:/12148/cb34934101p",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:12:16.641Z",
+    "enrichedAt": "2026-10-10T19:54:44.692Z",
     "source": "not_found"
   },
   "le-masque-de-lesperance-philippe-bradfer": {
@@ -2635,7 +2696,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:17.335Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb391414061",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:46.359Z",
     "source": "not_found"
   },
   "windows-of-the-mind-frank-brennan": {
@@ -2645,7 +2710,7 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/353924-L.jpg",
     "isbn": "9780521703321",
-    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
     "source": "override",
     "verified": true
   },
@@ -2686,8 +2751,9 @@
     "genre": "Drame",
     "coverUrl": "https://covers.openlibrary.org/b/id/12713416-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:20.171Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "precoce-automne-louis-bromfield": {
     "title": "Précoce automne",
@@ -2707,8 +2773,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=QEAgzgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9798585851193",
-    "enrichedAt": "2026-07-27T16:05:21.564Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "iboy-kevin-brooks": {
     "title": "iboy",
@@ -2737,8 +2804,9 @@
     "genre": "Thriller",
     "coverUrl": "https://books.google.com/books/content?id=6-pmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9786022911845",
-    "enrichedAt": "2026-07-27T15:44:39.061Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "colombe-eric-brucher": {
     "title": "Colombe",
@@ -2757,7 +2825,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:22.893Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": true,
+    "enrichedAt": "2026-10-10T19:54:47.683Z",
     "source": "not_found"
   },
   "le-nouveau-desordre-amoureux-pascal-bruckner": {
@@ -2920,8 +2992,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=Ti3d14Xi2SUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9781409018483",
-    "enrichedAt": "2026-07-27T16:05:25.725Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "la-contre-nature-des-choses-tony-burgess": {
     "title": "La contre-nature des choses",
@@ -2934,7 +3007,7 @@
     "publishedDate": "2018",
     "bnfRef": "ark:/12148/cb45450874n",
     "needsReview": false,
-    "enrichedAt": "2026-10-10T19:13:11.218Z",
+    "enrichedAt": "2026-10-10T19:54:48.613Z",
     "source": "not_found"
   },
   "les-meurtrieres-franz-andre-burguet": {
@@ -3095,8 +3168,12 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:32.900Z",
+    "isbn": "9791022406055",
+    "publisher": "Michel Lafon poche",
+    "publishedDate": "2023",
+    "bnfRef": "ark:/12148/cb472208968",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:50.402Z",
     "source": "not_found"
   },
   "une-piece-montee-blandine-callet-le": {
@@ -3126,8 +3203,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/14435231-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:33.966Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "caligula-suivi-du-malentendu-albert-camus": {
     "title": "Caligula suivi du Malentendu",
@@ -3176,7 +3254,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:37.236Z",
+    "publisher": "Hélium",
+    "publishedDate": "2023",
+    "bnfRef": "ark:/12148/cb47339718r",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:51.908Z",
     "source": "not_found"
   },
   "rien-quune-femme-francis-carco": {
@@ -3234,10 +3316,11 @@
     "author": "Alejo Carpentier",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3075330-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:45:23.906Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "lespion-qui-venait-du-froid-john-carre-le": {
     "title": "L'espion qui venait du froid",
@@ -3254,10 +3337,11 @@
     "author": "John Carré, le",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/967896-L.jpg",
     "isbn": "9782738218278",
-    "enrichedAt": "2026-07-27T15:45:25.957Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-toupe-john-carre-le": {
     "title": "La toupe",
@@ -3274,10 +3358,11 @@
     "author": "John Carré, le",
     "description": "Le tailleur de Panama Harry Pendel, tailleur renommé, est contacté par le mystérieux Andrew Osnard. Ce dernier, espion sans scrupules chargé de ~ suivre l'évolution politique du Panama, l'oblige à devenir son informateur. Qui mieux que Pendel, dans le bureau duquel défilent tous les hommes qui comptent au Panama, pourrait en effet le renseigner sur les bruits de couloirs et les rumeurs ? Mais Pendel prend la mesure des enjeux et, plutôt que de simplement recouper ses informations, décide de se mettre à broder. Sur la foi de ces chimères, son épouse, son meilleur ami, sa fidèle employée mais aussi les diplomates, les militaires, les barons de la finance et de la presse internationale vont bientôt se retrouver pris dans une énorme affaire géopolitique dont aucun ne sortira indemne. Single & Single Un avocat d'affaires du cabinet londonien Single & Single exécuté par un gang mafieux sur une colline turque, un magicien pour enfants convoqué par sa banque à propos du dépôt d'une somme d'argent colossale, un cargo russe arraisonné dans la mer Noire, un baron de la finance qui disparaît dans la nature, un officier des douanes sur la piste de la corruption et du meurtre... Autant de personnages pittoresques et d'événements en apparence isolés qui s'entrecroisent dans une intrigue dont les thèmes centraux sont l'amour, la trahison, la famille et l'humanisme triomphant. John le Carré nous entraîne dans un voyage mouvementé au cœur des milieux de la haute finance et de l'internationale du crime, dont les ramifications s'étendent de la vénérable City à la Russie post-communiste déliquescente. Notre jeu A quarante-huit ans, Tim Cranmer profite d'une retraite anticipée, en compagnie de la belle et énigmatique Emma. En tant qu'agent secret, il a livré et gagné la bataille de la guerre froide. Mais nul n'échappe à son passé. Celui de Tim habite à proximité, en la personne de Larry Pettifer, qui travailla pour lui comme agent double durant vingt ans. Soudain, Larry disparaît en même temps qu'Emma. Tim se lance à leur poursuite, découvrant aussitôt qu'il est lui-même poursuivi par ses anciens employeurs. De l'Angleterre hostile en passant par les bas-fonds de Moscou, c'est au cœur du Caucase que la quête de Tim connaîtra un dénouement brutal.",
     "genre": "Policier",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10571083-L.jpg",
     "isbn": "9782020447164",
-    "enrichedAt": "2026-07-27T15:45:28.088Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "dautres-vies-que-la-mienne-emmanuel-carrere": {
     "title": "D'autres vies que la mienne",
@@ -3306,8 +3391,9 @@
     "genre": "Fantasy",
     "coverUrl": "https://covers.openlibrary.org/b/id/10527843-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:42.942Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "haussmann-ou-la-gloire-du-second-empire-jean-cars-des": {
     "title": "Haussmann ou la gloire du second Empire",
@@ -3332,12 +3418,24 @@
   "bocanegra-tony-cartanot": {
     "title": "Bocanegra",
     "author": "Tony Cartanot",
+    "resolvedTitle": "Bocanegra",
+    "resolvedAuthor": "Tony Cartano",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:44.059Z",
-    "source": "not_found"
+    "coverUrl": "https://covers.openlibrary.org/b/id/11493636-L.jpg",
+    "isbn": "2246338212",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 0.9
+    },
+    "publisher": "B. Grasset",
+    "publishedDate": "1984",
+    "bnfRef": "ark:/12148/cb347551281",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:53.440Z",
+    "source": "open_library"
   },
   "sindbad-le-marin-jacques-cassabois": {
     "title": "Sindbad le marin",
@@ -3464,10 +3562,11 @@
     "author": "Cavanna",
     "description": "\" Un livre ni bête ni méchant mais très tendre. Avec des bouffées de rire et beaucoup d'amour qui livre le troisième volet de l'autobiographie de Cavanna, avec les Ritals et les Russkoffs. Dans un style qui évoque avec bonheur la confession parlée \". Paris-Match \" Voyage dans l'amour avec Liliane, la petite Polonaise martyrisée par les nazis ; voyage dans le travail avec les expériences journalistiques, graphiques, humoristiques ; voyage, enfin, dans l'amitié et les luttes, avec les potes de toujours. Dans un style alerte, à la plume juste, à l'adjectif décisif \". François Cérésa, le Nouvel Observateur",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/13118999-L.jpg",
     "isbn": "9782253031796",
-    "enrichedAt": "2026-07-27T15:45:47.061Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "cur-dartichaut-cavanna": {
     "title": "Cœur d'artichaut",
@@ -3484,10 +3583,11 @@
     "author": "Cavanna",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/8378651-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:45:49.809Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-russkofs-cavanna": {
     "title": "Les Russkofs",
@@ -3496,7 +3596,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:47.185Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": true,
+    "enrichedAt": "2026-10-10T19:54:54.455Z",
     "source": "not_found"
   },
   "ce-que-cecile-sait-journal-de-sortie-dinceste-cecile-cee": {
@@ -3584,10 +3688,11 @@
     "author": "Gilbert Cesbron",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14993309-L.jpg",
     "isbn": "9788439927273",
-    "enrichedAt": "2026-07-27T15:45:57.925Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-souveraine-gilbert-cesbron": {
     "title": "La souveraine",
@@ -3624,10 +3729,11 @@
     "author": "Gilbert Cesbron",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3110968-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:46:01.562Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "abord-de-la-magda-raymond-ceuppens": {
     "title": "Abord de la Magda",
@@ -3664,10 +3770,11 @@
     "author": "Sorj Chalandon",
     "description": "L'idee de Samuel etait belle et folle: monter l'Antigone de Jean Anouilh a Beyrouth. Voler deux heures a la guerre, en prelevant dans chaque camp un fils ou une fille pour en faire des acteurs. Puis rassembler ces ennemis sur une scene de fortune, entre cour detruite et jardin saccage. Samuel etait grec. Juif, aussi. Mon frere en quelque sorte. Un jour, il m'a demande de participer a cette treve poetique. Il me l'a fait promettre, a moi, le petit theatreux de patronage. Et je lui ai dit oui. Je suis alle a Beyrouth le 10 fevrier 1982, main tendue a la paix. Avant que la guerre ne m'offre brutalement la sienne. S. C. Rarement fiction fit autant ressentir l'intensite d'une guerre civile en y accolant la thematique du theatre comme arme rhetorique et politique. Ici battent des coeurs et tonne le monde. Hubert Artus, Lire. Brulant, fievreux et desespere, d'une violence inouie. Thierry Gandillot, Les Echos. Bouleversant, magistral. Transfuge.",
     "genre": "Drame",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10404565-L.jpg",
     "isbn": "9782253179825",
-    "enrichedAt": "2026-07-27T16:05:49.270Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "au-nom-du-pere-tracy-chamoun": {
     "title": "Au nom du père",
@@ -3684,10 +3791,11 @@
     "author": "Françoise Chandernagor",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3079691-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:46:09.208Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "lenfant-des-lumieres-francoise-chandernagor": {
     "title": "L'enfant des lumières",
@@ -3746,7 +3854,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:51.292Z",
+    "publisher": "L'Avant-scène théâtre",
+    "publishedDate": "2024",
+    "bnfRef": "ark:/12148/cb47458192v",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:55.599Z",
     "source": "not_found"
   },
   "lami-fritz-erckmann-chatrian": {
@@ -3782,12 +3894,24 @@
   "lenfant-multiple-andre-chedid": {
     "title": "L'enfant multiple",
     "author": "André Chedid",
+    "resolvedTitle": "L'Enfant multiple",
+    "resolvedAuthor": "Andrée Chedid",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:53.653Z",
-    "source": "not_found"
+    "coverUrl": "https://covers.openlibrary.org/b/id/2140712-L.jpg",
+    "isbn": "2290315567",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Librio",
+    "publishedDate": "2001",
+    "bnfRef": "ark:/12148/cb434452810",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:51:40.865Z",
+    "source": "open_library"
   },
   "le-survivant-andre-chedid": {
     "title": "Le survivant",
@@ -3796,7 +3920,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:54.884Z",
+    "publisher": "Plon Presses de la Cité Vaugirard",
+    "publishedDate": "1985",
+    "bnfRef": "ark:/12148/cb34230329f",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:56.854Z",
     "source": "not_found"
   },
   "leternite-nest-pas-de-trop-francois-cheng": {
@@ -3886,8 +4014,9 @@
     "genre": "Horreur",
     "coverUrl": "https://covers.openlibrary.org/b/id/13670254-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:59.771Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "dix-petits-negres-agatha-christie": {
     "title": "Dix petits nègres",
@@ -3904,10 +4033,11 @@
     "author": "Agatha Christie",
     "description": "La belle et jeune Elinor Carlisle affiche une incroyable sérénité dans le box des accusés. Pourtant tout porte à croire qu'elle a bien assassiné Mary Gerrard, sa rivale en amour. Toutes les charges pèsent en effet contre Elinor : elle avait le motif, l'arme et l'occasion de commettre le crime. Dans la salle d'audience hostile, un homme est néanmoins convaincu de son innocence, le célèbre enquêteur Hercule Poirot. Sa science de la déduction sera-t-elle suffisante pour faire innocenter la jeune femme ?",
     "genre": "Policier",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14590827-L.jpg",
     "isbn": "9782702440155",
-    "enrichedAt": "2026-07-27T16:06:01.332Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-mort-dans-les-nuages-agatha-christie": {
     "title": "La mort dans les nuages",
@@ -3966,8 +4096,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/12996574-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:08.132Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "le-train-bleu-agatha-christie": {
     "title": "Le train bleu",
@@ -4116,8 +4247,9 @@
     "genre": "Thriller",
     "coverUrl": "https://covers.openlibrary.org/b/id/683604-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:13.763Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "rainbow-six-1-tom-clancy": {
     "title": "Rainbow six 1",
@@ -4226,8 +4358,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/9707084-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:47:07.902Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "les-ames-grises-philippe-claudel": {
     "title": "Les âmes grises",
@@ -4366,8 +4499,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/969630-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:17.270Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "le-proces-verbal-j-m-g-clezio-le": {
     "title": "le proces verbal",
@@ -4404,10 +4538,11 @@
     "author": "Jean Cocteau",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/458003-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:47:24.960Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-enfants-terribles-jean-cocteau": {
     "title": "Les enfants terribles",
@@ -4434,10 +4569,11 @@
     "author": "Jean Cocteau",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/13291540-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:47:27.538Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-machine-infernale-jean-cocteau": {
     "title": "La machine infernale",
@@ -4466,8 +4602,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=ISROBAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9780544343764",
-    "enrichedAt": "2026-07-27T15:47:29.933Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "testament-a-langlaise-jonathan-coe": {
     "title": "Testament à l'anglaise",
@@ -4476,8 +4613,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/3215314-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:18.407Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "lalchimiste-paulo-coelho": {
     "title": "L'alchimiste",
@@ -4486,8 +4624,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/7414780-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:19.721Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "le-demon-et-madmoiselle-prym-paulo-coelho": {
     "title": "Le démon et madmoiselle Prym",
@@ -4516,8 +4655,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/9082929-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:47:34.339Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "disgrace-jm-coetzee": {
     "title": "Disgrâce",
@@ -4526,8 +4666,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=70-jOwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9780143115281",
-    "enrichedAt": "2026-07-27T16:06:21.107Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "mangeclou-albert-cohen": {
     "title": "Mangeclou",
@@ -4556,8 +4697,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/225120-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:23.812Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "duo-suivi-du-toutounier-colette": {
     "title": "Duo suivi du Toutounier",
@@ -4576,8 +4718,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=vu2QEAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9781784877439",
-    "enrichedAt": "2026-07-27T15:47:38.581Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "lingenue-libertine-colette": {
     "title": "L'ingénue libertine",
@@ -4634,10 +4777,11 @@
     "author": "Cyril Collard",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10571098-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:24.609Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "dedale-larry-collins": {
     "title": "Dedale",
@@ -4656,8 +4800,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/12646537-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:26.223Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "le-siege-de-la-baleine-fransico-coloane": {
     "title": "Le siège de la baleine",
@@ -4674,10 +4819,11 @@
     "author": "Laurie Colwin",
     "description": "La 4ème de couverture indique : Guido et Vincent sont cousins et amis d'enfance. À ces trentenaires de la bonne société new-yorkaise, nantis d'un métier qui leur plaît et d'amis souriants, il ne manque que la femme de leurs rêves pour que la vie soit merveilleuse. L'un la rencontre en la personne de l'élégante Holly, raffinée et secrète ; l'autre, de Mitsy, descendante d'immigrés russes, la rebelle jamais rassurée. Et les ennuis commencent... Disons plutôt les inquiétudes de l'amour, maladresses et malentendus, effusions et alarmes, comme s'il fallait se faire un petit peu mal pour apprécier son bonheur, dans un monde favorisé que l'auteur de Frank et Billy, figure emblématique du Manhattan des années 1980, nous dépeint avec un humour tendre et complice.",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/11339154-L.jpg",
     "isbn": "9782253066965",
-    "enrichedAt": "2026-07-27T15:47:46.591Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-corrida-de-la-victoire-georges-conchon": {
     "title": "La corrida de la victoire",
@@ -4746,8 +4892,9 @@
     "genre": "Drame",
     "coverUrl": "https://covers.openlibrary.org/b/id/1470116-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:28.152Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "choc-robin-cook": {
     "title": "Choc",
@@ -4766,18 +4913,20 @@
     "genre": "Thriller",
     "coverUrl": "https://covers.openlibrary.org/b/id/10739774-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:29.884Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "contagion-robin-cook": {
     "title": "Contagion",
     "author": "Robin Cook",
     "description": "Dr. John Stapleton, who became a pathologist after he lost his job and his family, investigates a series of extremely lethal illnesses that seem to originate in hospitals owned by a giant medical corporation.--",
     "genre": "Inconnu",
-    "coverUrl": "https://books.google.com/books/content?id=xQtWdJO8_2oC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+    "coverUrl": "https://covers.openlibrary.org/b/id/975536-L.jpg",
     "isbn": "9780786206490",
-    "enrichedAt": "2026-07-27T16:06:30.645Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "cure-fatale-robin-cook": {
     "title": "cure fatale",
@@ -4816,8 +4965,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/975575-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:32.274Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "manipulations-robin-cook": {
     "title": "Manipulations",
@@ -4926,7 +5076,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:37.964Z",
+    "publisher": "MARPOC",
+    "publishedDate": "1984",
+    "bnfRef": "ark:/12148/cb34862759m",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:57.892Z",
     "source": "not_found"
   },
   "jarrete-davoir-peur-marie-france-coquereaumont": {
@@ -5014,10 +5168,11 @@
     "author": "Corneille",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/5748757-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:48:12.760Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "si-je-creve-ce-sera-damour-axel-cornil": {
     "title": "si je crève, ce sera d'amour",
@@ -5025,8 +5180,12 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:43.229Z",
+    "isbn": "9782807100701",
+    "publisher": "Lansman",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb452601570",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:54:59.025Z",
     "source": "not_found"
   },
   "une-peine-dexception-patricia-cornwell": {
@@ -5046,8 +5205,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/4031702-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:48:15.174Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "cadavre-x-patricia-cornwell": {
     "title": "Cadavre X",
@@ -5056,8 +5216,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/5288944-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:45.346Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "combustion-patricia-cornwell": {
     "title": "Combustion",
@@ -5076,8 +5237,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/227071-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:46.620Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "et-il-ne-restera-que-poussiere-patricia-cornwell": {
     "title": "Et il ne restera que poussière…",
@@ -5086,8 +5248,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/614576-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:48.282Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "linstinct-du-mal-patricia-cornwell": {
     "title": "l'Instinct du mal",
@@ -5096,8 +5259,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/6406661-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:50.290Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "la-griffe-du-sud-patricia-cornwell": {
     "title": "La griffe du sud",
@@ -5116,8 +5280,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/1463556-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:51.768Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "mort-en-eau-trouble-patricia-cornwell": {
     "title": "Mort en eau trouble",
@@ -5126,7 +5291,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:53.120Z",
+    "publisher": "Fabbri Nouvelles messageries de la presse parisienne",
+    "publishedDate": "2006",
+    "bnfRef": "ark:/12148/cb40961177c",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:00.118Z",
     "source": "not_found"
   },
   "postmortem-patricia-cornwell": {
@@ -5136,8 +5305,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=gbFhQgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9780684191416",
-    "enrichedAt": "2026-07-27T16:06:53.869Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "une-mort-sans-nom-patricia-cornwell": {
     "title": "Une mort sans nom",
@@ -5156,8 +5326,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/259243-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:06:55.899Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "thyl-ulenspiehel-charles-coster-de": {
     "title": "Thyl Ulenspiehel",
@@ -5232,12 +5403,24 @@
   "le-roi-na-pas-de-sommeil-cecile-coulon": {
     "title": "Le roi n'a pas de sommeil",
     "author": "Cécile Coulon",
-    "description": "",
-    "genre": "Inconnu",
-    "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:00.416Z",
-    "source": "not_found"
+    "resolvedTitle": "Le Roi n'a pas sommeil",
+    "resolvedAuthor": "Cécile Coulon",
+    "description": "Thomas Hogan aura pourtant tout fait pour exorciser ses démons – les mêmes qui torturaient déjà son père. Quand a-t-il basculé? Lorsque Paul l’a trahi pour rejoindre la bande de Calvin ? Lorsqu’il a découvert le Blue Budd, le poker et l’alcool de poire ? Lorsque Donna l’a entraîné naïvement derrière la scierie maudite ?",
+    "genre": "Historique",
+    "coverUrl": "https://books.google.com/books/content?id=E6RVw_6Msq8C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+    "isbn": "9782878586831",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:52:24.305Z",
+    "source": "google_books"
   },
   "ladieur-a-la-femme-sauvage-henri-coulonges": {
     "title": "L'adieur à la femme sauvage",
@@ -5256,7 +5439,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:02.087Z",
+    "publisher": "",
+    "publishedDate": "1964",
+    "bnfRef": "ark:/12148/cb378739878",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:01.032Z",
     "source": "not_found"
   },
   "la-qualite-de-vie-chantale-couvreur": {
@@ -5336,8 +5523,9 @@
     "genre": "Policier",
     "coverUrl": "https://books.google.com/books/content?id=6fWd1Drg1zAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9780748114399",
-    "enrichedAt": "2026-07-27T16:07:03.771Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "lor-des-incas-clive-cussler": {
     "title": "L'or des incas",
@@ -5406,18 +5594,20 @@
     "genre": "Horreur",
     "coverUrl": "https://covers.openlibrary.org/b/id/6573746-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:06.985Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "lart-du-bonheur-howard-cutler": {
     "title": "L'art du bonheur",
     "author": "Howard Cutler",
     "description": "Demandez au Dalaï-Lama s'il est heureux, il vous répondra \" oui \" sans hésiter, car le bonheur est selon lui le but de toute notre existence. C'est ce qu'il explique dans cet Art du bonheur, mélange surprenant de sagesse plusieurs fois millénaire, de bon sens, de réflexions et de conseils concrets, que nous pouvons tous appliquer. Tout au long de ces conversations, le Dalaï-Lama nous montre comment vaincre l'anxiété, l'insécurité, la colère et le découragement, et il explore notre vie quotidienne pour nous apprendre à surmonter les obstacles de l'existence en puisant dans notre source de paix intérieure.",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/981852-L.jpg",
     "isbn": "9782290303412",
-    "enrichedAt": "2026-07-27T15:48:56.032Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-veille-dame-qui-ne-voulait-pas-mourir-avant-de-lavoir-refait-margot-d-marguerite": {
     "title": "La veille dame qui ne voulait pas mourir avant de l'avoir refait",
@@ -5426,7 +5616,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:09.423Z",
+    "publisher": "Tremblay et Dion",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb43349111b",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:03.049Z",
     "source": "not_found"
   },
   "casimir-mene-la-grande-vie-jean-dormesson": {
@@ -5514,10 +5708,11 @@
     "author": "Dante",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/11621024-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:11.901Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-joueur-de-go-denise-dantec-le": {
     "title": "Le joueur de Go",
@@ -5552,12 +5747,24 @@
   "si-je-meurs-un-soir-andre-dartevelle": {
     "title": "Si je meurs un soir",
     "author": "André Dartevelle",
-    "description": "",
+    "resolvedTitle": "Si je meurs un soir",
+    "resolvedAuthor": "André Dartevelle",
+    "description": "\"Ce sont mes films qui me sauvèrent. Mes films et la culture, cette somme d'idées et d'expériences sociales vécues dans ma jeunesse. Je persiste à croire que la révolution se fera, que c'est la démocratie elle-même qui suggère ce genre de mutation. La démocratie n'existe pas quand les institutions n'évoluent plus. Couplée au développement de la pensée et de la réflexion critique, elle suppose des transformations profondes initiées et acceptées par la collectivité. Si celles-ci ne se font pas, ce sera le choc révolutionnaire. La révolution en faveur de l'émancipation et de la justice vaut mieux que la contre-révolution, celle du fascisme, née de l'abattement et de la désolation d'une partie de la population qui accuse la démocratie d'être la cause de son désarroi. Je pense que la découverte de nouvelles utopies mène à une nouvelle vision de la société\". Les Mémoires ont toujours des failles, parfois elles peuvent être injustes, Celles d'André Dartevelle ne font pas exception mais le document qu'il nous laisse est exceptionnel. Pour la compréhension de l'homme et de l'oeuvre évidemment mais aussi sur la signification profonde du cinéma documentaire qu'incarnait ce \"cinéaste résistant\". Il nous rappelle aussi ce que pouvait produire une télévision de service public dont les exigences culturelles et citoyennes étaient alors à la hauteur du respect de son public. L'homme se livre, le cinéaste se (re)découvre, l'intellectuel nous interpelle. Ses questions sont plus que jamais les nôtres (Extrait de la préface de Hugues Le Paige).",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:14.450Z",
-    "source": "not_found"
+    "isbn": "9782872671922",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:52:51.871Z",
+    "source": "google_books"
   },
   "le-petit-chose-alphonse-daudet": {
     "title": "Le petit chose",
@@ -5594,10 +5801,11 @@
     "author": "Mildred Davis",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3076569-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:49:20.014Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-compte-a-rebours-francois-de-closets": {
     "title": "Le compte à rebours",
@@ -5674,10 +5882,11 @@
     "author": "Jeffery Deaver",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3104039-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:49:35.293Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "kennedy-thierry-debroux": {
     "title": "Kennedy",
@@ -5694,10 +5903,11 @@
     "author": "Regine Deforges",
     "description": "Dette er Régine Deforges syvende roman om Léa Delmas, som leserene har kunnet følge fra hun var tenåring i det okkuperte Frankrike. I denne boken møter vi Léa og hennes mann, Francois Tavernier etter at de har forlatt Vietnam, slitne etter en opprivende og utmattende periode. De velger Cuba - den solrike øya der de tror rastløshet og uro kan tvinges på avstand. Men dette er 1955, tiden da Fidel Castro og hans folk er i ferd med å bygge opp styrke til å sette i gang revolusjon. Batista sitter ved makten, og regimets brutalitet kommer Léa nær inn på livet gjennom den unge Carmen, som blir arrestert og torturert. Léas alltid våkne samvittighet, og aldri svekkede eventyrlyst, driver henne snart inn i grupper som er villig til å satse alt for å velte Batista. Francois blir nødt til å dra til Algerie, mens Léa trekkes inn i flokken rundt de revolusjonære i fjellene.",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/974380-L.jpg",
     "isbn": "9788202185411",
-    "enrichedAt": "2026-07-27T15:49:36.526Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "retour-a-la-ville-alain-defosse": {
     "title": "Retour à la ville",
@@ -5794,10 +6004,11 @@
     "author": "Anne Delbée",
     "description": "Pour la première fois nous est révélé le destin d'une femme hors du commun, Camille Claudel, soeur aînée de Paul, dont l'existence se partage, se déchire en deux périodes: trente ans de création comme sculpteur et disciple de Rodin dont elle tombe follement amoureuse et trente ans d'internement en hôpital psychiatrique. Anne Delbée en fait un portrait fervent et partial, trop préoccupée par sa démarche de réhabilitation pour être juste envers tous. A d'autres la tâche de faire toute la vérité sur le destin douloureux de celle que l'auteure a le mérite de nous faire découvrir et apprécier comme une artiste d'immense talent.",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/11702625-L.jpg",
     "isbn": "9782213601212",
-    "enrichedAt": "2026-07-27T16:07:15.906Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "tout-est-bien-qui-finit-bien-armand-delcampe": {
     "title": "tout est bien qui finit bien",
@@ -5836,8 +6047,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/12903429-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:17.464Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "robinson-laurent-demoulin": {
     "title": "Robinson",
@@ -5956,7 +6168,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:22.604Z",
+    "publisher": "Groupe Mondadori France-\"Nous deux\"",
+    "publishedDate": "2010",
+    "bnfRef": "ark:/12148/cb423606752",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:04.423Z",
     "source": "not_found"
   },
   "les-garcons-xavier-deutsch": {
@@ -6024,10 +6240,11 @@
     "author": "Luca Di Fulvio",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14488914-L.jpg",
     "isbn": "9782889440061",
-    "enrichedAt": "2026-07-27T15:50:28.319Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-paroles-perdues-jesus-diaz": {
     "title": "Les paroles perdues",
@@ -6044,10 +6261,11 @@
     "author": "Jesus Diaz",
     "description": "Enfermé sur une terrasse à Miami, exposé au soleil et affamé pour avoir l'air d'un balsero, le dentiste Staline Martínez revit la succession d'erreurs et de fatalités qui l'ont amené là. Il aurait pu être accueilli légalement aux Etats-Unis, lorsqu'il est arrivé à bord du bac Casablanca-La Havane détourné sur Key West, mais il était éperdument amoureux de sa femme, Idalys, la danseuse de cabaret. Il ne pouvait envisager de vivre loin d'elle, loin de sa famille, loin de Cuba... Il est revenu à Cuba et l'enfer qu'il y a déchaîné l'en a chassé à nouveau.",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3149988-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:50:32.400Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "ubik-philip-dick": {
     "title": "Ubik",
@@ -6056,8 +6274,9 @@
     "genre": "Horreur",
     "coverUrl": "https://books.google.com/books/content?id=ZEyn5Gl_sYUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9780547728247",
-    "enrichedAt": "2026-07-27T16:07:23.934Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "oliver-twist-charles-dickens": {
     "title": "Oliver Twist",
@@ -6076,8 +6295,9 @@
     "genre": "Drame",
     "coverUrl": "https://covers.openlibrary.org/b/id/13322313-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:26.137Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "jacques-le-fataliste-denis-diderot": {
     "title": "Jacques le fataliste",
@@ -6126,7 +6346,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:28.299Z",
+    "publisher": "M.A. Editions",
+    "publishedDate": "1983",
+    "bnfRef": "ark:/12148/cb34228889d",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:05.530Z",
     "source": "not_found"
   },
   "impardonnables-philippe-dijan": {
@@ -6176,18 +6400,20 @@
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=YwtqgnZSe5QC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9780007283989",
-    "enrichedAt": "2026-07-27T16:07:30.399Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "la-cause-des-enfants-francoise-dolto": {
     "title": "La cause des enfants",
     "author": "Françoise Dolto",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/2153686-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:50:54.456Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-faculte-de-linutile-iouri-dombrovski": {
     "title": "La faculté de l'inutile",
@@ -6252,22 +6478,46 @@
   "lidiot-i-fiodor-dostoievski": {
     "title": "L'Idiot I",
     "author": "Fiodor Dostoïevski",
-    "description": "",
-    "genre": "Inconnu",
-    "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:31.941Z",
-    "source": "not_found"
+    "resolvedTitle": "L'Idiot",
+    "resolvedAuthor": "Fiodor Dostoïevski",
+    "description": "Le prince Mychkine est un être fondamentalement bon, mais sa bonté confine à la naïveté et à l'idiotie, même s'il est capable d'analyses psychologiques très fines. Après avoir passé sa jeunesse en Suisse dans un sanatorium pour soigner son épilepsie, il retourne en Russie pour pénétrer les cercles fermés de la société russe, sans sou ni attache, mais avec son titre de noblesse et un certificat de recommandation en poche. Il se retrouve par hasard mêlé à un projet de mariage concernant Nastassia Filippovna, jeune femme très belle, adulée par un grand nombre de soupirants, mais dont le seul amant est Totzky, son tuteur de 55 ans qui l'a élevée et en a fait sa maîtresse dès la petite adolescence...",
+    "genre": "Romance",
+    "coverUrl": "https://books.google.com/books/content?id=dwCdEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+    "isbn": "9782385089344",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:53:19.875Z",
+    "source": "google_books"
   },
   "lechiquier-de-la-creation-dominique-douay": {
     "title": "L'échiquier de la création",
     "author": "Dominique Douay",
-    "description": "",
+    "resolvedTitle": "L'échiquier de la création",
+    "resolvedAuthor": "Dominique Douay",
+    "description": "Tentative poétique plus que roman d'aventures, cette quête mythique à travers la création et le problème que pose le fait d'être créé, plaira surtout à ceux qui s'intéressent au \"nouveau roman\" français.",
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:34.606Z",
-    "source": "not_found"
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Éditions J'ai lu",
+    "publishedDate": "1976",
+    "bnfRef": "ark:/12148/cb346935974",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:53:28.470Z",
+    "source": "google_books"
   },
   "les-aventures-de-sherlock-holmes-conan-doyle": {
     "title": "Les aventures de Sherlock Holmes",
@@ -6276,8 +6526,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/6717853-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:36.057Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "sherlock-holmes-la-vallee-de-la-peur-conan-doyle": {
     "title": "Sherlock Holmes : la vallée de la peur",
@@ -6286,8 +6537,9 @@
     "genre": "Policier",
     "coverUrl": "https://covers.openlibrary.org/b/id/8350377-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:38.227Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "sherlock-holmes-le-chien-des-baskervilles-conan-doyle": {
     "title": "Sherlock Holmes : le chien des Baskervilles",
@@ -6306,8 +6558,9 @@
     "genre": "Policier",
     "coverUrl": "https://books.google.com/books/content?id=6bpLAAAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9782253005742",
-    "enrichedAt": "2026-07-27T16:07:39.132Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "rappelle-moi-michel-drucker": {
     "title": "Rappelle-moi",
@@ -6326,7 +6579,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:41.660Z",
+    "publisher": "Editions Rencontre",
+    "publishedDate": "1968",
+    "bnfRef": "ark:/12148/cb32986587k",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:07.954Z",
     "source": "not_found"
   },
   "fatal-obstacle-fernand-du-carme": {
@@ -6344,10 +6601,11 @@
     "author": "Christiane Duchesne",
     "description": "Une superbe histoire d'amour pleine d'imagination, de merveilleux, de créativité et de tendresse. Ce roman est sans conteste un nouveau fleuron et non le moindre, de la littérature de jeunesse. Prix Monsieur Christie 1996, catégorie plus de huit ans. Prix Québec/Wallonie-Bruxelles 1997. [SDM].",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10773390-L.jpg",
     "isbn": "9782890376748",
-    "enrichedAt": "2026-07-27T15:51:12.794Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "lami-fritz-chatrian": {
     "title": "L'ami Fritz",
@@ -6394,20 +6652,22 @@
     "author": "Alexandre Dumas",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14561733-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:44.677Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-reine-margot-alexandre-dumas": {
     "title": "La Reine Margot",
     "author": "Alexandre Dumas",
     "description": "",
     "genre": "Historique",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14557277-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:45.538Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-comte-de-monte-cristo-t1-alexandre-dumas": {
     "title": "Le comte de Monte-Cristo t.1",
@@ -6454,10 +6714,11 @@
     "author": "Alexandre Dumas",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14563764-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:51.177Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-dame-aux-camelias-alexandre-dumas": {
     "title": "La dame aux Camélias",
@@ -6494,20 +6755,33 @@
     "author": "Claude Duneton",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/5453377-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:53.807Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "allons-voir-plus-loin-veux-tu-anne-duperey": {
     "title": "Allons voir plus loin, veux-tu ?",
     "author": "Anne Duperey",
+    "resolvedTitle": "Allons voir plus loin, veux-tu ?",
+    "resolvedAuthor": "Duperey Anny",
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:56.342Z",
-    "source": "not_found"
+    "isbn": "2744162582",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 0.7
+    },
+    "publisher": "France loisirs",
+    "publishedDate": "2003",
+    "bnfRef": "ark:/12148/cb39046242c",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:10.626Z",
+    "source": "open_library"
   },
   "green-ville-regis-duque": {
     "title": "Green ville",
@@ -6516,7 +6790,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:57.575Z",
+    "publisher": "Fleurus",
+    "publishedDate": "2021",
+    "bnfRef": "ark:/12148/cb46925752n",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:12.778Z",
     "source": "not_found"
   },
   "detruire-dit-t-elle-marguerite-duras": {
@@ -6526,7 +6804,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:07:59.071Z",
+    "publisher": "",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb43363747z",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:13.719Z",
     "source": "not_found"
   },
   "deux-heures-et-demie-du-soir-en-ete-marguerite-duras": {
@@ -6556,28 +6838,31 @@
     "genre": "Historique",
     "coverUrl": "https://covers.openlibrary.org/b/id/983850-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:08:02.562Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "lamante-anglaise-marguerite-duras": {
     "title": "L'amante anglaise",
     "author": "Marguerite Duras",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/4172795-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:08:03.291Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-ravissement-de-lol-v-stein-marguerite-duras": {
     "title": "Le ravissement de Lol V STein",
     "author": "Marguerite Duras",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/967381-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:08:04.105Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "moderato-cantabile-marguerite-duras": {
     "title": "Moderato Cantabile",
@@ -6595,8 +6880,12 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:08:06.503Z",
+    "isbn": "9782807100213",
+    "publisher": "Lansman Éditeur",
+    "publishedDate": "2015",
+    "bnfRef": "ark:/12148/cb45374365h",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:14.723Z",
     "source": "not_found"
   },
   "monsieur-ou-le-prince-des-tenebres-lawrence-durrell": {
@@ -6604,10 +6893,11 @@
     "author": "Lawrence Durrell",
     "description": "",
     "genre": "Historique",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/13443967-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:08:07.126Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "american-psycho-bret-easton-ellis": {
     "title": "American psycho",
@@ -6616,8 +6906,9 @@
     "genre": "Horreur",
     "coverUrl": "https://books.google.com/books/content?id=Gd_mGRCwW1QC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9780307756435",
-    "enrichedAt": "2026-07-27T16:08:07.924Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "courir-jean-echenoz": {
     "title": "Courir",
@@ -6676,8 +6967,9 @@
     "genre": "Historique",
     "coverUrl": "https://books.google.com/books/content?id=wSpQxAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9780526999323",
-    "enrichedAt": "2026-07-27T16:08:11.925Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "source": "override",
+    "verified": true
   },
   "algerie-roman-rene-nicolas-ehni": {
     "title": "Algérie roman",
@@ -6714,10 +7006,11 @@
     "author": "James Elliott",
     "description": "Call-girl. Pas désagréable comme job : hôtels de luxe, restaurants fins, croisières somptueuses, week-ends en Europe... Les clients sont gentils et généreux. Nicole Bass a déjà mis de côté neuf cent mille dollars. Dans deux ans, elle pourra s'arrêter. C'est aussi un métier à risques. Mais cela, elle s'en aperçoit trop tard, lorsqu'un de ses habitués se fait abattre sous ses yeux par la mafia. Elle en a déjà vu de dures, la belle Nicole. Seul un sang-froid sidérant lui permet de s'échapper, en emportant ce que les gangsters étaient venus chercher. L'ennui, c'est qu'ils sont désormais à ses trousses. Ainsi que la police, pour qui elle est le seul témoin à charge. Impossible de rester à New York. Il faut fuir... Amis où ?",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10866128-L.jpg",
     "isbn": "9782290049044",
-    "enrichedAt": "2026-07-27T16:08:14.495Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "nuit-grave-ben-elton": {
     "title": "Nuit grave",
@@ -6774,10 +7067,11 @@
     "author": "François Emmanuel",
     "description": "\" Ne posez pas de questions, écrivait Pierre Ansalem, vous entrez dans un monde qui n'est pas le vôtre. Sachez regarder seulement, vous en remettre à cela seul qui se déroule sous vos yeux. Ne faites pas un mouvement qui ne trompe le mouvement, pas un geste qui ne donne résistance aux choses... \" Avec pour seul viatique ces mots d'un vieil archéologue aveugle, le narrateur s'aventure sur une île coupée du monde. L'installation d'un terminal pétrolier en a récemment bouleversé l'histoire et le village où il se rend, situé sur un versant de l'île qui n'est plus qu'un champ de manœuvres militaires, se trouve rayé de toute carte officielle. Dans cet environnement sauvage survivent des insulaires à la fois accueillants et farouches. Le narrateur se découvre attendu par eux sans qu'il ne comprenne pourquoi. Entre silences, cris et murmures, au centre d'un théâtre d'ombre dont chacun des personnages livrera tour à tour un fragment de l'énigme, c'est une nuit de l'épreuve qui doit être ici traversée. Récit d'une mort et d'une renaissance, ce livre qui ouvre l'œuvre de François Emmanuel, peut se lire autant sur le fil toujours tendu de l'intrigue que comme un texte visionnaire sur le thème de la transmission cachée.",
     "genre": "Historique",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/2171845-L.jpg",
     "isbn": "9782804017095",
-    "enrichedAt": "2026-07-27T16:08:19.983Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-question-humaine-francois-emmanuel": {
     "title": "La question humaine",
@@ -6814,10 +7108,11 @@
     "author": "Michael Ende",
     "description": "A première vue, Bastien Balthasar Bux n'a rien d'un héros. Les héros sont grands, beaux et forts. Les héros ne courent pas sous la pluie pour se réfugier dans les librairies obscures et échapper ainsi à leurs camarades de classe. Ils ne volent pas non plus les vieux livres pour aller les dévorer dans les greniers de l'école. Bastien n'a pas pu résister. C'est comme si ce livre l'appelait. Son titre ? L'Histoire sans fin. Le garçon plonge dans un univers peuplé de mille créatures étonnantes : elfes nocturnes chevauchant des chauves-souris, Mange-Pierres, escargots de course, tortues millénaires et lions multicolores, Atréju, l'enfant guerrier sans peur et Fuchur, son fidèle Dragon de la Fortune. Toutes vouées à disparaître, avalées par le Néant, ce mal mystérieux qui ronge le Pays Fantastique. Bastien se trompait. Lui aussi a l'étoffe d'un héros. Et avant la dernière page du livre, son rôle lui sera révélé.",
     "genre": "Fantasy",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10337889-L.jpg",
     "isbn": "9782012043428",
-    "enrichedAt": "2026-07-27T16:08:22.971Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-absentes-vincent-engel": {
     "title": "Les Absentes",
@@ -6864,10 +7159,11 @@
     "author": "Maria Ernestam",
     "description": "Eva cultive ses rosiers. A cinquante-six ans, elle a une vie bien réglée qu’elle partage avec Sven. Quelques amies, des enfants, et une vieille dame acariâtre dont elle s’occupe. Pour se donner bonne conscience ? Le soir, lorsque Sven est couché, Eva se sert un verre de vin et écrit son journal intime. La nuit est propice aux souvenirs, aussi douloureux soient-ils. Peut-être aussi la cruauté est-elle plus douce lorsqu’on l’évoque dans l’atmosphère feutrée d’une maison endormie. Eva fut une petite fille traumatisée par sa mère, personnage fantasque et tyrannique, qui ne l’a jamais aimée et a toujours tout fait pour la ridiculiser. Très tôt, Eva s’était promis de se venger. Et elle l’a fait, avoue-t-elle d’emblée à son journal intime. Un délicieux mélange de candeur et de perversion, qui tient en haleine de bout en bout.",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10108151-L.jpg",
     "isbn": "9782330014452",
-    "enrichedAt": "2026-07-27T16:08:26.794Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "operation-green-back-ted-escott": {
     "title": "Opération Green back",
@@ -6904,10 +7200,11 @@
     "author": "Lucía Etxebarria",
     "description": "Loin des clichés, Lucía Etxebarria livre, à travers cette longue lettre d'une jeune mère à sa fille, une réflexion jubilatoire sur la féminité actuelle. Tour à tour drôle, piquante et poétique, elle lui parle des désirs multiples et parfois contraires qui tiraillent le cœur de la femme moderne : être indépendante, attirante, active, aimante exemplaire, l'une après l'autre ou toutes à la fois. Elle lui parle aussi de ses doutes d'écrivain, de l'inspiration capricieuse et de la cavalcade impatiente des idées et des mots. Ce roman bourré d'humour et d'émotion a reçu le prestigieux prix Planeta, équivalent espagnol du prix Goncourt.",
     "genre": "Comédie",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10721157-L.jpg",
     "isbn": "9782264042699",
-    "enrichedAt": "2026-07-27T16:08:29.791Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "theatre-tome-i-et-tome-iii-eurypide": {
     "title": "Théâtre tome I et tome III",
@@ -6928,5 +7225,333 @@
     "isbn": "9782210968431",
     "enrichedAt": "2026-07-27T16:08:31.503Z",
     "source": "google_books"
+  },
+  "des-demoiselles-imprudentes-charles-exbrayat": {
+    "title": "Des demoiselles imprudentes",
+    "author": "Charles Exbrayat",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "des Champs-Élysées",
+    "publishedDate": "1961",
+    "bnfRef": "ark:/12148/cb33001188j",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:16.012Z",
+    "source": "not_found"
+  },
+  "le-quintette-de-bergame-charles-exbrayat": {
+    "title": "Le quintette de Bergame",
+    "author": "Charles Exbrayat",
+    "resolvedTitle": "Le Quintette de Bergame",
+    "resolvedAuthor": "Charles Exbrayat",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3115803-L.jpg",
+    "isbn": "",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "des Champs-Élysées",
+    "publishedDate": "1967",
+    "bnfRef": "ark:/12148/cb330012206",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:16.990Z",
+    "source": "open_library"
+  },
+  "charlotte-sara-z-notre-sade-michele-fabien": {
+    "title": "Charlotte, Sara Z., notre sade",
+    "author": "Michèle Fabien",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "9782875687111",
+    "publisher": "Espace Nord",
+    "publishedDate": "2025",
+    "bnfRef": "ark:/12148/cb48554855x",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:18.095Z",
+    "source": "not_found"
+  },
+  "seul-dans-berlin-hans-fallada": {
+    "title": "Seul dans Berlin",
+    "author": "Hans Fallada",
+    "resolvedTitle": "Seul dans Berlin",
+    "resolvedAuthor": "Hans Fallada",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "https://covers.openlibrary.org/b/id/973654-L.jpg",
+    "isbn": "",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Plon",
+    "publishedDate": "1967",
+    "bnfRef": "ark:/12148/cb33002870n",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:19.987Z",
+    "source": "open_library"
+  },
+  "blacklash-susan-faludi": {
+    "title": "Blacklash",
+    "author": "Susan Faludi",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "",
+    "publishedDate": "1992",
+    "bnfRef": "ark:/12148/cb38269247f",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:21.521Z",
+    "source": "not_found"
+  },
+  "titre-prenom-famille": {
+    "title": "Titre",
+    "author": "Prénom Famille",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "Claude Dutreix BNFAE",
+    "publishedDate": "2025",
+    "bnfRef": "ark:/12148/cb487625586",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:23.495Z",
+    "source": "not_found"
+  },
+  "ne-vous-inquietez-plus-cest-la-guerre-daniel-fano": {
+    "title": "Ne vous inquiétez plus c'est la guerre",
+    "author": "Daniel Fano",
+    "resolvedTitle": "Ne vous inquiétez plus c'est la guerre",
+    "resolvedAuthor": "Daniel Fano",
+    "description": "",
+    "genre": "Drame",
+    "coverUrl": "",
+    "isbn": "9782930607139",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Éditions les Carnets du dessert de lune",
+    "publishedDate": "2015",
+    "bnfRef": "ark:/12148/cb44308133q",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:24.518Z",
+    "source": "open_library"
+  },
+  "prive-de-parking-daniel-fano": {
+    "title": "Privé de parking",
+    "author": "Daniel Fano",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "",
+    "publishedDate": "1994",
+    "bnfRef": "ark:/12148/cb38283564t",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:25.841Z",
+    "source": "not_found"
+  },
+  "demande-a-la-poussiere-john-fante": {
+    "title": "Demande à la poussière",
+    "author": "John Fante",
+    "resolvedTitle": "demande a la poussiere",
+    "resolvedAuthor": "FANTE JOHN",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "2267004372",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "C. Bourgois",
+    "publishedDate": "1986",
+    "bnfRef": "ark:/12148/cb34866002p",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:27.617Z",
+    "source": "open_library"
+  },
+  "tes-rives-finir-paul-farellier": {
+    "title": "Tes rives finir",
+    "author": "Paul Farellier",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "2874062758",
+    "publisher": "l'Arbre à paroles",
+    "publishedDate": "2004",
+    "bnfRef": "ark:/12148/cb39216972z",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:28.542Z",
+    "source": "not_found"
+  },
+  "aussi-libres-quun-reve-manon-fargetton": {
+    "title": "Aussi libres qu'un rêve",
+    "author": "Manon Fargetton",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "9782362311833",
+    "publisher": "Castelmore",
+    "publishedDate": "2016",
+    "bnfRef": "ark:/12148/cb45164184p",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:29.985Z",
+    "source": "not_found"
+  },
+  "le-cafe-rw-fassbinder": {
+    "title": "Le café",
+    "author": "RW. Fassbinder",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "Fedération nationale du commerce des cafés verts",
+    "publishedDate": "1969",
+    "bnfRef": "ark:/12148/cb361343839",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:31.680Z",
+    "source": "not_found"
+  },
+  "le-renard-et-la-couronne-yann-fastier": {
+    "title": "Le renard et la couronne",
+    "author": "Yann Fastier",
+    "resolvedTitle": "LE RENARD ET LA COURONNE",
+    "resolvedAuthor": "Yann FASTIER",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "9782362662386",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Talents hauts",
+    "publishedDate": "2018",
+    "bnfRef": "ark:/12148/cb45528480z",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:33.173Z",
+    "source": "open_library"
+  },
+  "une-rose-pour-emily-et-autres-nouvelles-william-faulkner": {
+    "title": "Une rose pour Emily et autres nouvelles",
+    "author": "William Faulkner",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "2070425495",
+    "publisher": "Gallimard",
+    "publishedDate": "2002",
+    "bnfRef": "ark:/12148/cb38893692k",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:34.329Z",
+    "source": "not_found"
+  },
+  "absalon-absalon-william-faulkner": {
+    "title": "Absalon, absalon",
+    "author": "William Faulkner",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "2070284840",
+    "publisher": "Gallimard",
+    "publishedDate": "1978",
+    "bnfRef": "ark:/12148/cb34607806x",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:35.269Z",
+    "source": "not_found"
+  },
+  "le-bruit-et-la-fureur-william-faulkner": {
+    "title": "Le bruit et la fureur",
+    "author": "William Faulkner",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "2070361624",
+    "publisher": "Gallimard",
+    "publishedDate": "1986",
+    "bnfRef": "ark:/12148/cb348435932",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:36.680Z",
+    "source": "not_found"
+  },
+  "les-palmiers-sauvages-william-faulkner": {
+    "title": "Les palmiers sauvages",
+    "author": "William Faulkner",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "2070296725",
+    "publisher": "Gallimard",
+    "publishedDate": "1977",
+    "bnfRef": "ark:/12148/cb34703754q",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:38.126Z",
+    "source": "not_found"
+  },
+  "tandis-que-jagonise-william-faulkner": {
+    "title": "Tandis que j'agonise",
+    "author": "William Faulkner",
+    "resolvedTitle": "Tandis que j'agonise",
+    "resolvedAuthor": "William Faulkner Maurice Edgar Coindreau",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 0.7
+    },
+    "publisher": "Gallimard",
+    "publishedDate": "1934",
+    "bnfRef": "ark:/12148/cb32094307q",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:39.439Z",
+    "source": "open_library"
+  },
+  "la-princesse-de-cleves-marie-medeleine-fayette-de-la": {
+    "title": "la Princesse de Clèves",
+    "author": "Marie-Medeleine Fayette, de la",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "Flammarion",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb41658911r",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:41.841Z",
+    "source": "not_found"
+  },
+  "milles-femmes-blanches-jym-fergus": {
+    "title": "Milles femmes blanches",
+    "author": "Jym Fergus",
+    "description": "",
+    "genre": "Inconnu",
+    "coverUrl": "",
+    "isbn": "",
+    "publisher": "Imprimerie Royale",
+    "publishedDate": "1717",
+    "bnfRef": "ark:/12148/cb38454497g",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:55:43.245Z",
+    "source": "not_found"
   }
 }

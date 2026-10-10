@@ -47,10 +47,44 @@ const GOOGLE_DAILY_CAP = parseInt(process.env.GOOGLE_DAILY_CAP || '900', 10);
 const QUOTA_STATE_FILE = path.join(__dirname, '../.quota-state.json');
 const RETRY_ON_5XX = 3; // Nombre de tentatives sur erreur serveur transitoire (503 notamment)
 
-// Nombre d'échecs consécutifs de Google Books au-delà duquel on arrête de
-// l'appeler pour le reste du run. Réessayer coûte ~7 s par livre (backoff 1+2+4 s)
-// et l'endpoint de recherche renvoie des 503 par vagues de plusieurs minutes.
-const GOOGLE_FAILURE_THRESHOLD = parseInt(process.env.GOOGLE_FAILURE_THRESHOLD || '5', 10);
+// --- Surveillance de la santé de Google Books ---
+// L'endpoint de recherche renvoie des 503 par vagues : on a mesuré 92 %
+// d'échec, avec des séries d'échecs séparées par un succès isolé. Compter
+// les échecs consécutifs ne fonctionne donc pas : un seul succès intercalé
+// remet le compteur à zéro et le coupe-circuit ne s'ouvre jamais.
+//
+// On juge donc sur une fenêtre glissante des N derniers appels, et on
+// n'abandonne pas Google définitivement : après un délai de refroidissement
+// on réessaie, au cas où la panne serait terminée.
+const GOOGLE_WINDOW = parseInt(process.env.GOOGLE_WINDOW || '10', 10);
+const GOOGLE_UNHEALTHY_RATE = parseFloat(process.env.GOOGLE_UNHEALTHY_RATE || '0.6');
+const GOOGLE_COOLDOWN_MIN = parseFloat(process.env.GOOGLE_COOLDOWN_MIN || '10');
+const GOOGLE_MIN_SAMPLES = 6; // en dessous, on ne conclut pas
+
+// 1 = succès, 0 = échec. Fenêtre glissante des derniers appels Google.
+const googleResults = [];
+// Budget de réessais, réduit quand Google va mal : inutile d'insister 3 fois
+// quand le service est à 92 % en panne.
+let googleRetryBudget = RETRY_ON_5XX;
+
+function noteGoogleResult(ok) {
+  googleResults.push(ok ? 1 : 0);
+  if (googleResults.length > GOOGLE_WINDOW) googleResults.shift();
+  const rate = googleFailureRate();
+  googleRetryBudget = rate >= 0.3 ? 1 : RETRY_ON_5XX;
+}
+
+function googleFailureRate() {
+  if (googleResults.length === 0) return 0;
+  let echecs = 0;
+  for (const r of googleResults) if (!r) echecs++;
+  return echecs / googleResults.length;
+}
+
+function googleUnhealthy() {
+  return googleResults.length >= GOOGLE_MIN_SAMPLES && googleFailureRate() >= GOOGLE_UNHEALTHY_RATE;
+}
+
 
 // --- Durée maximale d'un run ---
 // 0 = illimité. Sinon le script s'arrête proprement entre deux livres,
@@ -491,7 +525,7 @@ async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
   
   try {
     countGoogleCall();
-    let res = await httpGet(url);
+    let res = await httpGet(url, {}, googleRetryBudget);
     if (res.statusCode === 429) {
       throw new Error("RATE_LIMIT_EXCEEDED");
     }
@@ -519,7 +553,7 @@ async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
       let fallbackUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}&hl=fr&maxResults=5`;
       if (GOOGLE_BOOKS_API_KEY) fallbackUrl += `&key=${GOOGLE_BOOKS_API_KEY}`;
       
-      const fallbackRes = await httpGet(fallbackUrl);
+      const fallbackRes = await httpGet(fallbackUrl, {}, googleRetryBudget);
       if (fallbackRes.statusCode === 429) {
         throw new Error("RATE_LIMIT_EXCEEDED");
       }
@@ -897,12 +931,12 @@ async function enrich() {
   let needsReviewCount = 0;
   let quotaReached = false;
   let timeUp = false;
-  // Coupe-circuit : l'endpoint de recherche de Google Books renvoie des 503 par
-  // vagues. Réessayer coûte ~7 s par livre pour rien, donc après quelques échecs
-  // consécutifs on arrête de l'appeler et on continue avec BnF + Open Library.
-  let consecutiveGoogleFailures = 0;
-  let googleDegraded = false;
+  // Coupe-circuit fondé sur le taux d'échec, pas sur une série d'échecs :
+  // Google alterne des salves de 503 avec des réussites isolées, ce qui
+  // réinitialiserait sans fin un compteur d'échecs consécutifs.
+  let googleSkipUntil = 0;      // timestamp jusqu'auquel on saute Google
   let googleSkippedCount = 0;
+  let googleRetriedCount = 0;   // ré-essais après refroidissement
 
   console.log(`📊 Quota Google Books du jour : ${quotaState.googleCalls}/${GOOGLE_DAILY_CAP} utilisé(s).`);
 
@@ -1050,16 +1084,27 @@ async function enrich() {
       }
     }
 
-    // 2) Google Books, sauf si le coupe-circuit est ouvert
+    // 2) Google Books, sauf si le coupe-circuit est ouvert.
+    //    Le refroidissement est temporaire : après Google_COOLDOWN_MIN on
+    //    réessaie, la panne pouvant être finie.
+    const now = Date.now();
+    const googleCooling = now < googleSkipUntil;
+    if (now >= googleSkipUntil && googleUnhealthy()) {
+      googleSkipUntil = now + GOOGLE_COOLDOWN_MIN * 60000;
+      googleRetriedCount++;
+      console.log(`\n🔌 Google Books est saturé (${Math.round(googleFailureRate() * 100)} % d'échecs sur les ${googleResults.length} derniers appels).`);
+      console.log(`   Pause de ${GOOGLE_COOLDOWN_MIN} min : la suite se fait avec BnF et Open Library.`);
+      console.log('   Google sera réessayé ensuite, la panne pouvant être finie.\n');
+    }
+
     if (!enrichedData) {
-      if (googleDegraded) {
+      if (googleCooling) {
         googleSkippedCount++;
-        console.log('   ⏭️  Google Books ignoré (service saturé)');
       } else {
         apiCallsCount++;
         try {
           const gbResult = await fetchGoogleBooks(titre, auteur, isbn, googleBooksId);
-          consecutiveGoogleFailures = 0;
+          noteGoogleResult(true);
           if (gbResult) {
             const info = gbResult.info; // validé par pickBestCandidate
             const match = gbResult.match;
@@ -1131,7 +1176,7 @@ async function enrich() {
         // et on le laisse ouvert pour un nouvel essai.
         temporaryErrorCount++;
         apiCallsCount--;
-        consecutiveGoogleFailures++;
+        noteGoogleResult(false);
 
         if (bnfInfo && (bnfInfo.isbn || bnfInfo.publisher || bnfInfo.publishedDate)) {
           const dejaConnu = metadata[slug];
@@ -1154,13 +1199,6 @@ async function enrich() {
           console.error('   📚 Données BnF conservées (ISBN, éditeur, année) malgré la panne.');
         } else {
           console.error('   ⚠️ Google Books indisponible et aucune donnée BnF — livre laissé intact.');
-        }
-
-        if (!googleDegraded && consecutiveGoogleFailures >= GOOGLE_FAILURE_THRESHOLD) {
-          googleDegraded = true;
-          console.error(`\n🔌 Google Books est saturé (${consecutiveGoogleFailures} échecs consécutifs).`);
-          console.error('   La suite du run se fait sans Google : BnF et Open Library uniquement.');
-          console.error('   Un nouveau run réessaiera demain.\n');
         }
         continue;
       }
@@ -1269,9 +1307,8 @@ async function enrich() {
   console.log(`Erreurs temporaires (à retenter): ${temporaryErrorCount}`);
   console.log(`Livres sans Google (coupe-circuit): ${googleSkippedCount}`);
   console.log(`Total livres dans le cache     : ${Object.keys(metadata).length}`);
-  if (googleDegraded) {
-    console.log("🔌 Google Books est resté saturé pendant ce run :");
-    console.log('   les données BnF et Open Library ont tout de même été collectées.');
+  if (googleSkippedCount > 0) {
+    console.log(`🔌 Google Books ignoré pour ${googleSkippedCount} livre(s) (taux d'échec ${Math.round(googleFailureRate() * 100)} %).`);
   }
   if (temporaryErrorCount > 0) {
     console.log("ℹ️  Les livres en erreur temporaire n'ont pas été modifiés : relancez le script pour les retenter.");
