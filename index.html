@@ -314,6 +314,14 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
     
+    /* Référence bibliographique : éditeur et année (données BnF) */
+    .book-reference {
+      font-size: 0.85rem;
+      color: #718096;
+      font-style: italic;
+      margin: -0.4rem 0 0.6rem 0;
+    }
+    
     .info-item:hover {
       background: rgba(102, 126, 234, 0.08);
       border-color: rgba(102, 126, 234, 0.2);
@@ -2387,6 +2395,14 @@
         return `<span class="genre-tag tag-${slugClass}">${emoji} ${genre}</span>`;
       }).join('');
 
+      // Référence bibliographique (éditeur, année) issue de la BnF.
+      // Rare et souvent absente : on n'affiche la ligne que si l'une des deux existe.
+      const editeur = (livre.Editeur || '').trim();
+      const annee = (livre.Annee || '').toString().trim();
+      const referenceHTML = (editeur || annee)
+        ? `<div class="book-reference">${editeur ? escapeHTML(editeur) : ''}${editeur && annee ? ', ' : ''}${annee ? escapeHTML(annee) : ''}</div>`
+        : '';
+
       div.innerHTML = `
         <div class="book-content">
           <div class="book-cover">
@@ -2406,6 +2422,7 @@
               <span class="info-label">Auteur:</span>
               <span class="info-value">${nomComplet}</span>
             </div>
+            ${referenceHTML}
             <div class="info-item">
               <span class="info-label">Stock:</span>
               <span class="stock-badge ${
@@ -2724,7 +2741,10 @@
           CoverURL: metaVerified ? (meta.coverUrl || '') : '',
           // L'ISBN du Sheet fait foi : celui des métadonnées peut provenir d'un
           // appariement erroné et servirait alors une couverture d'un autre ouvrage.
-          ISBN: livre.ISBN || meta.isbn || ''
+          ISBN: livre.ISBN || meta.isbn || '',
+          // Référence bibliographique ajoutée par la BnF (catalogue national)
+          Editeur: meta.publisher || '',
+          Annee: meta.publishedDate || ''
         };
       });
 
@@ -3080,6 +3100,10 @@
       const descriptionHTML = livre.Description 
         ? livre.Description 
         : "Aucune description n'est disponible pour ce livre pour le moment. 📚";
+
+      // Référence bibliographique (éditeur, année) issue de la BnF
+      const editeur = (livre.Editeur || '').trim();
+      const annee = (livre.Annee || '').toString().trim();
         
       const stockClass = (livre.Stock === undefined || livre.Stock === '' || livre.Stock === null) ? 'undefined' : 
                          (livre.Stock == 0 || livre.Stock === '0') ? 'out-of-stock' : '';
@@ -3100,6 +3124,8 @@
             <div class="modal-meta-badges">
               ${livre.Type ? `<span class="modal-badge badge-type">📖 ${livre.Type}</span>` : ''}
               ${livre.Genre && livre.Genre !== 'Inconnu' ? `<span class="modal-badge badge-genre">🏷️ ${livre.Genre}</span>` : ''}
+              ${editeur ? `<span class="modal-badge badge-publisher">🏢 ${escapeHTML(editeur)}</span>` : ''}
+              ${annee ? `<span class="modal-badge badge-year">📅 ${escapeHTML(annee)}</span>` : ''}
               <span class="modal-badge stock-badge ${stockClass}">📦 Stock: ${stockText}</span>
             </div>
             <div class="modal-desc-title">Description</div>

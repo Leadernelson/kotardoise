@@ -47,6 +47,11 @@ const GOOGLE_DAILY_CAP = parseInt(process.env.GOOGLE_DAILY_CAP || '900', 10);
 const QUOTA_STATE_FILE = path.join(__dirname, '../.quota-state.json');
 const RETRY_ON_5XX = 3; // Nombre de tentatives sur erreur serveur transitoire (503 notamment)
 
+// Nombre d'échecs consécutifs de Google Books au-delà duquel on arrête de
+// l'appeler pour le reste du run. Réessayer coûte ~7 s par livre (backoff 1+2+4 s)
+// et l'endpoint de recherche renvoie des 503 par vagues de plusieurs minutes.
+const GOOGLE_FAILURE_THRESHOLD = parseInt(process.env.GOOGLE_FAILURE_THRESHOLD || '5', 10);
+
 // --- Durée maximale d'un run ---
 // 0 = illimité. Sinon le script s'arrête proprement entre deux livres,
 // sauvegarde, et quitte avec le code 0. Il peut dépasser de quelques secondes
@@ -197,6 +202,74 @@ function mapCategoryToGenre(categories) {
   }
   
   return 'Inconnu';
+}
+
+// ---------------------------------------------------------------------------
+// Contrôle de langue des descriptions
+//
+// Le catalogue est francophone : une description en anglais, en néerlandais ou
+// en italien est une erreur de données, pas un contenu. Or les API renvoient
+// volontiers le résumé de l'édition originale : "Le flux et le reflux" (Agatha
+// Christie) arrivait avec le texte de "Taken at the Flood".
+//
+// L'ancien isEnglishText (liste de 18 mots, seuil 3) laissait passer 8 cas sur
+// 45, dont du néerlandais. On mesure ici la densité de mots fonctionnels,
+// ce qui sépare les langues sans liste de mots-clés arbitraire.
+// ---------------------------------------------------------------------------
+
+const FRENCH_STOPWORDS = new Set(('le la les de des du un une et est en que qui dans pour au aux ce cette ' +
+  'pas plus sur avec par son sa ses leur leurs nous vous ils elles ne se lui y comme tout tous bien aussi ' +
+  'encore deja etre avoir faire ainsi donc alors même').split(' '));
+
+const ENGLISH_STOPWORDS = new Set(('the a an and or but is are was were in on of to for with that this it as ' +
+  'by from at be been has have had not which who its their his her they them we you i about into over than ' +
+  'then some such only own same too very can will just should now').split(' '));
+
+// Seuils mesurés sur le catalogue : le français valide le plus bas observé est
+// à 0,154 de densité, un italien à 0,079. 0,10 les sépare proprement.
+const LANG_MIN_DENSITY = 0.10;
+const LANG_MIN_HITS = 4;
+
+// Classifier une description : 'francais' | 'anglais' | 'inconnu' | 'trop-court'
+function detectLanguage(text) {
+  if (!text || text.length < 40) return 'trop-court';
+  const mots = text.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter((m) => m.length > 1);
+  if (mots.length < 8) return 'trop-court';
+
+  let fr = 0;
+  let en = 0;
+  for (const m of mots) {
+    if (FRENCH_STOPWORDS.has(m)) fr++;
+    if (ENGLISH_STOPWORDS.has(m)) en++;
+  }
+  const densFr = fr / mots.length;
+  const densEn = en / mots.length;
+
+  if (en > fr && en >= LANG_MIN_HITS) return 'anglais';
+  if (densFr >= LANG_MIN_DENSITY && fr >= LANG_MIN_HITS) return 'francais';
+  if (densEn > densFr && en >= LANG_MIN_HITS) return 'anglais';
+  return 'inconnu';
+}
+
+// Open Library renvoie parfois une notice de catalogue brut plutôt qu'un résumé
+// ("Genre/Form: Fiction Additional Physical Format: Online version: ...").
+// Ce n'est pas une description et cela ne doit jamais être enregistré.
+function isCatalogDumping(text) {
+  if (!text) return false;
+  return /^\s*Genre\s*\/\s*Form/i.test(text)
+    || /Additional Physical Format/i.test(text)
+    || /^\s*Topics?\s*:/i.test(text)
+    || /\bOnline version:\s*[A-Z][a-z]+,\s*[A-Z][a-z]+,?\s*\d{4}/.test(text);
+}
+
+// Décider si une description entrante peut être conservée
+function acceptDescription(text) {
+  if (!text || !text.trim()) return { keep: false, reason: 'vide' };
+  if (isCatalogDumping(text)) return { keep: false, reason: 'notice de catalogue' };
+  const lang = detectLanguage(text);
+  if (lang === 'francais') return { keep: true, reason: 'français' };
+  if (lang === 'trop-court') return { keep: true, reason: 'trop courte pour être jugée' };
+  return { keep: false, reason: 'langue ' + lang };
 }
 
 // Classification hybride par analyse textuelle des descriptions pour affiner le genre
@@ -351,6 +424,32 @@ function matchScore(wantTitle, wantAuthor, gotTitle, gotAuthor) {
     ok: titleScore >= MATCH_THRESHOLD.title && authorScore >= MATCH_THRESHOLD.author,
     titleScore: Math.round(titleScore * 100) / 100,
     authorScore: Math.round(authorScore * 100) / 100
+  };
+}
+
+// Couverture Open Library par ISBN : déterministe, gratuit, sans quota.
+// On ne prend que l'image : les descriptions Open Library sont rarement en
+// français et le contrôle de langue rejettera la plupart d'entre elles.
+async function fetchOpenLibraryCoverByIsbn(isbn) {
+  if (!isbn) return null;
+  let res;
+  try {
+    res = await httpGet(`https://openlibrary.org/isbn/${isbn}.json`, {}, 2);
+  } catch (e) {
+    return null;
+  }
+  if (!res || res.statusCode !== 200) return null;
+  let doc;
+  try { doc = JSON.parse(res.body); } catch (e) { return null; }
+  if (!doc || !Array.isArray(doc.covers) || doc.covers.length === 0) return null;
+
+  const authors = Array.isArray(doc.authors) ? doc.authors.map((a) => a.name || '').join(' ') : (doc.by_statement || '');
+  const match = matchScore('', '', doc.title || '', '');
+  return {
+    coverUrl: `https://covers.openlibrary.org/b/id/${doc.covers[0]}-L.jpg`,
+    title: doc.title || '',
+    author: authors,
+    match
   };
 }
 
@@ -588,6 +687,29 @@ function normalizeIsbn(value) {
   return '';
 }
 
+// Nettoyer l'éditeur : les notices BnF sont brutes, par exemple
+// "Livre de poche,] (impr. Brodard et Taupin)" ou "[s.l.]" pour une publication
+// sans éditeur identified.
+function cleanPublisher(value) {
+  if (!value) return '';
+  let v = value.trim();
+  // On retire d'abord ce qui est entre crochets ou parenthèses
+  v = v.replace(/\[[^\]]*\]/g, ' ').replace(/\([^)]*\)/g, ' ');
+  v = v.replace(/[\[\],]/g, ' ').replace(/\s+/g, ' ').trim();
+  // Une mention d'imprimeur ou de distribution pure n'est pas un éditeur
+  v = v.replace(/^(impr\.?|éditeur|éd\.|distrib\.?|librairie)\s+/i, '').trim();
+  // Mentions parasites de publication
+  v = v.replace(/^\[(s\.l\.|s\.n\.)\]$/i, '').trim();
+  return v;
+}
+
+// Extraire l'année : "2004" ok, "[s.d.]" ou "DL 2022" selon la forme
+function extractYear(value) {
+  if (!value) return '';
+  const m = String(value).match(/\b(1[6-9]\d{2}|20\d{2})\b/);
+  return m ? m[1] : '';
+}
+
 // L'index CQL de la BnF se comporte de façon imprévisible sur certaines
 // combinaisons de mots ("petite syrène" renvoie 0 alors que "syrène" seul
 // renvoie 25 notices). On construit donc une liste de requêtes de plus en
@@ -671,8 +793,8 @@ async function fetchBnF(title, author) {
     // Éditeur et date : 214 (notices récentes) ou 210 (notices anciennes)
     const f214 = bnfFields(record, '214')[0] || {};
     const f210 = bnfFields(record, '210')[0] || {};
-    const publisher = f214.c || f210.c || '';
-    const pubDate = f214.d || f210.d || '';
+    const publisher = cleanPublisher(f214.c || f210.c || '');
+    const pubDate = extractYear(f214.d || f210.d || '');
 
     // ISBN : champ 010$a
     const f010 = bnfFields(record, '010')[0] || {};
@@ -775,6 +897,12 @@ async function enrich() {
   let needsReviewCount = 0;
   let quotaReached = false;
   let timeUp = false;
+  // Coupe-circuit : l'endpoint de recherche de Google Books renvoie des 503 par
+  // vagues. Réessayer coûte ~7 s par livre pour rien, donc après quelques échecs
+  // consécutifs on arrête de l'appeler et on continue avec BnF + Open Library.
+  let consecutiveGoogleFailures = 0;
+  let googleDegraded = false;
+  let googleSkippedCount = 0;
 
   console.log(`📊 Quota Google Books du jour : ${quotaState.googleCalls}/${GOOGLE_DAILY_CAP} utilisé(s).`);
 
@@ -795,7 +923,7 @@ async function enrich() {
     const hasOverride = overrides[slug];
     
     // Est-il déjà enrichi en français ?
-    const alreadyEnrichedInFrench = metadata[slug] && 
+    const alreadyEnrichedInFrench = metadata[slug] &&
                                     !isEnglishText(metadata[slug].description) &&
                                     (
                                       (metadata[slug].description && metadata[slug].description.trim() !== '') ||
@@ -863,8 +991,9 @@ async function enrich() {
     // Extraction des clés d'identifiants prioritaires depuis la ligne Google Sheet
     let isbn = (book.ISBN || '').toString().trim();
     const googleBooksId = (book.ID_GoogleBooks || '').toString().trim();
+    const sheetIsbn = isbn;
 
-    // Phase C : la BnF est interrogée en priorité pour les livres sans ISBN.
+    // La BnF est interrogée en priorité pour les livres sans ISBN.
     // Elle confirme l'existence de l'ouvrage dans sa version française et fournit
     // souvent l'ISBN, ce qui rend la recherche Google ci-dessous déterministe.
     // La BnF n'a aucun quota : elle est toujours tentée en premier.
@@ -877,75 +1006,119 @@ async function enrich() {
         console.log(`   📚 Notice BnF non confirmée (titre ${bnf.match.titleScore}, auteur ${bnf.match.authorScore}) — recherche sans ISBN BnF`);
       } else if (bnf.isbn) {
         isbn = bnf.isbn;
-        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}" (${bnf.publisher || 'éditeur inconnu'}${bnf.pubDate ? ', ' + bnf.pubDate : ''}) — ISBN ${isbn}`);
+        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — ISBN ${isbn}`);
       } else {
-        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}" (${bnf.publisher || 'éditeur inconnu'}${bnf.pubDate ? ', ' + bnf.pubDate : ''}) — mais sans ISBN dans la notice`);
+        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — mais sans ISBN dans la notice`);
       }
     }
 
+    // Ce que la BnF a permis d'établir sur ce livre, indépendamment des API
+    const bnfInfo = bnf && bnf.confirmed ? {
+      isbn: isbn || '',
+      publisher: bnf.publisher || '',
+      publishedDate: bnf.pubDate || '',
+      bnfRef: bnf.ark || ''
+    } : null;
+
     let enrichedData = null;
-    apiCallsCount++;
-    
-    try {
-      // 1ère tentative : Google Books API
-      const gbResult = await fetchGoogleBooks(titre, auteur, isbn, googleBooksId);
-      
-      if (gbResult) {
-        const info = gbResult.info; // validé par pickBestCandidate
-        const match = gbResult.match;
-        
-        // Extraire la description
-        let desc = info.description || '';
-        
-        // Mappage des genres (hybride : catégories + description/titre)
-        let genre = 'Inconnu';
-        if (info.categories && info.categories.length > 0) {
-          genre = mapCategoryToGenre(info.categories);
-        }
-        if (genre === 'Inconnu') {
-          genre = classifyBookText(titre, desc);
-        }
-        
-        // Extraire la couverture
-        let cover = '';
-        if (info.imageLinks) {
-          cover = info.imageLinks.medium || info.imageLinks.thumbnail || '';
-          if (cover.startsWith('http://')) {
-            cover = cover.replace('http://', 'https://');
-          }
-        }
-        
-        // Extraire l'ISBN
-        let resolvedIsbn = isbn;
-        if (!resolvedIsbn && info.industryIdentifiers) {
-          const isbn13 = info.industryIdentifiers.find(id => id.type === 'ISBN_13');
-          const isbn10 = info.industryIdentifiers.find(id => id.type === 'ISBN_10');
-          resolvedIsbn = isbn13 ? isbn13.identifier : (isbn10 ? isbn10.identifier : '');
-        }
-        
+
+    // 1) Open Library par ISBN : déterministe, gratuit, sans quota.
+    //    On ne récupère que la couverture : les descriptions Open Library sont
+    //    rarement en français et le contrôle de langue les rejettera de toute façon.
+    if (isbn && !hasOverride) {
+      const olIsbn = await fetchOpenLibraryCoverByIsbn(isbn);
+      if (olIsbn && olIsbn.coverUrl) {
         enrichedData = {
           title: titre,
           author: auteur,
-          // Titre/auteur réellement renvoyés par l'API : permet de détecter un appariement douteux
-          resolvedTitle: info.title || titre,
-          resolvedAuthor: Array.isArray(info.authors) ? info.authors.join(', ') : (info.authors || auteur),
-          description: desc,
-          genre: genre,
-          coverUrl: cover,
-          isbn: resolvedIsbn,
+          resolvedTitle: olIsbn.title || titre,
+          resolvedAuthor: olIsbn.author || auteur,
+          description: '',
+          genre: 'Inconnu',
+          coverUrl: olIsbn.coverUrl,
+          isbn: isbn,
           verified: true,
-          matchScore: match,
-          // Données de référence ajoutées par la BnF
-          publisher: bnf?.publisher || '',
-          publishedDate: bnf?.pubDate || '',
-          bnfRef: bnf?.ark || '',
-          // Un livre non confirmé par la BnF et non trouvé par les API est à revoir
+          matchScore: olIsbn.match,
+          publisher: bnfInfo ? bnfInfo.publisher : '',
+          publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
+          bnfRef: bnfInfo ? bnfInfo.bnfRef : '',
           needsReview: false,
           enrichedAt: new Date().toISOString(),
-          source: 'google_books'
+          source: 'open_library_isbn'
         };
+        console.log(`   📗 Couverture Open Library trouvée par ISBN ${isbn}`);
       }
-    } catch (err) {
+    }
+
+    // 2) Google Books, sauf si le coupe-circuit est ouvert
+    if (!enrichedData) {
+      if (googleDegraded) {
+        googleSkippedCount++;
+        console.log('   ⏭️  Google Books ignoré (service saturé)');
+      } else {
+        apiCallsCount++;
+        try {
+          const gbResult = await fetchGoogleBooks(titre, auteur, isbn, googleBooksId);
+          consecutiveGoogleFailures = 0;
+          if (gbResult) {
+            const info = gbResult.info; // validé par pickBestCandidate
+            const match = gbResult.match;
+
+            // Contrôle de langue : le catalogue est francophone
+            const descCheck = acceptDescription(info.description || '');
+            const desc = descCheck.keep ? (info.description || '') : '';
+            if (info.description && !descCheck.keep) {
+              console.log(`   🚫 Description écartée (${descCheck.reason})`);
+            }
+
+            // Mappage des genres (hybride : catégories + description/titre)
+            let genre = 'Inconnu';
+            if (info.categories && info.categories.length > 0) {
+              genre = mapCategoryToGenre(info.categories);
+            }
+            if (genre === 'Inconnu') {
+              genre = classifyBookText(titre, desc);
+            }
+
+            // Extraire la couverture
+            let cover = '';
+            if (info.imageLinks) {
+              cover = info.imageLinks.medium || info.imageLinks.thumbnail || '';
+              if (cover.startsWith('http://')) {
+                cover = cover.replace('http://', 'https://');
+              }
+            }
+
+            // Extraire l'ISBN
+            let resolvedIsbn = isbn;
+            if (!resolvedIsbn && info.industryIdentifiers) {
+              const isbn13 = info.industryIdentifiers.find(id => id.type === 'ISBN_13');
+              const isbn10 = info.industryIdentifiers.find(id => id.type === 'ISBN_10');
+              resolvedIsbn = isbn13 ? isbn13.identifier : (isbn10 ? isbn10.identifier : '');
+            }
+
+            enrichedData = {
+              title: titre,
+              author: auteur,
+              // Titre/auteur réellement renvoyés par l'API : permet de détecter un appariement douteux
+              resolvedTitle: info.title || titre,
+              resolvedAuthor: Array.isArray(info.authors) ? info.authors.join(', ') : (info.authors || auteur),
+              description: desc,
+              genre: genre,
+              coverUrl: cover,
+              isbn: resolvedIsbn,
+              verified: true,
+              matchScore: match,
+              // Données de référence ajoutées par la BnF
+              publisher: bnfInfo ? bnfInfo.publisher : '',
+              publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
+              bnfRef: bnfInfo ? bnfInfo.bnfRef : '',
+              needsReview: false,
+              enrichedAt: new Date().toISOString(),
+              source: 'google_books'
+            };
+          }
+        } catch (err) {
       if (err.message === "RATE_LIMIT_EXCEEDED") {
         console.error("⚠️ Quota journalier Google Books dépassé (Erreur 429).");
         quotaReached = true;
@@ -953,16 +1126,49 @@ async function enrich() {
         break;
       }
       if (err.message === "TEMPORARY_ERROR") {
-        // Google est saturé (503) : le livre n'est pas "absent", on le laisse intact
-        // pour qu'un run ultérieur le retente, plutôt que de le marquer not_found.
-        console.error("⚠️ Google Books temporairement indisponible — livre laissé intact pour un nouvel essai.");
+        // Google est saturé (503). On n'inscrit pas le livre comme "absent" :
+        // on conserve ce que la BnF a permis d'établir (ISBN, éditeur, année)
+        // et on le laisse ouvert pour un nouvel essai.
         temporaryErrorCount++;
         apiCallsCount--;
+        consecutiveGoogleFailures++;
+
+        if (bnfInfo && (bnfInfo.isbn || bnfInfo.publisher || bnfInfo.publishedDate)) {
+          const dejaConnu = metadata[slug];
+          metadata[slug] = Object.assign({}, dejaConnu || {}, {
+            title: titre,
+            author: auteur,
+            // On ne remplace la description que si elle est absente ou non française
+            description: dejaConnu && acceptDescription(dejaConnu.description).keep
+              ? dejaConnu.description : '',
+            genre: dejaConnu && dejaConnu.genre ? dejaConnu.genre : 'Inconnu',
+            coverUrl: dejaConnu ? (dejaConnu.coverUrl || '') : '',
+            isbn: bnfInfo.isbn || (dejaConnu ? dejaConnu.isbn : '') || sheetIsbn,
+            publisher: bnfInfo.publisher,
+            publishedDate: bnfInfo.publishedDate,
+            bnfRef: bnfInfo.bnfRef,
+            needsReview: true,
+            source: 'bnf_only',
+            enrichedAt: new Date().toISOString()
+          });
+          console.error('   📚 Données BnF conservées (ISBN, éditeur, année) malgré la panne.');
+        } else {
+          console.error('   ⚠️ Google Books indisponible et aucune donnée BnF — livre laissé intact.');
+        }
+
+        if (!googleDegraded && consecutiveGoogleFailures >= GOOGLE_FAILURE_THRESHOLD) {
+          googleDegraded = true;
+          console.error(`\n🔌 Google Books est saturé (${consecutiveGoogleFailures} échecs consécutifs).`);
+          console.error('   La suite du run se fait sans Google : BnF et Open Library uniquement.');
+          console.error('   Un nouveau run réessaiera demain.\n');
+        }
         continue;
       }
     }
-    
-    // 2ème tentative en fallback : Open Library
+    }
+    }   // fin du else (Google) et du if (!enrichedData)
+
+    // 3) Dernier recours : Open Library par titre + auteur
     if (!enrichedData && !quotaReached) {
       console.log(`   -> Fallback Open Library...`);
       const olResult = await fetchOpenLibrary(titre, auteur, isbn);
@@ -975,21 +1181,26 @@ async function enrich() {
         if (olResult.coverId) {
           cover = `https://covers.openlibrary.org/b/id/${olResult.coverId}-L.jpg`;
         }
+        // Contrôle de langue sur la description Open Library
+        const olDescCheck = acceptDescription(olResult.description || '');
+        if (olResult.description && !olDescCheck.keep) {
+          console.log(`   🚫 Description Open Library écartée (${olDescCheck.reason})`);
+        }
         
         enrichedData = {
           title: titre,
           author: auteur,
           resolvedTitle: olResult.title || titre,
           resolvedAuthor: olResult.author || auteur,
-          description: olResult.description || '',
+          description: olDescCheck.keep ? (olResult.description || '') : '',
           genre: genre,
           coverUrl: cover,
           isbn: olResult.isbn || isbn || '',
           verified: true,
           matchScore: olResult.match,
-          publisher: bnf?.publisher || '',
-          publishedDate: bnf?.pubDate || '',
-          bnfRef: bnf?.ark || '',
+          publisher: bnfInfo ? bnfInfo.publisher : '',
+          publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
+          bnfRef: bnfInfo ? bnfInfo.bnfRef : '',
           needsReview: false,
           enrichedAt: new Date().toISOString(),
           source: 'open_library'
@@ -1056,7 +1267,12 @@ async function enrich() {
   console.log(`Confirmés par la BnF          : ${bnfConfirmedCount}`);
   console.log(`À vérifier manuellement       : ${needsReviewCount}`);
   console.log(`Erreurs temporaires (à retenter): ${temporaryErrorCount}`);
+  console.log(`Livres sans Google (coupe-circuit): ${googleSkippedCount}`);
   console.log(`Total livres dans le cache     : ${Object.keys(metadata).length}`);
+  if (googleDegraded) {
+    console.log("🔌 Google Books est resté saturé pendant ce run :");
+    console.log('   les données BnF et Open Library ont tout de même été collectées.');
+  }
   if (temporaryErrorCount > 0) {
     console.log("ℹ️  Les livres en erreur temporaire n'ont pas été modifiés : relancez le script pour les retenter.");
   }

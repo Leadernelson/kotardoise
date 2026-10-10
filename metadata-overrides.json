@@ -75,7 +75,7 @@
     "isbn": "2070557774",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T18:45:51.445Z",
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
     "publisher": "Gallimard",
     "publishedDate": "2004",
     "bnfRef": "ark:/12148/cb392658478"
@@ -94,7 +94,7 @@
     "isbn": "",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
   },
   "sherlock-homes-son-dernier-coup-darchet-conan-doyle": {
     "description": "",
@@ -126,7 +126,7 @@
     "isbn": "",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
   },
   "contagion-robin-cook": {
     "description": "",
@@ -134,7 +134,7 @@
     "isbn": "",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
   },
   "je-toublierai-tous-les-jours-vassilis-alexakis": {
     "coverUrl": "https://covers.openlibrary.org/b/id/13018717-L.jpg",
@@ -176,7 +176,8 @@
     "coverUrl": "https://covers.openlibrary.org/b/id/981802-L.jpg",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "description": ""
   },
   "vipere-au-poing-herve-bazin": {
     "coverUrl": "https://covers.openlibrary.org/b/id/13622570-L.jpg",
@@ -242,7 +243,8 @@
     "coverUrl": "https://covers.openlibrary.org/b/id/353924-L.jpg",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "description": ""
   },
   "precoce-automne-louis-bromfield": {
     "coverUrl": "https://covers.openlibrary.org/b/id/13077166-L.jpg",
@@ -386,7 +388,8 @@
     "coverUrl": "https://covers.openlibrary.org/b/id/974380-L.jpg",
     "verified": true,
     "source": "override",
-    "enrichedAt": "2026-10-10T17:41:32.508Z"
+    "enrichedAt": "2026-10-10T19:40:21.936Z",
+    "description": ""
   },
   "une-femme-anne-delbee": {
     "coverUrl": "https://covers.openlibrary.org/b/id/11702625-L.jpg",
@@ -489,5 +492,287 @@
     "verified": true,
     "source": "override",
     "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "beckett-jean-anouilh": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "la-musique-du-hasard-paul-auster": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "eugenie-grandet-honore-balzac-de": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "le-jardin-des-finzi-contini-giorgio-bassani": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "linvitee-simone-beauvoir-de": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "en-attendant-godot-samuel-beckett": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "pour-toujours-judy-blume": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "une-saison-blanche-et-seche-andre-brink": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "haute-plainte-emiliy-bronte": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "da-vinci-code-dan-brown": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "monsieur-enderby-anthony-burgess": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "lhomme-revolte-albert-camus": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "alice-au-pays-des-merveilles-lewis-carroll": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "le-flux-et-le-reflux-agatha-christie": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "le-secret-des-chimneys-agatha-christie": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "octobre-rouge-tom-clancy": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "le-rapport-de-brodeck-philippe-claudel": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "le-chercheur-dor-j-m-g-clezio-le": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "expo-58-jonathan-coe": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "testament-a-langlaise-jonathan-coe": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "lalchimiste-paulo-coelho": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "maktub-paulo-coelho": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "disgrace-jm-coetzee": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "cheri-colette": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "gigi-colette": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "hunger-games-suzanne-collins": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "avec-intention-de-nuire-robin-cook": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "chromosome-6-robin-cook": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "invasion-robin-cook": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "memoires-mortes-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "dossier-benton-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "et-il-ne-restera-que-poussiere-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "linstinct-du-mal-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "la-sequence-des-corps-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "postmortem-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "sans-raison-patricia-cornwell": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "iceberg-clive-cussler": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "vixen-03-clive-cussler": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "lile-des-fleaux-nelson-demille": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "ubik-philip-dick": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "les-grandes-esperances-charles-dickens": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "zoology-ben-dolnick": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "les-aventures-de-sherlock-holmes-conan-doyle": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "sherlock-holmes-la-vallee-de-la-peur-conan-doyle": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "lamant-marguerite-duras": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "american-psycho-bret-easton-ellis": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
+  },
+  "la-nouvelle-cartage-georges-eekhoud": {
+    "description": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T19:40:21.936Z"
   }
 }

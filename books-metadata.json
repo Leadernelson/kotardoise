@@ -17,7 +17,8 @@
     "coverUrl": "https://covers.openlibrary.org/b/id/10559775-L.jpg",
     "isbn": "",
     "enrichedAt": "2026-07-27T16:17:51.370Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "une-histoire-tue-daniel-adam": {
     "title": "Une histoire tue",
@@ -37,7 +38,8 @@
     "coverUrl": "",
     "isbn": "9782804015848",
     "enrichedAt": "2026-07-27T16:18:31.941Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "benie-soit-sixtine-maylis-adhemar": {
     "title": "Bénie soit Sixtine",
@@ -97,7 +99,8 @@
     "coverUrl": "https://covers.openlibrary.org/b/id/8195895-L.jpg",
     "isbn": "",
     "enrichedAt": "2026-07-27T16:18:49.839Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "merci-pour-les-souvenirs-cecelia-ahern": {
     "title": "Merci pour les souvenirs",
@@ -117,7 +120,8 @@
     "coverUrl": "",
     "isbn": "9782235007658",
     "enrichedAt": "2026-07-27T16:19:10.918Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "requiem-anna-akhmantova": {
     "title": "Requiem",
@@ -137,7 +141,8 @@
     "coverUrl": "https://books.google.com/books/content?id=l1iNDgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "9782330078713",
     "enrichedAt": "2026-07-27T16:19:48.484Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "lamitie-francesco-alberoni": {
     "title": "L'amitié",
@@ -167,17 +172,19 @@
     "coverUrl": "",
     "isbn": "",
     "enrichedAt": "2026-07-27T16:22:50.047Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "je-toublierai-tous-les-jours-vassilis-alexakis": {
     "title": "Je t'oublierai tous les jours",
     "author": "Vassilis Alexakis",
     "description": "Au fantôme surgi un midi dans un restaurant d'Athènes, et qui n'est autre que sa mère aujourd'hui disparue, Vassilis Alexakis raconte ce qui est advenu depuis. Avec beaucoup de légèreté et d'humour, il relate la petite histoire, la sienne, ses amours, ses enfants, et la grande, les jeux Olympiques, la victoire de la Grèce à l'Euro 2004, le Rwanda, le 11 Septembre. Il évoque aussi, avec retenue et pudeur, l'enfance en Grèce, les vacances, les souvenirs du temps où sa mère vivait encore, poursuivant ainsi une conversation, l'ultime, avec celle qui lui donna le goût de la littérature.",
     "genre": "Comédie",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/13018717-L.jpg",
     "isbn": "9782070336364",
-    "enrichedAt": "2026-07-18T10:27:03.882Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "7-mers-et-13-rivieres-monica-ali": {
     "title": "7 mers et 13 rivières",
@@ -197,7 +204,8 @@
     "coverUrl": "",
     "isbn": "",
     "enrichedAt": "2026-07-27T16:23:05.892Z",
-    "source": "override"
+    "source": "override",
+    "verified": true
   },
   "anthologie-poetique-francaise-maurice-allem": {
     "title": "Anthologie: poétique française",
@@ -232,12 +240,24 @@
   "haute-pression-nicolas-ancion": {
     "title": "Haute pression",
     "author": "Nicolas Ancion",
-    "description": "",
+    "resolvedTitle": "Haute pression",
+    "resolvedAuthor": "Nicolas Ancion",
+    "description": "La canicule à Bruxelles rend les gens fous. On a besoin de pluie, on a besoin de fraîcheur. Nous ne sommes pas faits pour des étés pareils. Yvon Kempeneers est au bout du rouleau : sa vie, son boulot, tout est usé jusqu'à la corde. En plus, la météo est au beau fixe depuis des semaines, ce qui n'arrange rien. Jusqu'à ce qu'un soir, il roule trop vite sur la petite ceinture de Bruxelles, un verre dans le nez, et que sa vie bascule...",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:03:49.658Z",
-    "source": "not_found"
+    "isbn": "9782930351452",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "First international production",
+    "publishedDate": "2005",
+    "bnfRef": "ark:/12148/cb39909305w",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:08:27.708Z",
+    "source": "google_books"
   },
   "lhomme-qui-valait-35-milliards-nicolas-ancion": {
     "title": "L'homme qui valait 35 milliards",
@@ -256,8 +276,9 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/446546-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:40:48.068Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-petite-syrene-hans-christian-andersen": {
     "title": "La petite syrène",
@@ -274,10 +295,11 @@
     "author": "M. T.  Anderson",
     "description": "Chemistry of Functional Materials Surfaces and Interfaces: Fundamentals and Applications gives a descriptive account of interfacial phenomena step-by-step, from simple to complex, to provide readers with a strong foundation of knowledge in interfacial materials chemistry. Many case studies are provided to give real-world examples of problems and their solutions, allowing readers to make the connection between fundamental understanding and applications. Emerging applications in nanomaterials and nanotechnology are also discussed. Throughout the book, the author explains the common interface and surface equations, models, methods, and applications in the creation of functional materials. The goal of Chemistry of Functional Materials Surfaces and Interfaces is to provide readers with the basic understanding of the common tools of surface and interface chemistry for application in materials science and nanotechnology. This book is suitable for researchers and practitioners in the disciplines of materials science and engineering and surface and interface chemistry. - Includes numerous real-world examples and case studies throughout - Addresses emerging applications of interfacial materials chemistry in nanomaterials and nanotechnology - Provides the foundational concepts of surface and interfacial science with models, equation, and methods",
     "genre": "Inconnu",
-    "coverUrl": "https://books.google.com/books/content?id=vQAAEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
-    "isbn": "9780128231937",
-    "enrichedAt": "2026-07-27T16:03:53.113Z",
-    "source": "google_books"
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/2070557774-M.jpg",
+    "isbn": "2070557774",
+    "enrichedAt": "2026-10-10T18:45:51.445Z",
+    "source": "override",
+    "verified": true
   },
   "lart-de-se-gacher-la-vie-marie-noel-anderson": {
     "title": "L'art de se gâcher la vie",
@@ -344,10 +366,11 @@
     "author": "Jean Anglade",
     "description": "A partir d'une histoire vraie, Jean Anglade raconte, de ses mots enchanteurs, le roman de Rose Malartre ou le fabuleux destin d'une garde-barrière écrivain d'Auvergne... Rose a vécu sa jeunesse à la fin du 19e siècle, l'époque difficile où les enfants quittent les bancs de l'école pour travailler, où les mariages sont encore arrangés. La fillette, douce et studieuse élève, voulait être institutrice. La vie en décide autrement. Elle épouse Etienne le cantonnier et reste à la maison à s'occuper des enfants, de la belle-mère, des soucis ménagers. A la mort de son mari, Rose se voit confier le poste de garde-barrière. Là, sous les encouragements d'un ami, monsieur Pignol, homme érudit et fin lettré, elle s'adonne, à ses heures de loisir et entre deux trains, à l'écriture. Alentour tout un monde, drôle et insolite, celui de l'Auvergne verte des campagnes, de son langage, de ses coutumes, de ses gens vigoureux accrochés à leur terre ou à leur métier. Rose s'en nourrit pour rédiger sur son cahier d'écolier, à l'encre violette, quelques pages inspirées... Un roman lumineux et touchant : une ode à l'Auvergne et un hommage à l'écriture.",
     "genre": "Historique",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/11340137-L.jpg",
     "isbn": "9782258059962",
-    "enrichedAt": "2026-07-27T15:40:56.654Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "rendez-vous-christine-angot": {
     "title": "Rendez-vous",
@@ -552,12 +575,24 @@
   "les-lacets-du-piege-gj-arnaud": {
     "title": "Les lacets du piège",
     "author": "G.J. Arnaud",
+    "resolvedTitle": "Les Lacets du piège",
+    "resolvedAuthor": "G.-J. Arnaud",
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:10.347Z",
-    "source": "not_found"
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Editions Fleuve noir",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb329614792",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:09:16.687Z",
+    "source": "google_books"
   },
   "jai-quinze-ans-et-je-ne-veux-pas-mourir-christine-arnothy": {
     "title": "J'ai quinze ans et je ne veux pas mourir",
@@ -626,7 +661,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:12.932Z",
+    "publisher": "Zingo Ringo",
+    "publishedDate": "",
+    "bnfRef": "ark:/12148/cb500011781",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:09:19.896Z",
     "source": "not_found"
   },
   "pp-cul-vert-detective-prive-jean-philippe-arrou-vignod": {
@@ -644,20 +683,22 @@
     "author": "Jean-Philippe Arrou-Vignod",
     "description": "Une chasse au trésor : quelle aubaine pour Mathilde, Rémi et Pierre-Paul ! Les voilà lancés sur la piste d'une mysterieuse statuette qui semble intéresser beaucoup de monde... Beaucoup trop ! Les énigmes et les' dangers succèdent sans répit. Décidément, les vacances avec P.P.Cul-Vert, ce n est jamais la vie de château !",
     "genre": "Historique",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3076875-L.jpg",
     "isbn": "9782070624287",
-    "enrichedAt": "2026-07-27T15:41:33.203Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-dernier-adieu-reed-arvin": {
     "title": "Le dernier adieu",
     "author": "Reed Arvin",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10777103-L.jpg",
     "isbn": "9782702897676",
-    "enrichedAt": "2026-07-27T15:41:33.769Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "au-signe-du-seul-vivanta-frans-ashaes-de": {
     "title": "Au signe du seul vivanta",
@@ -836,7 +877,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:24.727Z",
+    "publisher": "Arbre",
+    "publishedDate": "1972",
+    "bnfRef": "ark:/12148/cb34235378v",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:09:55.253Z",
     "source": "not_found"
   },
   "lecoute-anne-autrique": {
@@ -884,10 +929,11 @@
     "author": "Marcel Aymé",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/9828604-L.jpg",
     "isbn": "9782070100279",
-    "enrichedAt": "2026-07-27T15:42:01.806Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-vouivre-marcel-ayme": {
     "title": "La vouivre",
@@ -965,8 +1011,12 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:26.123Z",
+    "isbn": "271443794X",
+    "publisher": "Belfond",
+    "publishedDate": "2002",
+    "bnfRef": "ark:/12148/cb388202015",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:10:04.611Z",
     "source": "not_found"
   },
   "le-couple-conscient-lydie-bader": {
@@ -994,10 +1044,11 @@
     "author": "Julianna Baggott",
     "description": "\" Je pourrais écrire un manuel, vous savez ? J'ai déjà des titres pour les chapitres : Comment survivre quand on n'a pas été Miss Amérique ? Comment survivre après avoir trouvé son mari dans le lit d'un homme ? Comment devenir une pute sans maquereau ? \" Une Miss qui perd ne doit jamais pleurer, jamais. Pourtant, la vie de Pixie n'est qu'une série de désillusions. Un père qui se noie un soir de cuite, une mère qui n'a jamais su lui donner d'amour, un premier mari devenu homosexuel, un second qui la délaisse, et un tragique secret de famille de plus en plus pesant... Dans ce récit à deux voix, celle de Pixie, Miss Amérique ratée, et celle de son fils Ezra, seize ans, Julianna Baggott ausculte avec une précision rare et un humour grinçant une famille américaine moderne. Le résultat est tour à tour touchant, cruel et drôle, tragiquement drôle.",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14497293-L.jpg",
     "isbn": "9782290338292",
-    "enrichedAt": "2026-07-27T15:42:15.533Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-perce-oreille-du-luxembourg-andre-baillon": {
     "title": "Le perce-oreille du Luxembourg",
@@ -1014,10 +1065,11 @@
     "author": "Othilie Bailly",
     "description": "Relaas van de mishandeling van een vijfjarig jongetje door zijn moeder en stiefvader.",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/981802-L.jpg",
     "isbn": "9782277230298",
-    "enrichedAt": "2026-07-27T15:42:17.396Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "laffaire-clara-miller-olivier-bal": {
     "title": "L'affaire Clara Miller",
@@ -1246,7 +1298,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:31.739Z",
+    "publisher": "Universal Music France",
+    "publishedDate": "2025",
+    "bnfRef": "ark:/12148/cb486167366",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:10:18.644Z",
     "source": "not_found"
   },
   "heureux-les-deliants-henry-bauchau": {
@@ -1336,7 +1392,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:33.668Z",
+    "publisher": "la Compagnie littéraire",
+    "publishedDate": "2014",
+    "bnfRef": "ark:/12148/cb451192008",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:10:29.830Z",
     "source": "not_found"
   },
   "la-mort-du-petit-cheval-herve-bazin": {
@@ -1354,10 +1414,11 @@
     "author": "Hervé Bazin",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/13622570-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:42:53.898Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-barbier-de-seville-beaumarchais": {
     "title": "Le barbier de Séville",
@@ -1404,19 +1465,32 @@
     "author": "Simone Beauvoir, de",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/37132-L.jpg",
     "isbn": "9782759300440",
-    "enrichedAt": "2026-07-27T15:42:58.561Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "linvitee-simone-beauvoir-de": {
     "title": "L'invitée",
     "author": "Simone Beauvoir, de",
+    "resolvedTitle": "L'invitée",
+    "resolvedAuthor": "Simone de Beauvoir",
     "description": "Existential novel which communicates the conflict of three protagonists: Pierre, Francois, and Xaviere, who are attracted to each other.",
     "genre": "Inconnu",
     "coverUrl": "https://books.google.com/books/content?id=kyctAAAAIAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:35.600Z",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Gallimard",
+    "publishedDate": "1980",
+    "bnfRef": "ark:/12148/cb34638296x",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:10:42.335Z",
     "source": "google_books"
   },
   "la-femme-rompue-simone-beauvoir-de": {
@@ -1444,10 +1518,11 @@
     "author": "simone Beauvoir, de",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/967211-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:43:04.798Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-papillon-christian-beck": {
     "title": "Le papillon",
@@ -1456,17 +1531,30 @@
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/10535152-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:43:05.959Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "en-attendant-godot-samuel-beckett": {
     "title": "En attendant Godot",
     "author": "Samuel Beckett",
+    "resolvedTitle": "En attendant Godot",
+    "resolvedAuthor": "Samuel Beckett",
     "description": "*Waiting for Godot* is a play by Irish author Samuel Beckett. It is Beckett's best-known literary work and is regarded by critics as \"one of the most enigmatic plays of modern literature.\" It was written (1948–1949), first published (1952), and first performed (1953) in French as *En attendant Godot. Waiting for Godot* is Beckett's own English-language adaptation. Subtitled \"tragicomedy in two acts\", it was published in 1954. As one of the foundational works of theatre, the play remains widely studied in academic and literary circles.\r\n\r\nIn *Waiting for Godot,* the two main characters, Vladimir (Didi) and Estragon (Gogo), spend their days waiting for someone named Godot, who they believe will provide them with salvation. They pass the time with conversations, physical routines, and philosophical musings, but their hope fades as Godot never arrives.",
     "genre": "Inconnu",
     "coverUrl": "https://covers.openlibrary.org/b/id/376471-L.jpg",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:37.782Z",
+    "isbn": "2707301485",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Ed. de Minuit",
+    "publishedDate": "1979",
+    "bnfRef": "ark:/12148/cb42155537w",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:10:46.445Z",
     "source": "open_library"
   },
   "o-les-beaux-jours-samuel-beckett": {
@@ -1566,8 +1654,9 @@
     "genre": "Drame",
     "coverUrl": "https://books.google.com/books/content?id=0OW_DQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     "isbn": "9782806103161",
-    "enrichedAt": "2026-07-27T15:43:15.303Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-dents-de-la-mer-peter-benchley": {
     "title": "Les dents de la mer",
@@ -1634,10 +1723,11 @@
     "author": "Juliette Benzoni",
     "description": "Tout à son amour, Orchidée, la petite princesse mandchoue, avait oublié la Chine et l'impératrice Ts'eu-hi qu'elle a trahie pour épouser Edouard. Mais, soudain, elle reçoit une terrible missive... Ts'eu-hi lui ordonne de regagner la Chine après avoir volé à Paris une agrafe qui appartenait à la famille impériale. La mort dans l'âme, Orchidée dérobe le bijou. Mais le cauchemar continue. Le lendemain, Edouard est assassiné. Et c'est elle que les domestiques accusent ! Effondrée, Orchidée prend la fuite. Direction Marseille, puis... A bord du Méditerranée-Express, elle rencontre enfin l'homme providentiel qui réussira peut-être à l'aider...",
     "genre": "Policier",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10436539-L.jpg",
     "isbn": "9782266119269",
-    "enrichedAt": "2026-07-27T15:43:21.062Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "suite-italienne-juliette-benzoni": {
     "title": "Suite italienne",
@@ -1724,10 +1814,11 @@
     "author": "Louis Bériot",
     "description": "A trente ans, Alexis entre dans la carrière notariale par amour pour une femme qui lui en préfère un autre. Le métier qu'il découvre l'enthousiasme vite. Plongé dans l'univers insolite et passionnant d'une étude, il devient le témoin - et souvent le médiateur - d'incroyables secrets de famille : unions, séparations, héritages, amour, argent... ou pire. Les confidences qu'il recueille quotidiennement l'étonnent, l'émeuvent ou l'inquiètent. Bref, la vie professionnelle d'Alexis s'annonce comme une réussite, sous la houlette de celui qui le guide dans son apprentissage. Mais ce qu'Alexis ignore, c'est que cet homme auprès de qui il travaille détient dans son coffre un secret : celui de sa naissance et de son enfance. Louis Bériot renoue ici avec la grande tradition romanesque. En écrivant L'Enfant secret, il dévoile la réalité d'un monde d'argent qui sert de révélateur aux passions et aux angoisses humaines.",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/2152772-L.jpg",
     "isbn": "9782259194150",
-    "enrichedAt": "2026-07-27T15:43:28.167Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-train-de-la-mort-christian-bernadac": {
     "title": "Le train de la mort",
@@ -1742,12 +1833,24 @@
   "dialogue-dombre-george-bernanos": {
     "title": "Dialogue d'ombre",
     "author": "George Bernanos",
-    "description": "",
+    "resolvedTitle": "Dialogue d'ombres",
+    "resolvedAuthor": "Georges Bernanos",
+    "description": "Ce recueil contient trois nouvelles d'importance majeure dans l'oeuvre de Bernanos: Madame Dargent (1922), Une nuit (1928) et Dialogue d'ombres (1928). Ces dernières montent un auteur plus que jamais obsédé par la mort et les inquiétudes face à cette ultime épreuve. La date de composition de cette nouvelle est inconnue. On suppose néanmoins que Bernanos a écrit Madame Dargent au cours des années 1919-1921. Cette première grande nouvelle de l'écrivain a été publiée en janvier 1922 dans la Revue hebdomadaire, puis en 1928 dans les Cahiers libres, en 1947 aux éditions La Palatine (Genève) et en 1955, chez Plon, dans un recueil intitulé Dialogue d'Ombres. (Notes et variantes, dans OEuvres romanesques, La Pléïade.)Trois courts récits d'importance majeure dans son oeuvre et pourtant méconnus sont rassemblés dans ce volume: Madame Dargent (1922), Une nuit (1928) et Dialogue d'ombres (1928), où l'auteur de Sous le soleil de Satan se révèle plus que jamais obsédé par la mort, cette ultime épreuve où s'affrontent le Bien et le Mal dans les obscurités de la conscience. Je voudrais dans mes livres lancer des escadrons d'images, confiait le jeune Bernanos à un ami. Cette volonté et cette énergie, il les mettait en oeuvre dès 1907- il avait alors dix-huit ans - dans ses premiers textes publiés que l'on trouvera encore ici: manifestations initiales d'un génie en devenir, nouvelles hachées, elliptiques où la vie rayonnante et le pur cauchemar, le plus âpre et le plus spirituel, nouaient déjà de formidables noces.",
     "genre": "Inconnu",
-    "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:44.763Z",
-    "source": "not_found"
+    "coverUrl": "https://books.google.com/books/content?id=bD2bzQEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+    "isbn": "9798643452256",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "",
+    "publishedDate": "1973",
+    "bnfRef": "ark:/12148/cb35964297k",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:11:06.071Z",
+    "source": "google_books"
   },
   "dialogue-des-carmelite-george-bernanos": {
     "title": "Dialogue des carmélite",
@@ -1802,12 +1905,24 @@
   "nouvelle-histoire-de-mouchette-georges-bernanos": {
     "title": "Nouvelle histoire de Mouchette",
     "author": "Georges Bernanos",
-    "description": "Relates the story of the young outcast peasant girl, Mouchette ... and her search for the compassion and strength to combat her loneliness.",
+    "resolvedTitle": "Nouvelle histoire de Mouchette",
+    "resolvedAuthor": "Georges Bernanos",
+    "description": "Georges Bernanos (1888-1948) \"Mais déjà le grand vent noir qui vient de l’ouest – le vent des mers, comme dit Antoine – éparpille les voix dans la nuit. Il joue avec elles un moment, puis les ramasse toutes ensemble et les jette on ne sait où, en ronflant de colère. Ce que Mouchette vient d’entendre reste longtemps suspendue entre ciel et terre, ...",
     "genre": "Inconnu",
-    "coverUrl": "https://covers.openlibrary.org/b/id/978195-L.jpg",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:04:48.113Z",
-    "source": "open_library"
+    "coverUrl": "https://books.google.com/books/content?id=3kQsEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+    "isbn": "9782374639000",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "Plon",
+    "publishedDate": "1936",
+    "bnfRef": "ark:/12148/cb39765708z",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:11:09.224Z",
+    "source": "google_books"
   },
   "un-crime-george-bernanos": {
     "title": "Un crime",
@@ -1846,8 +1961,9 @@
     "genre": "Historique",
     "coverUrl": "https://covers.openlibrary.org/b/id/977704-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:43:38.866Z",
-    "source": "open_library"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "dernieres-nouvelles-du-luxembourg-alain-bertrand-et-al": {
     "title": "Dernières nouvelles du Luxembourg",
@@ -2024,10 +2140,11 @@
     "author": "georgia bockoven",
     "description": "",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/10774780-L.jpg",
     "isbn": "9782744140273",
-    "enrichedAt": "2026-07-27T15:43:52.824Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-nouveaux-contes-de-la-cite-perdue-richard-bohringer": {
     "title": "Les nouveaux contes de la cité perdue",
@@ -2202,12 +2319,24 @@
   "le-grimoire-de-rubis-19-beatrice-botte": {
     "title": "Le grimoire de rubis (1–9)",
     "author": "Béatrice Botte",
+    "resolvedTitle": "Le grimoire au rubis",
+    "resolvedAuthor": "Béatrice Bottet",
     "description": "",
-    "genre": "Inconnu",
+    "genre": "Fantasy",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:04.105Z",
-    "source": "not_found"
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 0.9
+    },
+    "publisher": "Casterman",
+    "publishedDate": "2005",
+    "bnfRef": "ark:/12148/cb40080348z",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:11:41.825Z",
+    "source": "google_books"
   },
   "le-pacte-des-march-ombres-pierre-bottero": {
     "title": "le pacte des march ombres",
@@ -2224,10 +2353,11 @@
     "author": "patricia Bouchenot-dechin",
     "description": "C'est en 1662 que le jeune maître jardinier Henry Dupuis arrive à Versailles. Quarante années durant, il va exécuter les travaux voulus par Louis XIV et les projets d'André Le Nôtre. C'est à lui qu'incombe la transformation de ces jardins de fêtes en un véritable jardin de roi : il trace les parterres, aligne les allées, plante les milliers d'arbres exigés par le lieu, crée les salons de verdure, creuse le Grand Canal, aménage l'Orangerie... Quand il meurt en 1703, Henry Dupuis est gouverneur de l'Orangerie, chargé du parc et du pourtour du Canal. Pendant toutes ces années également, il a observé la cour et accueilli les visiteurs étrangers. Cet homme qui n'était qu'un nom dans les registres de paiements est un témoin de premier ordre. Patricia Bouchenot-Déchin, grâce à ses recherches, le fait revivre dans un récit plein de saveur. Avec lui resurgit tout un clan, celui des jardiniers, celui d'André Le Nôtre, son illustre parent ; resurgissent également leurs usages et leurs savoir-faire.",
     "genre": "Historique",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/3105429-L.jpg",
     "isbn": "9782262016227",
-    "enrichedAt": "2026-07-27T15:44:10.202Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "la-metamorphose-des-cloportes-alphonse-boudard": {
     "title": "La métamorphose des cloportes",
@@ -2334,10 +2464,11 @@
     "author": "Pierre Bourdieu",
     "description": "La 4e de couv. indique : \"Sous la direction de Pierre Bourdieu, une équipe de chercheurs s'est consacrée pendant trois ans à comprendre les conditions d'apparition des formes contemporaines de la misère sociale. La Cité, l'Ecole, la famille, le monde ouvrier, le sous-prolétariat, l'univers des employés, celui des paysans et des artisans, etc. : autant d'espaces où se nouent des conflits générateurs d'une souffrance dont la vérité est dite, ici, par ceux qui la vivent\"",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/964134-L.jpg",
     "isbn": "9782020920926",
-    "enrichedAt": "2026-07-27T16:05:11.011Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "rendez-vous-a-kerloch-francoise-bourdin": {
     "title": "Rendez-vous à Kerloc'h",
@@ -2412,12 +2543,24 @@
   "les-morts-rigolos-antoine-et-al-boute": {
     "title": "Les morts rigolos",
     "author": "Antoine, et al. Boute",
+    "resolvedTitle": "Les morts rigolos",
+    "resolvedAuthor": "Antoine Boute",
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:13.740Z",
-    "source": "not_found"
+    "isbn": "9782363831415",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "les Petits matins",
+    "publishedDate": "2014",
+    "bnfRef": "ark:/12148/cb43813878b",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:12:10.040Z",
+    "source": "open_library"
   },
   "les-curs-detruits-elizabeth-bowen": {
     "title": "Les cœurs détruits",
@@ -2434,10 +2577,11 @@
     "author": "William Boyd",
     "description": "L'affaire Carriscant commence-t-elle à Manille un matin de 1902, à l'instant où un brillant chirurgien jette les yeux sur une belle tireuse à l'arc ? Ou bien en 1936, à Los Angeles, lorsque Kay Fischer est abordée par un homme qui affirme être son père ? Ou encore à Lisbonne qui réunit les héros de cette surprenante aventure ? Intemporelle, insaisissable, l'affaire Carriscant est une merveilleuse histoire d'amour qui tient de la légende.",
     "genre": "Romance",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/963740-L.jpg",
     "isbn": "9782020283069",
-    "enrichedAt": "2026-07-27T15:44:26.803Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "ciel-seraing-frederic-bozidar": {
     "title": "Ciel Seraing",
@@ -2456,7 +2600,11 @@
     "genre": "Inconnu",
     "coverUrl": "",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:15.458Z",
+    "publisher": "du Pélican",
+    "publishedDate": "1987",
+    "bnfRef": "ark:/12148/cb34934101p",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:12:16.641Z",
     "source": "not_found"
   },
   "le-masque-de-lesperance-philippe-bradfer": {
@@ -2474,10 +2622,11 @@
     "author": "Anne Bragance",
     "description": "Jonas part le matin, Jonas rentre le soir. Toute la journée, Ada l'attend dans leur appartement, au huitième étage de la tour Azur. Se peut-il que cette vie soit celle dont ils rêvaient lorsqu'ils se sont mariés cinq ans plus tôt ? Jonas ne peut tolérer l'incursion de l'imprévu dans son quotidien. Ada, au contraire, n'aime rien tant que l'inconnu et les inconnus : elle s'ennuie et finit par dépérir dans son rôle de femme au foyer. Il y a longtemps que les deux époux ne se parlent plus, ne se connaissent plus. Comme tant d'autres, ils vivent ensemble et séparés, et chacun valse, solitaire, avec ses rêves et ses regrets.",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/4238782-L.jpg",
     "isbn": "9782742758449",
-    "enrichedAt": "2026-07-27T15:44:29.340Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "oeuvre-integral-jacques-brel": {
     "title": "Oeuvre intégral",
@@ -2494,10 +2643,11 @@
     "author": "Frank Brennan",
     "description": "Cambridge English Readers Is An Exciting New Series Of Original Fiction, Specially Written For Learners Of English. Graded Into Six Levels From Elementary To Advanced The Stories In This Series Provide Easy And Enjoyable Reading On A Wide Range Of Contemporary Topics And Themes.Each Of These Highly Entertaining Stories Centres Around One Of The Five Senses. We Meet Arlo, Who Will Stop At Nothing To Get Silence, Gopal Who Uses Smell To Protect The Memory Of His Sister, Kathy Whose Blindness Is Her Power, David Whose Tongue Is His Fortune, And Jamie Who Overdoes His Search For Physical Strength.",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/353924-L.jpg",
     "isbn": "9780521703321",
-    "enrichedAt": "2026-07-27T16:05:18.431Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "les-plus-beaux-mots-damour-jean-breton": {
     "title": "les plus beaux mots d'amour",
@@ -2544,10 +2694,11 @@
     "author": "Louis Bromfield",
     "description": "Il faut relire Louis Bromfield (1896-1956), qu'on ne trouve plus guère en librairie et qui fut entre les deux guerres l'un des plus subtils dénonciateurs du conformisme de la vertueuse et riche Amérique. Prix Pulitzer en 1926, Précoce automne (Early Autumn) est sans doute la meilleure introduction possible au versant américain de son œuvre (laquelle fréquenta aussi les chemins de l'Asie) : il révèle, chez ce fils de fermiers de l'Ohio, un continuateur inattendu de Thomas Hardy - dont il partage ici le pessimisme sans appel. Une jeune femme, mariée au dernier rejeton d'une vieille dynastie de la Nouvelle-Angleterre, découvre un assez méchant enfer derrière la façade de respectabilité et de puritanisme de sa nouvelle famille. Lucide mais manquant de ce courage qui permet de dire non, elle accepte sa vie de prisonnière mais fera tout pour que sa fille, parvenue à l'adolescence, échappe au piège des apparences. Un combat plus risqué qu'elle ne l'imagine. Bromfield jette un regard terrible sur la \" bonne \" société américaine ; et rejoint par d'autres chemins la vision que Ludwig Lewisohn (Le Destin de Mr. Crump) en proposait à la même époque exactement. Les choses ont-elles vraiment changé ?",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/13077166-L.jpg",
     "isbn": "9782859406233",
-    "enrichedAt": "2026-07-27T16:05:21.023Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "haute-plainte-emiliy-bronte": {
     "title": "Haute-Plainte",
@@ -2674,10 +2825,11 @@
     "author": "Serge Brussolo",
     "description": "Curiosité locale, la maison de poupées géante de la famille McGregor attire les touristes de tous les coins de la Floride. Interminable labyrinthe, elle abrite des poupées d'une beauté étrange. On dit que le fantôme d'une petite fille y aurait trouvé refuge. Depuis quelque temps la mort guette tous ceux qui s'y intéressent d'un peu trop près. Quelqu'un se décidera-t-il enfin à aller voir ce qui se cache derrière cette façade rose bonbon ? Et si oui, en reviendra-t-il vivant ? Prix du roman d'aventures 1994 avec Le Chien de minuit, Serge Brussolo restitue, avec un insurpassable sens du suspense et de l'angoisse, l'atmosphère lourde et vénéneuse des marais de Floride.",
     "genre": "Thriller",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/2158208-L.jpg",
     "isbn": "9782253170648",
-    "enrichedAt": "2026-07-27T15:44:47.304Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "milena-margaret-buber-neumann": {
     "title": "milena",
@@ -2694,10 +2846,11 @@
     "author": "Pearl Buck",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/6649477-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:23.527Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "le-roi-fantome-pearl-buck": {
     "title": "Le roi fantôme",
@@ -2714,10 +2867,11 @@
     "author": "Pearl Buck",
     "description": "",
     "genre": "Inconnu",
-    "coverUrl": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/14916990-L.jpg",
     "isbn": "",
-    "enrichedAt": "2026-07-27T15:44:51.218Z",
-    "source": "google_books"
+    "enrichedAt": "2026-10-10T17:41:32.508Z",
+    "source": "override",
+    "verified": true
   },
   "journal-dun-vieux-degeulasse-charles-bukowksi": {
     "title": "Journal d'un vieux dégeulasse",
@@ -2775,19 +2929,35 @@
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:27.571Z",
+    "isbn": "9782330092535",
+    "publisher": "Actes Sud",
+    "publishedDate": "2018",
+    "bnfRef": "ark:/12148/cb45450874n",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:13:11.218Z",
     "source": "not_found"
   },
   "les-meurtrieres-franz-andre-burguet": {
     "title": "Les meurtrières",
     "author": "Franz-André Burguet",
+    "resolvedTitle": "Les meurtrières",
+    "resolvedAuthor": "Frantz André Burguet",
     "description": "",
     "genre": "Inconnu",
     "coverUrl": "",
-    "isbn": "",
-    "enrichedAt": "2026-07-27T16:05:28.748Z",
-    "source": "not_found"
+    "isbn": "2246001404",
+    "verified": true,
+    "matchScore": {
+      "ok": true,
+      "titleScore": 1,
+      "authorScore": 1
+    },
+    "publisher": "B. Grasset",
+    "publishedDate": "1974",
+    "bnfRef": "ark:/12148/cb345614111",
+    "needsReview": false,
+    "enrichedAt": "2026-10-10T19:13:17.234Z",
+    "source": "open_library"
   },
   "arreter-de-piquet-mes-sous-nicole-buron-de": {
     "title": "Arreter de piquet mes sous",
