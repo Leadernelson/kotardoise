@@ -4,3 +4,8 @@ node_modules/
 dist/
 .netlify/
 .gemini/
+.audit-cache.json
+.recover-covers-cache.json
+audit-report.json
+recover-covers-report.json
+audit-sample.json

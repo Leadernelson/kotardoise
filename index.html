@@ -2661,8 +2661,17 @@
         console.warn("Échec du chargement de books-metadata.json, continuation sans métadonnées :", e);
         return null;
       });
+      // Corrections validées à la main : elles priment sur les métadonnées automatiques
+      const overridesPromise = fetch("./metadata-overrides.json").catch(e => {
+        console.warn("Échec du chargement de metadata-overrides.json :", e);
+        return null;
+      });
 
-      const [sheetRes, metadataRes] = await Promise.all([sheetPromise, metadataPromise]);
+      const [sheetRes, metadataRes, overridesRes] = await Promise.all([
+        sheetPromise,
+        metadataPromise,
+        overridesPromise
+      ]);
       
       if (!sheetRes.ok) {
         throw new Error(`Erreur HTTP Google Sheet: ${sheetRes.status} - ${sheetRes.statusText}`);
@@ -2680,18 +2689,42 @@
         }
       }
 
+      let overrides = {};
+      if (overridesRes && overridesRes.ok) {
+        try {
+          overrides = await overridesRes.json();
+          console.log(`✏️  Corrections manuelles chargées: ${Object.keys(overrides).length} livres.`);
+        } catch (e) {
+          console.warn("Erreur lors de la lecture des corrections manuelles:", e);
+        }
+      }
+
+      // Les corrections validées à la main priment sur les métadonnées automatiques.
+      // Fusion champ par champ : un override partiel ne doit pas effacer
+      // la description ou le genre déjà présents dans books-metadata.json.
+      for (const slug of Object.keys(overrides)) {
+        metadata[slug] = Object.assign({}, metadata[slug] || {}, overrides[slug]);
+      }
+
       // Fusionner les données en direct du Google Sheet avec les métadonnées statiques
       const data = rawData.map(livre => {
         const nomComplet = ((livre.Prénom || '') + ' ' + (livre.Famille || '')).trim() || livre.Auteur || '';
         const slug = slugify(livre.Titre + ' ' + nomComplet);
         const meta = metadata[slug] || {};
         
+        // Une métadonnée explicitement non vérifiée ne doit pas fournir de couverture
+        // ni de description : elles appartiendraient à un autre livre.
+        // Les entrées anciennes (sans champ "verified") restent considérées comme fiables.
+        const metaVerified = meta.verified !== false;
+        
         return {
           ...livre,
-          Description: meta.description || '',
+          Description: metaVerified ? (meta.description || '') : '',
           Genre: (livre.Genre && livre.Genre.trim() !== '') ? livre.Genre : (meta.genre || 'Inconnu'),
-          CoverURL: meta.coverUrl || '',
-          ISBN: meta.isbn || livre.ISBN || ''
+          CoverURL: metaVerified ? (meta.coverUrl || '') : '',
+          // L'ISBN du Sheet fait foi : celui des métadonnées peut provenir d'un
+          // appariement erroné et servirait alors une couverture d'un autre ouvrage.
+          ISBN: livre.ISBN || meta.isbn || ''
         };
       });
 

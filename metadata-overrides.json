@@ -68,5 +68,423 @@
     "isbn": "",
     "enrichedAt": "2026-07-27T16:23:05.892Z",
     "source": "override"
+  },
+  "interface-m-t-anderson": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "un-jour-jirai-a-new-york-avec-toi-bruno-et-al-belvaux-et-al": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "cadavre-x-patricia-cornwell": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "sherlock-homes-son-dernier-coup-darchet-conan-doyle": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-reine-et-la-favorite-simone-bertiere": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-papillon-christian-beck": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "contes-hans-christian-andersen": {
+    "description": "",
+    "coverUrl": "",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "contagion-robin-cook": {
+    "description": "",
+    "coverUrl": "https://covers.openlibrary.org/b/id/975536-L.jpg",
+    "isbn": "",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "je-toublierai-tous-les-jours-vassilis-alexakis": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/13018717-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-roi-des-fougeres-jean-anglade": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/11340137-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "sur-la-piste-de-la-salamandre-jean-philippe-arrou-vignod": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3076875-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-dernier-adieu-reed-arvin": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10777103-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-jument-verte-marcel-ayme": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/9828604-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "miss-amerique-ne-pleure-jamais-julianna-baggott": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14497293-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lenfant-dans-le-placard-othilie-bailly": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/981802-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "vipere-au-poing-herve-bazin": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/13622570-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "memoire-dune-jeune-fille-rangee-simone-beauvoir-de": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/37132-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-sang-des-autres-simone-beauvoir-de": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/967211-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-princesse-mandchoue-juliette-benzoni": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10436539-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lenfant-secret-louis-beriot": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/2152772-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lamour-dune-soeur-georgia-bockoven": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10774780-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "henry-dupuis-jardinier-de-louis-xiv-patricia-bouchenot-dechin": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3105429-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-misere-du-monde-pierre-bourdieu": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/964134-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lapres-midi-bleu-william-boyd": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/963740-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "une-valse-noire-anne-bragance": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/4238782-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "windows-of-the-mind-frank-brennan": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/353924-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "precoce-automne-louis-bromfield": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/13077166-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "les-enfants-du-crepuscule-serge-brussolo": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/2158208-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-patriote-pearl-buck": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/6649477-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "les-fils-de-wang-lung-pearl-buck": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14916990-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-harpe-et-lombre-alejo-carpentier": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3075330-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-maison-russie-john-carre-le": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/967896-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "notre-jeu-john-carre-le": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10571083-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "bete-et-mechant-cavanna": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/13118999-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "les-ritals-cavanna": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/8378651-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "je-suis-mal-dans-ta-peau-gilbert-cesbron": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14993309-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "chiens-perdus-sans-collier-gilbert-cesbron": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3110968-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-quatrieme-mur-sorj-chalandon": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10404565-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "couleur-du-temps-francoise-chandernagor": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3079691-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "je-ne-suis-pas-coupable-agatha-christie": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14590827-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-grand-ecart-jean-cocteau": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/458003-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "thomas-limposteur-jean-cocteau": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/13291540-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "les-nuits-fauves-cyril-collard": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10571098-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "une-vie-merveilleuse-laurie-colwin": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/11339154-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "polyeucte-corneille": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/5748757-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lart-du-bonheur-howard-cutler": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/981852-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-divina-commedia-dante": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/11621024-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-chambre-du-haut-mildred-davis": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3076569-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "dix-huit-heures-pour-mourir-jeffery-deaver": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3104039-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "cuba-libre-regine-deforges": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/974380-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "une-femme-anne-delbee": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/11702625-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-gang-des-reves-luca-di-fulvio": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14488914-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "parle-moi-un-peu-de-cuba-jesus-diaz": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/3149988-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-cause-des-enfants-francoise-dolto": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/2153686-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-bergere-de-chevaux-christiane-duchesne": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10773390-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "ange-pitou-alexandre-dumas": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14561733-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-reine-margot-alexandre-dumas": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14557277-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "les-mohicans-de-paris-alexandre-dumas": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/14563764-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-puce-a-loreille-claude-duneton": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/5453377-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lamante-anglaise-marguerite-duras": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/4172795-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "le-ravissement-de-lol-v-stein-marguerite-duras": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/967381-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "monsieur-ou-le-prince-des-tenebres-lawrence-durrell": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/13443967-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "une-femme-en-danger-james-elliott": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10866128-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "la-nuit-dobsidienne-francois-emmanuel": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/2171845-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "lhistoire-sans-fin-michael-ende": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10337889-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "les-oreilles-de-buster-maria-ernestam": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10108151-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
+  },
+  "un-miracle-en-equilibre-lucia-etxebarria": {
+    "coverUrl": "https://covers.openlibrary.org/b/id/10721157-L.jpg",
+    "verified": true,
+    "source": "override",
+    "enrichedAt": "2026-10-10T17:41:32.508Z"
   }
 }
