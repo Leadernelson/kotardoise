@@ -37,16 +37,6 @@
 
 /* Performance optimizations for mobile */
 @media (max-width: 768px) {
-  /* Désactiver les animations coûteuses sur mobile */
-  * {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-perspective: 1000;
-    perspective: 1000;
-  }
-  
   /* Optimiser les animations pour mobile */
   .book {
     animation: none !important; /* Désactiver les animations d'entrée sur mobile */
