@@ -1248,6 +1248,9 @@
         max-width: 100%;
         max-height: 100vh;
         height: 100vh;
+        max-height: 100dvh;
+        height: 100dvh;
+        overscroll-behavior: contain;
         border-radius: 0;
         padding: 1.25rem;
         padding-top: 3.5rem;
@@ -3000,7 +3003,33 @@
     console.log('- window.forceDataRefresh() : Force le rechargement des données');
 
     // --- FONCTIONS ET ÉVÉNEMENTS POUR LA MODALE DE DÉTAILS ---
-    
+
+    // Verrouillage du scroll de la page derrière les modales.
+    // overflow:hidden sur <body> se propage au viewport et remet le scroll à 0 :
+    // on sauvegarde donc la position pour la restaurer à la fermeture.
+    let modalScrollY = 0;
+    let isScrollLocked = false;
+
+    function lockScroll() {
+      if (isScrollLocked) return;
+      modalScrollY = window.scrollY || window.pageYOffset || 0;
+      isScrollLocked = true;
+      document.body.style.overflow = "hidden";
+    }
+
+    function unlockScroll() {
+      if (!isScrollLocked) return;
+      isScrollLocked = false;
+      document.body.style.overflow = "";
+      // Neutralise html { scroll-behavior: smooth } le temps du scrollTo,
+      // sinon la restauration serait animée et le saut resterait visible.
+      const html = document.documentElement;
+      const prevScrollBehavior = html.style.scrollBehavior;
+      html.style.scrollBehavior = "auto";
+      window.scrollTo(0, modalScrollY);
+      html.style.scrollBehavior = prevScrollBehavior;
+    }
+
     function openBookModal(livre) {
       const modal = document.getElementById("book-modal");
       const modalBody = modal.querySelector(".modal-body");
@@ -3052,11 +3081,11 @@
       
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden"; // Empêcher le scroll du body en arrière-plan
+      lockScroll(); // Empêcher le scroll du body en arrière-plan
       
       // Placer le focus sur le bouton de fermeture
       setTimeout(() => {
-        modal.querySelector(".modal-close").focus();
+        modal.querySelector(".modal-close").focus({ preventScroll: true });
       }, 50);
     }
     
@@ -3064,7 +3093,7 @@
       const modal = document.getElementById("book-modal");
       modal.classList.remove("open");
       modal.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = ""; // Réactiver le scroll
+      unlockScroll(); // Réactiver le scroll à la position initiale
     }
     
     // Événements de fermeture
@@ -3182,17 +3211,17 @@
       legalModalBody.innerHTML = LEGAL_TEXTS[type];
       legalModal.classList.add('open');
       legalModal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+      lockScroll();
       
       setTimeout(() => {
-        legalCloseBtn.focus();
+        legalCloseBtn.focus({ preventScroll: true });
       }, 50);
     }
 
     function closeLegalModal() {
       legalModal.classList.remove('open');
       legalModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      unlockScroll();
     }
 
     document.getElementById('link-legal').addEventListener('click', () => openLegalModal('legal'));
