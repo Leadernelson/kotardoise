@@ -189,7 +189,10 @@ function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0) {
         // 5xx = erreur serveur temporaire : on réessaie avec un délai croissant
         if (res.statusCode >= 500 && retries > 0) {
           const wait = 1000 * Math.pow(2, RETRY_ON_5XX - retries);
-          console.warn(`   ⚠️  HTTP ${res.statusCode} — nouvel essai dans ${wait} ms`);
+          // Pendant une panne, ces lignes se répètent trois fois par livre :
+          // elles sont journalisées avec le reste du livre et jetées si le
+          // livre n'apporte rien. La bannière du coupe-circuit, elle, reste.
+          dire(`   ⚠️  HTTP ${res.statusCode} — nouvel essai dans ${wait} ms`);
           setTimeout(() => resolve(httpGet(url, headers, retries - 1)), wait);
           return;
         }
@@ -247,7 +250,19 @@ function mapCategoryToGenre(categories) {
   if (text.includes('comedy') || text.includes('humor') || text.includes('comédie') || text.includes('funny') || text.includes('satire')) {
     return 'Comédie';
   }
-  
+  // Essai : placé en dernier car c'est le genre fourre-tout du non-fiction.
+  // Un essai sur l'histoire reste Historique, un essai fantastique reste
+  // Fantasy : seuls ceux qui n'entrent dans aucune autre case arrivent ici.
+  if (text.includes('essay') || text.includes('essai') || text.includes('non-fiction')
+    || text.includes('nonfiction') || text.includes('philosoph') || text.includes('politique')
+    || text.includes('politic') || text.includes('social science') || text.includes('sciences sociales')
+    || text.includes('sociolog') || text.includes('sociologie')
+    || text.includes('religion') || text.includes('psycholog') || text.includes('psychologie')
+    || text.includes('economie') || text.includes('economics') || text.includes('self-help')
+    || text.includes('development personnel')) {
+    return 'Essai';
+  }
+
   return 'Inconnu';
 }
 
@@ -363,7 +378,12 @@ function classifyBookText(title, description, categoryText = '') {
   if (text.match(/\b(aventure|adventure|action|voyage|exploration|survie|naufrage|tresor|ile deserte|jungle|expedition|odyssee|quetes|quete)\b/)) {
     return 'Aventure';
   }
-  
+  // 11. Essai : le plus large des genres, donc en dernier. Un essai
+  // historique reste Historique, un essai sur la magie reste Fantasy.
+  if (text.match(/\b(essai|essais|essay|essays|non-fiction|nonfiction|philosophie|philosophe|politique|sociologie|religion|psychologie|economie|developpement personnel|reflexion)\b/)) {
+    return 'Essai';
+  }
+
   return 'Inconnu';
 }
 
@@ -922,6 +942,39 @@ async function fetchBnF(title, author) {
   return { ...best, confirmed, searchedOn: found.variant, relaxed: found.attempt > 0 };
 }
 
+// Journal par livre.
+//
+// Un run passe en revue 2 181 lignes ;ahn dont la grande majorité ne gagne
+// rien. Écrire trois lignes pour chaque livre produit un log de plusieurs
+// centaines de lignes où le résultat réel passe inaperçu. On met donc le
+// journal de chaque livre en tampon, et on ne l'affiche que si le livre a
+// réellement changé — c'est-à-dire s'il a été trouvé, ou si la BnF a ajouté
+// une référence. --verbose rétablit le journal exhaustif.
+const VERBOSE = process.argv.includes('--verbose');
+let journalCourant = [];
+// Nombre de livres ayant réellement rapporté quelque chose depuis la dernière
+// sauvegarde : sans cela, « Progression sauvegardée » s'affiche une centaine
+// de fois sur un run complet.
+let gainsDepuisSauvegarde = 0;
+
+function dire(ligne) {
+  if (VERBOSE) {
+    console.log(ligne);
+    return;
+  }
+  journalCourant.push(ligne);
+}
+
+function viderJournal(garder) {
+  if (journalCourant.length) {
+    if (garder) {
+      for (const l of journalCourant) console.log(l);
+      gainsDepuisSauvegarde++;
+    }
+    journalCourant = [];
+  }
+}
+
 // Fonction principale d'enrichissement
 async function enrich() {
   console.log("🚀 Démarrage du script d'enrichissement...");
@@ -1105,7 +1158,7 @@ async function enrich() {
       await new Promise(resolve => setTimeout(resolve, REQUEST_DELAY));
     }
     
-    console.log(`\n🔍 [${i+1}/${books.length}] Enrichissement de: "${titre}" par "${auteur}"`);
+    dire(`\n🔍 [${i+1}/${books.length}] Enrichissement de: "${titre}" par "${auteur}"`);
     
     // Extraction des clés d'identifiants prioritaires depuis la ligne Google Sheet
     let isbn = (book.ISBN || '').toString().trim();
@@ -1141,17 +1194,17 @@ async function enrich() {
     if (!isbn) {
       bnf = await fetchBnF(titre, auteur);
       if (!bnf) {
-        console.log('   📚 Aucune notice BnF — le livre sera marqué pour revue humaine');
+        dire('   📚 Aucune notice BnF — le livre sera marqué pour revue humaine');
       } else if (!bnf.confirmed) {
-        console.log(`   📚 Notice BnF non confirmée (titre ${bnf.match.titleScore}, auteur ${bnf.match.authorScore}) — recherche sans ISBN BnF`);
+        dire(`   📚 Notice BnF non confirmée (titre ${bnf.match.titleScore}, auteur ${bnf.match.authorScore}) — recherche sans ISBN BnF`);
       } else if (bnf.isbn) {
         isbn = bnf.isbn;
-        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — ISBN ${isbn}`);
+        dire(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — ISBN ${isbn}`);
       } else {
-        console.log(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — mais sans ISBN dans la notice`);
+        dire(`   📚 BnF confirmée : "${bnf.notifTitle}"${bnf.publisher ? ' (' + bnf.publisher + (bnf.pubDate ? ', ' + bnf.pubDate : '') + ')' : ''} — mais sans ISBN dans la notice`);
       }
     } else if (bnf && bnf.fromCache) {
-      console.log(`   📚 Référence BnF réutilisée du cache (ISBN ${isbn})`);
+      dire(`   📚 Référence BnF réutilisée du cache (ISBN ${isbn})`);
     }
 
     // Ce que la BnF a permis d'établir sur ce livre, indépendamment des API
@@ -1188,7 +1241,7 @@ async function enrich() {
           enrichedAt: new Date().toISOString(),
           source: 'open_library_isbn'
         };
-        console.log(`   📗 Couverture Open Library trouvée par ISBN ${isbn}`);
+        dire(`   📗 Couverture Open Library trouvée par ISBN ${isbn}`);
       }
     }
 
@@ -1221,7 +1274,7 @@ async function enrich() {
             const descCheck = acceptDescription(info.description || '');
             const desc = descCheck.keep ? (info.description || '') : '';
             if (info.description && !descCheck.keep) {
-              console.log(`   🚫 Description écartée (${descCheck.reason})`);
+              dire(`   🚫 Description écartée (${descCheck.reason})`);
             }
 
             // Mappage des genres (hybride : catégories + description/titre)
@@ -1276,6 +1329,7 @@ async function enrich() {
         console.error("⚠️ Quota journalier Google Books dépassé (Erreur 429).");
         quotaReached = true;
         apiCallsCount--;
+        viderJournal(false);
         break;
       }
       if (err.message === "TEMPORARY_ERROR") {
@@ -1304,10 +1358,13 @@ async function enrich() {
             source: 'bnf_only',
             enrichedAt: new Date().toISOString()
           });
-          console.error('   📚 Données BnF conservées (ISBN, éditeur, année) malgré la panne.');
+          dire('   📚 Données BnF conservées (ISBN, éditeur, année) malgré la panne.');
         } else {
-          console.error('   ⚠️ Google Books indisponible et aucune donnée BnF — livre laissé intact.');
+          dire('   ⚠️ Google Books indisponible et aucune donnée BnF — livre laissé intact.');
         }
+        // Pendant une panne, ces lignes se répètent sur des dizaines de livres :
+        // la bannière du coupe-circuit explique déjà la situation.
+        viderJournal(false);
         continue;
       }
     }
@@ -1316,7 +1373,7 @@ async function enrich() {
 
     // 3) Dernier recours : Open Library par titre + auteur
     if (!enrichedData && !quotaReached) {
-      console.log(`   -> Fallback Open Library...`);
+      dire(`   -> Fallback Open Library...`);
       const olResult = await fetchOpenLibrary(titre, auteur, isbn);
       if (olResult) {
         let genre = mapCategoryToGenre(olResult.subjects);
@@ -1330,7 +1387,7 @@ async function enrich() {
         // Contrôle de langue sur la description Open Library
         const olDescCheck = acceptDescription(olResult.description || '');
         if (olResult.description && !olDescCheck.keep) {
-          console.log(`   🚫 Description Open Library écartée (${olDescCheck.reason})`);
+          dire(`   🚫 Description Open Library écartée (${olDescCheck.reason})`);
         }
         
         enrichedData = {
@@ -1373,7 +1430,7 @@ async function enrich() {
       });
       successCount++;
       if (bnf && bnf.confirmed) bnfConfirmedCount++;
-      console.log(`   ✅ Trouvé! Genre: ${metadata[slug].genre} | Source: ${metadata[slug].source}`);
+      dire(`   ✅ Trouvé! Genre: ${metadata[slug].genre} | Source: ${metadata[slug].source}`);
     } else {
       // Rien trouvé de neuf. On ne remplace PAS l'existant : un livre qui avait
       // déjà une couverture ou une description française la garde, et on se
@@ -1400,15 +1457,26 @@ async function enrich() {
       });
       failureCount++;
       if (metadata[slug].needsReview) needsReviewCount++;
-      console.log(`   ❌ Rien de neuf. ${metadata[slug].coverUrl ? 'Couverture conservée.' : 'Toujours sans couverture.'}${bnf && bnf.confirmed ? ' Référence BnF conservée.' : ''}`);
+      dire(`   ❌ Rien de neuf. ${metadata[slug].coverUrl ? 'Couverture conservée.' : 'Toujours sans couverture.'}${bnf && bnf.confirmed ? ' Référence BnF conservée.' : ''}`);
     }
 
-    // Sauvegarder périodiquement pour ne pas perdre la progression
+    // Ce livre a-t-il réellement rapporté quelque chose ? Si oui on montre son
+    // journal, sinon on le jette : c'est ce qui transforme un log de mille
+    // lignes en une dizaine.
+    viderJournal(!!enrichedData || !!(bnf && bnf.confirmed));
+
+    // Sauvegarder périodiquement pour ne pas perdre la progression. Le fichier
+    // est réécrit dans tous les cas : c'est une garantie de ne rien perdre si
+    // le run s'interrompt. Seule la ligne de journal est conditionnelle, pour
+    // ne pas annoncer une sauvegarde qui n'a rien changé.
     const totalProcessed = successCount + failureCount;
     if (totalProcessed > 0 && totalProcessed % 15 === 0) {
       try {
         fs.writeFileSync(METADATA_FILE, JSON.stringify(metadata, null, 2), 'utf-8');
-        console.log(`   💾 Progression sauvegardée périodiquement (${totalProcessed} nouveaux livres enregistrés).`);
+        if (VERBOSE || gainsDepuisSauvegarde > 0) {
+          console.log(`   💾 Progression sauvegardée périodiquement (${totalProcessed} nouveaux livres enregistrés).`);
+        }
+        gainsDepuisSauvegarde = 0;
       } catch (e) {
         console.error("   ⚠️ Erreur de sauvegarde intermédiaire :", e.message);
       }
@@ -1451,4 +1519,32 @@ async function enrich() {
   console.log("==========================================");
 }
 
-enrich();
+// Le script s'auto-exécute lorsqu'on le lance directement, mais reste
+// importable : review-cli.js réutilise ces fonctions plutôt que de les
+// recopier, pour n'avoir qu'une seule implémentation du scoring, du
+// contrôle de langue et du nettoyage des données BnF.
+if (require.main === module) {
+  enrich();
+}
+
+module.exports = {
+  enrich,
+  fetchBnF,
+  fetchOpenLibrary,
+  fetchOpenLibraryCoverByIsbn,
+  fetchGoogleBooks,
+  matchScore,
+  scoreTitle,
+  scoreAuthor,
+  acceptDescription,
+  classifyBookText,
+  mapCategoryToGenre,
+  detectLanguage,
+  isCatalogDumping,
+  cleanPublisher,
+  extractYear,
+  normalizeIsbn,
+  slugify,
+  googleUnhealthy,
+  SHEET_URL
+};

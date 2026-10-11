@@ -1096,6 +1096,7 @@
     .tag-historique { background-color: #fdf6e2; color: #b7791f; }
     .tag-drame { background-color: #faf5ff; color: #7e22ce; }
     .tag-comedie { background-color: #ecfeff; color: #0891b2; }
+    .tag-essai { background-color: #f5f3ff; color: #6d28d9; }
     .tag-inconnu { background-color: #f8fafc; color: #64748b; }
     
     .book {
@@ -1829,8 +1830,9 @@
         <button class="genre-btn" data-genre="Policier">🕵️ Policier</button>
         <button class="genre-btn" data-genre="Historique">📜 Historique</button>
         <button class="genre-btn" data-genre="Drame">🎭 Drame</button>
-        <button class="genre-btn" data-genre="Comédie">😄 Comédie</button>
-        <button class="genre-btn" data-genre="Inconnu">❓ Inconnu</button>
+      <button class="genre-btn" data-genre="Comédie">😄 Comédie</button>
+      <button class="genre-btn" data-genre="Essai">📝 Essai</button>
+      <button class="genre-btn" data-genre="Inconnu">❓ Inconnu</button>
       </div>
       
       <div class="reset-container">
@@ -2087,6 +2089,7 @@
         case 'drame': return '🎭';
         case 'comedie':
         case 'comédie': return '😄';
+        case 'essai': return '📝';
         default: return '🏷️';
       }
     }

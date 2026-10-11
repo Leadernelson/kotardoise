@@ -11,4 +11,5 @@ recover-covers-report.json
 audit-sample.json
 .quota-state.json
 .enrich-snapshot/
+.review-progress.json
 enrich-run.log

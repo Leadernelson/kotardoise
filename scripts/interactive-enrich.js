@@ -79,6 +79,7 @@ function mapCategoryToGenre(categories) {
   if (text.includes('history') || text.includes('historique') || text.includes('biography')) return 'Historique';
   if (text.includes('drama') || text.includes('drame')) return 'Drame';
   if (text.includes('comedy') || text.includes('humour') || text.includes('comédie')) return 'Comédie';
+  if (text.includes('essay') || text.includes('essai') || text.includes('non-fiction') || text.includes('philosoph')) return 'Essai';
   return 'Inconnu';
 }
 
@@ -94,6 +95,7 @@ function classifyBookText(title, description, categoryText = '') {
   if (text.match(/\b(drame|tragique|tragedie|deuil|orphelin|maladie|accident|suicide)\b/)) return 'Drame';
   if (text.match(/\b(comedie|comédie|humour|drole|drôle|rigolo|amusant|rires)\b/)) return 'Comédie';
   if (text.match(/\b(aventure|adventure|action|voyage|exploration|survie|tresor)\b/)) return 'Aventure';
+  if (text.match(/\b(essai|essais|essay|essays|non-fiction|nonfiction|philosophie|philosophe|politique|sociologie|religion|psychologie|economie|reflexion)\b/)) return 'Essai';
   return 'Inconnu';
 }
 

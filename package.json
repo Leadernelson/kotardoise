@@ -14,6 +14,9 @@
     "recover": "node scripts/recover-covers.js",
     "review": "node scripts/review-queue.js",
     "review:all": "node scripts/review-queue.js --template",
+    "review:cli": "node scripts/review-cli.js",
+    "review:genres": "node scripts/review-cli.js --genres",
+    "review:list": "node scripts/review-cli.js --list",
     "ping": "node scripts/keep-supabase-alive.js",
     "keep-alive": "node scripts/keep-supabase-alive.js"
   }

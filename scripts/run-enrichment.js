@@ -120,6 +120,18 @@ function diffAgainst(snapshotNames) {
 
 // --- Exécution ------------------------------------------------------------
 
+// Un Ctrl+C sous Windows termine le processus avec le code 3221225786
+// (0xC000013A, STATUS_CONTROL_C_EXIT) et sans signal. Sous Unix, Node reçoit
+// SIGINT. Présenter cela comme un échec est trompeur : les contrôles
+// d'intégrité montrent que les données sont parfaitement saines.
+function estInterruption(code, signal, demande) {
+  return Boolean(demande)
+    || signal === 'SIGINT'
+    || code === 130
+    || code === 3221225786
+    || code === null;
+}
+
 function main() {
   console.log('╔══════════════════════════════════════════════════════╗');
   console.log('║  Enrichissement local borné                          ║');
@@ -192,8 +204,18 @@ function main() {
     log.end();
     const elapsed = Math.round((Date.now() - startedAt) / 1000);
 
+    // Un Ctrl+C sous Windows termine le processus avec le code 3221225786
+    // (0xC000013A, STATUS_CONTROL_C_EXIT). Le présenter comme un échec est
+    // trompeur : les contrôles d'intégrité qui suivent montrent que les
+    // données sont saines.
+    const interrompu = estInterruption(code, signal, interrupted);
+
     console.log('\n' + '─'.repeat(56));
-    console.log(`  Run terminé en ${Math.floor(elapsed / 60)} min ${elapsed % 60} s (code ${code}${signal ? ', signal ' + signal : ''})`);
+    if (interrompu) {
+      console.log(`  Run arrêté sur demande après ${Math.floor(elapsed / 60)} min ${elapsed % 60} s.`);
+    } else {
+      console.log(`  Run terminé en ${Math.floor(elapsed / 60)} min ${elapsed % 60} s (code ${code}${signal ? ', signal ' + signal : ''})`);
+    }
     console.log('─'.repeat(56) + '\n');
 
     // --- Contrôle d'intégrité : c'est la garantie "sans casser" ---
@@ -233,10 +255,24 @@ function main() {
         console.log(`\n  Bilan : couvertures ${d('covers') >= 0 ? '+' : ''}${d('covers')}, descriptions ${d('descriptions') >= 0 ? '+' : ''}${d('descriptions')}, genres ${d('genres') >= 0 ? '+' : ''}${d('genres')}`);
         console.log(`  Total_metadata : ${after.total} entrées | ${after.review} à vérifier | ${after.bnf} référencés à la BnF`);
       }
-      if (code === 0) clearSnapshot();
-      else console.log('\n  Note : code de sortie non nul, l\'instantané est conservé pour inspection.');
+      if (interrompu) {
+        console.log('\n  ⏸️  Arrêt demandé de votre part. Les contrôles d’intégrité sont passés,');
+        console.log('     les données sont cohérentes : relancez pour reprendre où ça s’est arrêté.');
+        clearSnapshot();
+      } else if (code === 0) {
+        clearSnapshot();
+      } else {
+        console.log('\n  ⚠️  Code de sortie non nul sans interruption : l’instantané est conservé pour inspection.');
+      }
     }
     process.exit(0);
-  });}
+  });
+}
 
-main();
+// Le wrapper ne démarre que lorsqu'on le lance : l'importer, par exemple pour
+// tester estInterruption, ne doit pas déclencher un enrichissement.
+if (require.main === module) {
+  main();
+}
+
+module.exports = { estInterruption };
