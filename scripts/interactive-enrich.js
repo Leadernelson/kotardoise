@@ -1,7 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const readline = require('readline');
+
+// Le pipeline d'enrichissement partage désormais UNE SEULE couche HTTP, celle
+// qui survit aux 503 de Google Books (backoff exponentiel + gigue). La version
+// locale de ce fichier ne réessayait pas du tout et résolvait statusCode 500
+// sur la moindre erreur réseau : Google Books ne renvoyait donc jamais rien
+// ici, silencieusement.
+const { httpGet } = require('./enrich-books');
 
 // 1. Charger les variables d'environnement (.env)
 try {
@@ -39,30 +45,6 @@ function slugify(text) {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
-}
-
-// Helper HTTP GET
-function httpGet(url, headers = {}) {
-  return new Promise((resolve, reject) => {
-    https.get(url, {
-      headers: {
-        'User-Agent': 'KotArdoiseLibraryBot/2.0 (contact: info@kotardoise.be)',
-        ...headers
-      }
-    }, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          resolve({ statusCode: res.statusCode, body: data });
-        } catch (e) {
-          resolve({ statusCode: 500, body: '' });
-        }
-      });
-    }).on('error', () => {
-      resolve({ statusCode: 500, body: '' });
-    });
-  });
 }
 
 // Helper: Mappage du genre

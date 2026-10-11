@@ -45,33 +45,72 @@ const REQUEST_DELAY = 100; // Délai en ms entre les requêtes pour respecter le
 // fichier afin qu'un run interrompu puisse reprendre le lendemain sans recalculer.
 const GOOGLE_DAILY_CAP = parseInt(process.env.GOOGLE_DAILY_CAP || '900', 10);
 const QUOTA_STATE_FILE = path.join(__dirname, '../.quota-state.json');
-const RETRY_ON_5XX = 3; // Nombre de tentatives sur erreur serveur transitoire (503 notamment)
 
-// --- Surveillance de la santé de Google Books ---
-// L'endpoint de recherche renvoie des 503 par vagues : on a mesuré 92 %
-// d'échec, avec des séries d'échecs séparées par un succès isolé. Compter
-// les échecs consécutifs ne fonctionne donc pas : un seul succès intercalé
-// remet le compteur à zéro et le coupe-circuit ne s'ouvre jamais.
+// --- Stratégie de réessai sur erreur transitoire ---
 //
-// On juge donc sur une fenêtre glissante des N derniers appels, et on
-// n'abandonne pas Google définitivement : après un délai de refroidissement
-// on réessaie, au cas où la panne serait terminée.
-const GOOGLE_WINDOW = parseInt(process.env.GOOGLE_WINDOW || '10', 10);
-const GOOGLE_UNHEALTHY_RATE = parseFloat(process.env.GOOGLE_UNHEALTHY_RATE || '0.6');
-const GOOGLE_COOLDOWN_MIN = parseFloat(process.env.GOOGLE_COOLDOWN_MIN || '10');
-const GOOGLE_MIN_SAMPLES = 6; // en dessous, on ne conclut pas
+// L'endpoint de RECHERCHE de Google Books (/volumes?q=…) est dégradé chez
+// Google : il renvoie des 503 « backendFailed » par vagues, y compris pour des
+// requêtes valides et déjà éprouvées. C'est un problème côté Google, documenté
+// publiquement (Publisher Center, juillet 2026 : « the Google Books API will
+// always return a 503 error code when the "q" URL param is used » ; Issue
+// Tracker 536042535 ; StackOverflow 56579891). On a mesuré ~80 % d'échec sur
+// cet endpoint, avec 4 à 7 tentatives nécessaires pour obtenir un 200.
+//
+// L'ancien réglage — 3 tentatives, délais fixes 1 s / 2 s / 4 s — était
+// insuffisant : à 80 % d'échec, P(4 échecs d'affilée) ≈ 45 %, et le livre
+// était alors perdu. D'où les « 503 tout le temps » observés.
+//
+// Google recommande officiellement un backoff exponentiel tronqué AVEC GIGUE
+// (« truncated exponential backoff with introduced jitter ») : la gigue évite
+// que tous les clients réessayent au même instant et ne s'entre-saturant.
+const RETRY_ON_5XX = parseInt(process.env.GOOGLE_RETRIES || '10', 10); // tentatives après l'essai initial
+const RETRY_BASE_MS = parseInt(process.env.GOOGLE_RETRY_BASE_MS || '400', 10); // premier délai
+const RETRY_MAX_MS = parseInt(process.env.GOOGLE_RETRY_MAX_MS || '8000', 10); // plafond d'un délai
+const RETRY_JITTER = 0.5; // part d'aléatoire : ±50 % du délai de base
+const REQUEST_TIMEOUT_MS = parseInt(process.env.HTTP_TIMEOUT_MS || '30000', 10); // socket bloquée
+
+// Délai avant la n-ième tentative (attempt 0 = premier échec) : exponentiel
+// tronqué, plus une gigue aléatoire pour désynchroniser les clients.
+function backoffDelay(attempt) {
+  const base = Math.min(RETRY_BASE_MS * Math.pow(2, attempt), RETRY_MAX_MS);
+  const jitter = base * RETRY_JITTER * (Math.random() * 2 - 1);
+  // Le plafond porte sur la valeur finale : sinon la gigue ferait dépasser
+  // RETRY_MAX_MS et le réglage ne serait plus un plafond.
+  return Math.max(50, Math.min(RETRY_MAX_MS, Math.round(base + jitter)));
+}
+
+// --- Coupe-circuit Google Books (DÉSACTIVÉ PAR DÉFAUT) ---
+//
+// L'ancien réglage — 60 % d'échec sur 10 appels, pause de 10 minutes — avait
+// l'effet inverse de celui recherché. Google Books étant en panne partielle
+// permanente (~80 % de 503), le coupe-circuit s'ouvrait après ~6 livres et
+// Google n'était plus interrogé du tout : c'est ce qui explique les 40 appels
+// par jour relevés dans .quota-state.json.
+//
+// Le mécanisme est conservé, mais il ne se déclenche plus que sur une panne
+// quasi totale, et sa pause est courte — la panne peut être finie. Le
+// réactiver avec GOOGLE_BREAKER=1.
+const GOOGLE_BREAKER = process.env.GOOGLE_BREAKER === '1';
+const GOOGLE_WINDOW = parseInt(process.env.GOOGLE_WINDOW || '20', 10);
+const GOOGLE_UNHEALTHY_RATE = parseFloat(process.env.GOOGLE_UNHEALTHY_RATE || '0.95');
+const GOOGLE_COOLDOWN_MIN = parseFloat(process.env.GOOGLE_COOLDOWN_MIN || '1');
+const GOOGLE_MIN_SAMPLES = 20; // en dessous, on ne conclut pas
 
 // 1 = succès, 0 = échec. Fenêtre glissante des derniers appels Google.
 const googleResults = [];
-// Budget de réessais, réduit quand Google va mal : inutile d'insister 3 fois
-// quand le service est à 92 % en panne.
-let googleRetryBudget = RETRY_ON_5XX;
+
+// Le budget de réessais ne dépend PLUS du taux d'échec. L'ancien comportement
+// — le réduire à 1 tentative dès 30 % d'échec — garantissait de perdre les
+// livres précisément pendant une panne : à 80 % d'échec, 2 tentatives laissent
+// 67 % de perte, contre 0,01 % avec 11 tentatives.
+const googleRetryBudget = RETRY_ON_5XX;
+// Une clé refusée par Google (400) ne se répète pas à chaque livre : on ne le
+// signale qu'une fois par run.
+let cleApiSignalee = false;
 
 function noteGoogleResult(ok) {
   googleResults.push(ok ? 1 : 0);
   if (googleResults.length > GOOGLE_WINDOW) googleResults.shift();
-  const rate = googleFailureRate();
-  googleRetryBudget = rate >= 0.3 ? 1 : RETRY_ON_5XX;
 }
 
 function googleFailureRate() {
@@ -134,16 +173,58 @@ function countGoogleCall() {
   saveQuotaState(quotaState);
 }
 
+// Compte les appels HTTP RÉELS vers Google Books, réessais inclus.
+//
+// L'ancien comptage avait lieu une fois par livre (avant l'appel à httpGet) :
+// pendant une panne de 503, un livre « coûte » jusqu'à 11 requêtes HTTP mais
+// n'en comptait qu'une. La consommation réelle était donc sous-estimée d'un
+// facteur pouvant atteindre 7, et le quota de 1000/jour se faisait dépasser
+// sans que le script s'en aperçoive. On compte donc chaque requête émise.
+function countGoogleRequest(url) {
+  if (typeof url === 'string' && url.indexOf('www.googleapis.com') !== -1) {
+    countGoogleCall();
+  }
+}
+
 function googleQuotaLeft() {
   return Math.max(0, GOOGLE_DAILY_CAP - quotaState.googleCalls);
 }
 
-// Genres autorisés dans le KotArdoise
+// Genres autorisés dans le KotArdoise.
+//
+// Cette liste est la SOURCE DE VÉRITÉ UNIQUE. Elle doit refléter les boutons de
+// filtre de index.html et la liste de scripts/review-cli.js, soit 11 genres.
+//
+// Deux défauts corrigés ici :
+//   · elle n'en contenait que 10 — « Essai » manquait, alors que les deux
+//     autres listes l'ont et que « Add Essai genre » est le dernier
+//     changement de ce dépôt ;
+//   · elle n'était JAMAIS utilisée : aucun genre écrit dans le cache n'était
+//     validé. Une faute de frappe ou une valeur venue d'une API aurait fait
+//     disparaître un livre des filtres du site, silencieusement.
 const VALID_GENRES = [
-  'Horreur', 'Romance', 'Science-fiction', 'Fantasy', 
-  'Thriller', 'Aventure', 'Policier', 'Historique', 
-  'Drame', 'Comédie'
+  'Horreur', 'Romance', 'Science-fiction', 'Fantasy',
+  'Thriller', 'Aventure', 'Policier', 'Historique',
+  'Drame', 'Comédie', 'Essai'
 ];
+const VALID_GENRES_SET = new Set(VALID_GENRES);
+
+// Un genre est valide s'il fait partie des 11 du Kot. « Inconnu » est admis :
+// c'est l'état « pas encore classé », pas une erreur de données.
+function genreValide(g) {
+  return g === 'Inconnu' || VALID_GENRES_SET.has(g);
+}
+
+// Ramène tout genre hors des 11 à « Inconnu » plutôt que de le laisser polluer
+// les filtres du site. Compteur à la fin du run pour rendre le nettoyage visible.
+let genresHorsListe = 0;
+function normaliserGenre(g) {
+  if (g === undefined || g === null || g === '' || g === 'Inconnu') return 'Inconnu';
+  if (VALID_GENRES_SET.has(g)) return g;
+  genresHorsListe++;
+  console.error(`   ⚠️  Genre hors des 11 du Kot ignoré : "${g}" → Inconnu`);
+  return 'Inconnu';
+}
 
 // Helper: Normaliser les chaînes de caractères pour générer le slug
 function slugify(text) {
@@ -159,19 +240,57 @@ function slugify(text) {
     .replace(/-+/g, '-'); // Supprimer les tirets consécutifs
 }
 
+// ---------------------------------------------------------------------------
+// Distinguer les deux 429 de Google
+//
+// Un 429 peut vouloir dire deux choses très différentes :
+//   · quota JOURNALIER épuisé → inutile d'insister, on s'arrête jusqu'à demain ;
+//   · limite par MINUTE → transitoire, on attend quelques secondes et on retente.
+//
+// L'ancien code traitait tout 429 comme un quota journalier et interrompait
+// tout le run : une simple salve suffisait à abandonner les ~2000 livres
+// restants. On lit donc le corps de l'erreur pour décider.
+// ---------------------------------------------------------------------------
+function classify429(body) {
+  try {
+    const j = JSON.parse(body);
+    const details = (j.error && j.error.details) || [];
+    for (const d of details) {
+      const meta = d.metadata || {};
+      const limite = String(meta.quota_limit || '');
+      if (limite === 'defaultPerDayPerProject' || meta.quota_limit_value === '0') {
+        return 'quota-journalier';
+      }
+      if (/perminute|per_minute|per-user/i.test(limite)) return 'par-minute';
+    }
+  } catch (e) {
+    // Corps illisible : par prudence on considère la limite comme transitoire,
+    // plutôt que d'abandonner un run entier sur une réponse incompréhensible.
+  }
+  return 'par-minute';
+}
+
 // Helper: Faire une requête HTTP GET, avec réessais sur erreur transitoire.
 // Google Books renvoie régulièrement des 503 sur son endpoint de recherche :
-// les retry avec backoff évitent de marquer ces livres comme "introuvables".
+// les retry avec backoff + gigue évitent de marquer ces livres comme
+// "introuvables". Le 429 par minute est également réessayé : c'est une limite
+// de débit, pas une fin de quota.
 //
 // Les redirections sont suivies : openlibrary.org/isbn/{isbn}.json répond 302
 // pour un ISBN valide, et sans suivi on croyait le livre absent.
-function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0) {
+function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0, attempt = 0) {
   return new Promise((resolve, reject) => {
-    https.get(url, {
+    // Un appel HTTP réel part : on le compte s'il va vers Google Books. Les
+    // réessais de backoff sont donc comptés eux aussi, contrairement à avant
+    // (redirectHops === 0 évite de recompter une chaîne de redirections).
+    if (redirectHops === 0) countGoogleRequest(url);
+
+    const req = https.get(url, {
       headers: {
         'User-Agent': 'KotArdoiseLibraryBot/2.0 (contact: info@kotardoise.be)',
         ...headers
-      }
+      },
+      timeout: REQUEST_TIMEOUT_MS
     }, (res) => {
       const isRedirect = [301, 302, 303, 307, 308].includes(res.statusCode);
       if (isRedirect && res.headers.location && redirectHops < 5) {
@@ -186,14 +305,17 @@ function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0) {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
-        // 5xx = erreur serveur temporaire : on réessaie avec un délai croissant
-        if (res.statusCode >= 500 && retries > 0) {
-          const wait = 1000 * Math.pow(2, RETRY_ON_5XX - retries);
-          // Pendant une panne, ces lignes se répètent trois fois par livre :
-          // elles sont journalisées avec le reste du livre et jetées si le
-          // livre n'apporte rien. La bannière du coupe-circuit, elle, reste.
+        // 5xx = erreur serveur temporaire (503 « backendFailed » de Google).
+        // 429 par minute = limite de débit. Dans les deux cas on réessaie.
+        const transitoire = res.statusCode >= 500
+          || (res.statusCode === 429 && retries > 0 && classify429(data) !== 'quota-journalier');
+        if (transitoire && retries > 0) {
+          const wait = backoffDelay(attempt);
+          // Pendant une panne, ces lignes se répètent à chaque tentative : elles
+          // sont journalisées avec le reste du livre et jetées si le livre
+          // n'apporte rien. --verbose rétablit le journal exhaustif.
           dire(`   ⚠️  HTTP ${res.statusCode} — nouvel essai dans ${wait} ms`);
-          setTimeout(() => resolve(httpGet(url, headers, retries - 1)), wait);
+          setTimeout(() => resolve(httpGet(url, headers, retries - 1, redirectHops, attempt + 1)), wait);
           return;
         }
         resolve({
@@ -202,11 +324,14 @@ function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0) {
           body: data
         });
       });
-    }).on('error', (err) => {
+    });
+    // Une socket qui ne répond plus ne doit pas bloquer le run entier.
+    req.on('timeout', () => req.destroy(new Error('ETIMEDOUT')));
+    req.on('error', (err) => {
       // Erreur réseau : on réessaie aussi, puis on abandonne
       if (retries > 0) {
-        const wait = 1000 * Math.pow(2, RETRY_ON_5XX - retries);
-        setTimeout(() => resolve(httpGet(url, headers, retries - 1)), wait);
+        const wait = backoffDelay(attempt);
+        setTimeout(() => resolve(httpGet(url, headers, retries - 1, redirectHops, attempt + 1)), wait);
         return;
       }
       reject(err);
@@ -214,53 +339,47 @@ function httpGet(url, headers = {}, retries = RETRY_ON_5XX, redirectHops = 0) {
   });
 }
 
-// Mappage des catégories de livres vers les genres du Kot
+// Mappage des catégories de livres vers les genres du Kot.
+//
+// Réécrit comme classifyBookText, avec la MÊME normalisation : la version
+// précédente comparait des chaînes brutes avec `includes()`, donc
+// « Science-Fiction » (trait d'union) ne matchait pas « science fiction »
+// (espace) et « Comedie » sans accent ne matchait pas « comédie ».
+// Les mots-clés de catégories, séparés par des VIRGULES pour la même raison
+// que GENRE_KEYWORDS : « science fiction » est une expression, pas deux mots.
+// Ils sont comparés sans tirets, pour que « Science-Fiction » et
+// « Science Fiction » rejoignent le même genre.
+const CATEGORY_KEYWORDS = [
+  ['Horreur', 'horror,horreur,vampire,ghost'],
+  ['Romance', 'romance,amour,romantic,chick lit,love story,love stories'],
+  ['Science-fiction', 'science fiction,sci-fi,dystop,anticipation,post-apocalyptic'],
+  ['Fantasy', 'fantasy,fantastique,magic,sorcellerie,fairy tale'],
+  ['Thriller', 'thriller,suspense,angoisse,psychological'],
+  ['Aventure', 'adventure,aventure,action'],
+  ['Policier', 'policier,detective,mystery,crime,meurtre,sherlock'],
+  ['Historique', 'history,historical,historique,biography,biographie,memoir'],
+  ['Drame', 'drama,drame,tragedy,melodrama'],
+  ['Comédie', 'comedy,comedie,humor,funny,satire'],
+  // Essai en dernier : le fourre-tout du non-fiction.
+  ['Essai', 'essay,essai,non-fiction,nonfiction,philosoph,politique,politic,social science,sciences sociales,sociologie,sociolog,religion,psychologie,psycholog,economie,economics,self-help,development personnel']
+];
+
+// Les mots-clés de catégories sont comparés sans tirets, pour que
+// « Science-Fiction » et « Science Fiction » rejoignent le même genre.
+const CATEGORY_PATTERNS = CATEGORY_KEYWORDS.map(([genre, mots]) => {
+  const termes = mots.split(',')
+    .map((m) => normaliserPourClassification(m).replace(/-/g, ' ').trim())
+    .filter(Boolean);
+  return { genre, pattern: new RegExp('\\b(' + termes.map(echapperRegex).join('|') + ')\\b') };
+});
+
 function mapCategoryToGenre(categories) {
   if (!categories || categories.length === 0) return 'Inconnu';
-  
-  const text = categories.join(' ').toLowerCase();
-  
-  if (text.includes('horror') || text.includes('horreur') || text.includes('vampire') || text.includes('ghost')) {
-    return 'Horreur';
-  }
-  if (text.includes('romance') || text.includes('amour') || text.includes('romantic') || text.includes('chick lit')) {
-    return 'Romance';
-  }
-  if (text.includes('science fiction') || text.includes('sci-fi') || text.includes('dystop') || text.includes('anticipation') || text.includes('post-apocalyptic')) {
-    return 'Science-fiction';
-  }
-  if (text.includes('fantasy') || text.includes('fantastique') || text.includes('magic') || text.includes('sorcellerie') || text.includes('fairy tales')) {
-    return 'Fantasy';
-  }
-  if (text.includes('thriller') || text.includes('suspense') || text.includes('angoisse') || text.includes('psychological')) {
-    return 'Thriller';
-  }
-  if (text.includes('adventure') || text.includes('aventure') || text.includes('action')) {
-    return 'Aventure';
-  }
-  if (text.includes('policier') || text.includes('detective') || text.includes('mystery') || text.includes('crime') || text.includes('meurtre') || text.includes('sherlock')) {
-    return 'Policier';
-  }
-  if (text.includes('history') || text.includes('historique') || text.includes('biography') || text.includes('biographie') || text.includes('memoir')) {
-    return 'Historique';
-  }
-  if (text.includes('drama') || text.includes('drame') || text.includes('tragedy') || text.includes('melodrama')) {
-    return 'Drame';
-  }
-  if (text.includes('comedy') || text.includes('humor') || text.includes('comédie') || text.includes('funny') || text.includes('satire')) {
-    return 'Comédie';
-  }
-  // Essai : placé en dernier car c'est le genre fourre-tout du non-fiction.
-  // Un essai sur l'histoire reste Historique, un essai fantastique reste
-  // Fantasy : seuls ceux qui n'entrent dans aucune autre case arrivent ici.
-  if (text.includes('essay') || text.includes('essai') || text.includes('non-fiction')
-    || text.includes('nonfiction') || text.includes('philosoph') || text.includes('politique')
-    || text.includes('politic') || text.includes('social science') || text.includes('sciences sociales')
-    || text.includes('sociolog') || text.includes('sociologie')
-    || text.includes('religion') || text.includes('psycholog') || text.includes('psychologie')
-    || text.includes('economie') || text.includes('economics') || text.includes('self-help')
-    || text.includes('development personnel')) {
-    return 'Essai';
+
+  const text = normaliserPourClassification(categories.join(' ')).replace(/-/g, ' ');
+
+  for (const { genre, pattern } of CATEGORY_PATTERNS) {
+    if (pattern.test(text)) return genre;
   }
 
   return 'Inconnu';
@@ -287,12 +406,35 @@ const ENGLISH_STOPWORDS = new Set(('the a an and or but is are was were in on of
   'by from at be been has have had not which who its their his her they them we you i about into over than ' +
   'then some such only own same too very can will just should now').split(' '));
 
+// ---------------------------------------------------------------------------
+// FUITES DE LANGUE
+//
+// La porte française laissait passer l'espagnol. FRENCH_STOPWORDS contient
+// « de », « un », « que », « en », « no », « son », « mais », « comme »… soit
+// une bonne partie du lexique fonctionnel espagnol. Un texte espagnol atteint
+// donc facilement la densité française et était enregistré comme français.
+// Ce n'est pas théorique : « La maison aux esprits » est en cache avec une
+// description espagnole (« Primera novela de Isabel Allende… »).
+//
+// On ajoute donc un détecteur espagnol fondé sur des mots qui n'existent pas
+// en français. L'italien, lui, était déjà rejeté correctement.
+// ---------------------------------------------------------------------------
+const SPANISH_MARKERS = new Set(('los las del por para pero muy este esta esto eso esos esas fue ya tambien ' +
+  'cuando donde quien cual todo toda todos todas nada mucho muchos porque aunque hasta desde hay aqui alli ' +
+  'ahora siempre nunca estaban estaba eran tiene tienen hace hacer otro otra otros otras cada mismo misma ' +
+  'asi sino entonces pues casi tan tanto anos senor gran mis sus uno una').split(' '));
+
 // Seuils mesurés sur le catalogue : le français valide le plus bas observé est
 // à 0,154 de densité, un italien à 0,079. 0,10 les sépare proprement.
 const LANG_MIN_DENSITY = 0.10;
 const LANG_MIN_HITS = 4;
+// Un texte français peut contenir un mot espagnol isolé (titre d'ouvrage,
+// citation) : on n'exige donc que quelques marqueurs, mais une densité
+// suffisante pour que ce ne soit pas un hapax.
+const LANG_ES_MIN_HITS = 3;
+const LANG_ES_MIN_DENSITY = 0.05;
 
-// Classifier une description : 'francais' | 'anglais' | 'inconnu' | 'trop-court'
+// Classifier une description : 'francais' | 'anglais' | 'espagnol' | 'inconnu' | 'trop-court'
 function detectLanguage(text) {
   if (!text || text.length < 40) return 'trop-court';
   const mots = text.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter((m) => m.length > 1);
@@ -300,13 +442,19 @@ function detectLanguage(text) {
 
   let fr = 0;
   let en = 0;
+  let es = 0;
   for (const m of mots) {
     if (FRENCH_STOPWORDS.has(m)) fr++;
     if (ENGLISH_STOPWORDS.has(m)) en++;
+    if (SPANISH_MARKERS.has(m)) es++;
   }
   const densFr = fr / mots.length;
   const densEn = en / mots.length;
+  const densEs = es / mots.length;
 
+  // L'espagnol est testé AVANT le français : un texte espagnol marque aussi
+  // des points sur la liste française (voir plus haut), l'ordre est décisif.
+  if (es >= LANG_ES_MIN_HITS && densEs >= LANG_ES_MIN_DENSITY) return 'espagnol';
   if (en > fr && en >= LANG_MIN_HITS) return 'anglais';
   if (densFr >= LANG_MIN_DENSITY && fr >= LANG_MIN_HITS) return 'francais';
   if (densEn > densFr && en >= LANG_MIN_HITS) return 'anglais';
@@ -316,12 +464,24 @@ function detectLanguage(text) {
 // Open Library renvoie parfois une notice de catalogue brut plutôt qu'un résumé
 // ("Genre/Form: Fiction Additional Physical Format: Online version: ...").
 // Ce n'est pas une description et cela ne doit jamais être enregistré.
+//
+// Élargi après constat : « L'art de se gâcher la vie » était en cache avec
+// « La liste exhaustive des ouvrages disponibles publiés en langue française
+// dans le monde. La liste des éditeurs et la liste des collections… », qui est
+// le mode d'emploi d'un distributeur, pas un résumé du livre. Les formes
+// ci-dessous viennent des bases Electre / Ambre, qui renvoient ce contenu à la
+// place d'une quatrième de couverture.
 function isCatalogDumping(text) {
   if (!text) return false;
   return /^\s*Genre\s*\/\s*Form/i.test(text)
     || /Additional Physical Format/i.test(text)
     || /^\s*Topics?\s*:/i.test(text)
-    || /\bOnline version:\s*[A-Z][a-z]+,\s*[A-Z][a-z]+,?\s*\d{4}/.test(text);
+    || /\bOnline version:\s*[A-Z][a-z]+,\s*[A-Z][a-z]+,?\s*\d{4}/.test(text)
+    || /\bLa liste exhaustive\b/i.test(text)
+    || /\bliste des (?:éditeurs|editeurs|collections)\b/i.test(text)
+    || /\bouvrages disponibles publiés\b/i.test(text)
+    || /\basin d['’]édition|base de données des|référencement\b/i.test(text)
+    || /\b(?:publié|publiée|publiés|publiées) en langue française dans le monde\b/i.test(text);
 }
 
 // Décider si une description entrante peut être conservée
@@ -334,56 +494,103 @@ function acceptDescription(text) {
   return { keep: false, reason: 'langue ' + lang };
 }
 
+// ---------------------------------------------------------------------------
+// Classification par mots-clés — normalisation du texte
+//
+// Deux défauts systématiques rendaient « Inconnu » des livres parfaitement
+// classables :
+//
+//  1. LES PLURIELS. Les listes sont écrites au singulier (« robot, vampire,
+//     meurtre ») et testées avec `\b…\b`, donc « Un défilé de robots », « Les
+//     vampires de Manhattan », « Des meurtres étranges » ne matchaient rien.
+//  2. LES ACCENTS. Les listes sont écrites sans accent (« fantome, theatre »)
+//     alors que les titres en portent : « Histoires de fantômes », « Le
+//     théâtre de… » ne matchaient rien non plus.
+//
+// On normalise donc le texte — minuscules, accents retirés, pluriel ramené au
+// singulier — et on applique EXACTEMENT la même normalisation aux mots-clés.
+// Traiter les deux côtés de la même façon garantit que ce qui est ajouté d'un
+// côté reste trouvable de l'autre.
+//
+// Les chiffres sont conservés : « 1914 », « 1939 » sont des marqueurs
+// historiques à part entière.
+// ---------------------------------------------------------------------------
+function normaliserPourClassification(text) {
+  return String(text == null ? '' : text)
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // é -> e, è -> e, ï -> i…
+    .replace(/[^a-z0-9\s-]+/g, ' ')                   // ponctuation, apostrophes
+    .split(/\s+/)
+    // Pluriel simple : « robots » -> « robot ». On ne touche pas aux mots
+    // courts (« les », « pas ») dont la troncature n'apporte rien.
+    // Pluriel anglais en -ies : « stories » -> « story », sans quoi la
+    // catégorie « Love stories » ne rejoindrait jamais « love story ».
+    .map((w) => {
+      if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
+      return (w.length > 3 && w.endsWith('s')) ? w.slice(0, -1) : w;
+    })
+    .filter(Boolean)
+    .join(' ');
+}
+
+// Échapper une chaîne pour l'insérer telle quelle dans une RegExp.
+function echapperRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Les 11 genres du Kot, dans l'ORDRE DE PRIORITÉ : le premier qui matche
+// gagne. Cet ordre est fonctionnel, pas cosmétique — le Théâtre est placé
+// après la Comédie parce que « pièce » décrirait aussi bien une comédie de
+// Molière, et l'Essai est dernier car c'est le fourre-tout du non-fiction.
+//
+// Les mots-clés sont SÉPARÉS PAR DES VIRGULES, pas par des espaces : « vaisseau
+// spatial », « coup de foudre », « moyen age » sont des expressions, et les
+// découper en mots isolés ferait matcher n'importe quel texte contenant
+// « spatial », « foudre » ou « age ». Séparer par des virgules les garde
+// entières. Mots écrits au singulier et sans accent : la normalisation fait
+// le reste.
+const GENRE_KEYWORDS = [
+  ['Horreur', 'horreur,horror,epouvante,vampire,fantome,ghost,frisson,demoni,possession,gore,epouvantable'],
+  ['Science-fiction', 'science-fiction,sci-fi,dystopi,post-apocalypt,futuriste,cyberpunk,space opera,extra-terrestre,extraterrestre,robot,anticipation,vaisseau spatial,barjavel,teleportation,dystopique'],
+  // NOTE sur les mots-clés volontairement absents :
+  // « legendaire » était dans Fantasy et « passion »/« sentiment » dans Romance.
+  // Ils ne « marchaient » pas auparavant par accident : écrits sans accent, ils
+  // ne matchaient jamais un texte français accentué. Une fois l'accent corrigé
+  // (plus haut), ils sont devenus vivants et se sont mis à matcher la prose
+  // ordinaire — « l'époque légendaire des Mousquetaires » classait « Le Vicomte
+  // de Bragelonne » en Fantasy, « ses passions » classait une biographie de
+  // Balzac en Romance. Retirés, faute d'être discriminants.
+  ['Fantasy', 'fantasy,fantastique,magie,magic,sorcier,sorciere,elfe,nain,dragon,royaume,merlin,enchant,grimoire,feerie,fee'],
+  ['Policier', 'policier,detective,mystery,mystere,enquete,commissaire,inspecteur,assassin,meurtre,homicide,crime,sherlock,poirot,vol,cambriolage'],
+  ['Thriller', 'thriller,suspense,angoisse,tueur en serie,psychopathe,machination,complot,otage,kidnapping,kidnappe,espion,espionnage,agent secret'],
+  ['Romance', 'romance,amour,romantic,amoureuse,amoureux,coup de foudre,je t aime,seduc,divorce,mariage,epouser'],
+  ['Historique', 'historique,biographie,biography,memoire,autobiographie,siecle,moyen age,moyen-age,renaissance,antiquite,chateau,napoleon,louis xiv,seconde guerre,premiere guerre,guerre mondiale,1914,1939,1945,baron,prince,princesse,roi,reine,empire,monarchie,archeologie'],
+  ['Drame', 'drame,tragique,tragedie,deuil,orphelin,cancer,maladie,coma,mortel,accident,suicide,guerre,exil,prison,larme,pleur,tristesse,separation'],
+  ['Comédie', 'comedie,humour,drole,rigolo,amusant,rire,satirique,satire,parodie,burlesque,cocasse,hilarant'],
+  // Théâtre — après la Comédie, volontairement (voir plus haut).
+  ['Drame', 'theatre,piece de theatre,mythe,antigone,oedipe,sophocle,anouilh,corneille,shakespeare,hamlet,macbeth'],
+  ['Aventure', 'aventure,adventure,action,voyage,exploration,survie,naufrage,tresor,ile deserte,jungle,expedition,odyssee,quete'],
+  // Essai en dernier. Les marqueurs politiques ont été ajoutés après constat :
+  // « Le problème du sud » (Gramsci) restait Inconnu alors que son texte ne
+  // parle que de question méridionale et de comités ouvriers.
+  ['Essai', 'essai,essay,non-fiction,nonfiction,philosophie,philosophe,politique,sociologie,religion,psychologie,developpement personnel,reflexion,marxisme,marxiste,socialisme,communisme,capitalisme,ideologie,gramsci,lenine,trotsky,mouvement ouvrier,comites ouvrier,manifeste']
+  // « economie » est absent lui aussi : il apparaît dans la prose ordinaire
+  // (« l'économie de la ville ») et faisait classer « Les dents de la mer » en
+  // Essai. En catégorie, en revanche, « Economics » est une affirmation.
+];
+
+// Expressions compilées une fois pour toutes : un run en évalue des milliers.
+const GENRE_PATTERNS = GENRE_KEYWORDS.map(([genre, mots]) => {
+  const termes = mots.split(',').filter(Boolean).map(normaliserPourClassification).filter(Boolean);
+  return { genre, pattern: new RegExp('\\b(' + termes.map(echapperRegex).join('|') + ')\\b') };
+});
+
 // Classification hybride par analyse textuelle des descriptions pour affiner le genre
 function classifyBookText(title, description, categoryText = '') {
-  const text = `${title} ${description} ${categoryText}`.toLowerCase();
-  
-  // 1. Horreur
-  if (text.match(/\b(horreur|horror|epouvante|vampire|fantome|ghost|frisson|demoni|possession|gore|epouvantable)\b/)) {
-    return 'Horreur';
+  const text = normaliserPourClassification([title, description, categoryText].join(' '));
+  for (const { genre, pattern } of GENRE_PATTERNS) {
+    if (pattern.test(text)) return genre;
   }
-  // 2. Science-fiction
-  if (text.match(/\b(science-fiction|sci-fi|dystopi|post-apocalypt|futuriste|cyberpunk|space opera|extra-terrestre|extraterrestre|robot|anticipation|vaisseau spatial|barjavel|teleportation|dystopique)\b/)) {
-    return 'Science-fiction';
-  }
-  // 3. Fantasy
-  if (text.match(/\b(fantasy|fantastique|magie|magic|sorcier|sorciere|elfe|nain|dragon|royaume|merlin|enchant|grimoire|feerie|fees|legendaire)\b/)) {
-    return 'Fantasy';
-  }
-  // 4. Policier
-  if (text.match(/\b(policier|detective|mystery|mystere|enquête|enquete|commissaire|inspecteur|assassin|meurtre|homicide|crime|sherlock|poirot|vol|cambriolage)\b/)) {
-    return 'Policier';
-  }
-  // 5. Thriller
-  if (text.match(/\b(thriller|suspense|angoisse|tueur en serie|psychopathe|machination|complot|otages|kidnapping|kidnappe|espion|espionnage|agent secret)\b/)) {
-    return 'Thriller';
-  }
-  // 6. Romance
-  if (text.match(/\b(romance|amour|romantic|passion|sentiment|amoureuse|amoureux|coup de foudre|je t'aime|seduc|divorce|mariage|epouser)\b/)) {
-    return 'Romance';
-  }
-  // 7. Historique
-  if (text.match(/\b(historique|biographie|biography|memoire|autobiographie|siecle|moyen age|moyen-age|renaissance|antiquite|château|napoleon|louis xiv|seconde guerre|premiere guerre|guerre mondiale|1914|1939|1945|baron|prince|princesse|roi|reine|empire|monarchie|archeologie)\b/)) {
-    return 'Historique';
-  }
-  // 8. Drame
-  if (text.match(/\b(drame|tragique|tragedie|deuil|orphelin|cancer|maladie|coma|mortel|accident|suicide|guerre|exil|prison|larme|pleur|tristesse|separation)\b/)) {
-    return 'Drame';
-  }
-  // 9. Comédie
-  if (text.match(/\b(comedie|comédie|humour|drole|drôle|rigolo|amusant|rires|rire|satirique|satire|parodie|burlesque|cocasse|hilarant)\b/)) {
-    return 'Comédie';
-  }
-  // 10. Aventure
-  if (text.match(/\b(aventure|adventure|action|voyage|exploration|survie|naufrage|tresor|ile deserte|jungle|expedition|odyssee|quetes|quete)\b/)) {
-    return 'Aventure';
-  }
-  // 11. Essai : le plus large des genres, donc en dernier. Un essai
-  // historique reste Historique, un essai sur la magie reste Fantasy.
-  if (text.match(/\b(essai|essais|essay|essays|non-fiction|nonfiction|philosophie|philosophe|politique|sociologie|religion|psychologie|economie|developpement personnel|reflexion)\b/)) {
-    return 'Essai';
-  }
-
   return 'Inconnu';
 }
 
@@ -596,77 +803,125 @@ function pickBestCandidate(title, author, items) {
   return best;
 }
 
-// Fonction pour interroger Google Books API
+// ---------------------------------------------------------------------------
+// Interrogation de Google Books
+//
+// Google dégrade actuellement l'endpoint de RECHERCHE (/volumes?q=…) : il
+// renvoie des 503 « backendFailed » par vagues, y compris pour des requêtes
+// valides et déjà éprouvées (Publisher Center juil. 2026, Issue Tracker
+// 536042535, StackOverflow 56579891 — « the problem appears to be related only
+// to search operations using the q URL param »). L'endpoint VOLUME UNIQUE
+// (/volumes/{id}) fonctionne, lui, normalement.
+//
+// La stratégie découle de ce constat :
+//   1. si l'identifiant de volume est connu (colonne ID_GoogleBooks de la Sheet
+//      ou cache d'un run précédent), on lit /volumes/{id} — déterministe ;
+//   2. sinon, et seulement sinon, on passe par la recherche, entourée d'un
+//      backoff exponentiel avec gigue (voir httpGet).
+// Chaque identifiant résolu est mémorisé dans books-metadata.json afin que les
+// runs suivants n'aient plus jamais à chercher.
+//
+// Notes sur les paramètres :
+//   · `langRestrict=fr` a été retiré. Il doublonne inutilement le contrôle de
+//     langue des descriptions (acceptDescription) et surtout il réduit le
+//     rappel : combiné aux résultats vides géo-dépendants de Google, il
+//     faisait passer des livres français existants pour absents.
+//   · `printType=books` évite de récupérer des magazines.
+//   · il n'existe PAS de paramètre `country` sur cet endpoint : la restriction
+//     géographique dépend de l'IP d'appel, pas d'un paramètre.
+// ---------------------------------------------------------------------------
 async function fetchGoogleBooks(title, author, isbn = '', googleBooksId = '') {
-  let url = '';
-  
-  if (googleBooksId) {
-    url = `https://www.googleapis.com/books/v1/volumes/${googleBooksId}?hl=fr`;
-  } else if (isbn) {
-    url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&langRestrict=fr&hl=fr`;
-  } else {
-    // Nettoyer un peu les termes de recherche pour éviter les échecs liés aux caractères spéciaux
+  const keyParam = GOOGLE_BOOKS_API_KEY ? `&key=${GOOGLE_BOOKS_API_KEY}` : '';
+
+  // Signale une fois par run une clé refusée par Google (400), plutôt que de
+  // croire, livre après livre, que le livre est absent.
+  const signalerSiCleInvalide = (res) => {
+    if (res.statusCode !== 400 || cleApiSignalee) return;
+    try {
+      const j = JSON.parse(res.body);
+      if (j.error && j.error.code === 400) {
+        cleApiSignalee = true;
+        const reasons = ((j.error.errors || []).map((e) => e.reason).filter(Boolean)).join(', ');
+        console.error(`   🔑 Google Books a rejeté la requête : ${j.error.message}${reasons ? ' (' + reasons + ')' : ''}`);
+        console.error('      Vérifiez que la Books API est activée et que GOOGLE_BOOKS_API_KEY est correcte.');
+      }
+    } catch (e) { /* corps illisible : sans importance */ }
+  };
+
+  // Traduit une réponse Google en erreur métier, ou null si elle est exploitable.
+  const erreurGoogle = (res) => {
+    if (res.statusCode === 200) return null;
+    if (res.statusCode === 429) {
+      return classify429(res.body) === 'quota-journalier' ? "DAILY_QUOTA_EXCEEDED" : "TEMPORARY_ERROR";
+    }
+    if (res.statusCode >= 500) return "TEMPORARY_ERROR";
+    return null; // 404/400 : la réponse est définitive, ce n'est pas une panne
+  };
+
+  try {
+    // 1) Lecture directe par identifiant de volume : l'endpoint qui fonctionne.
+    //    Le comptage de quota est fait par httpGet, sur chaque requête réelle.
+    if (googleBooksId) {
+      const byId = await httpGet(
+        `https://www.googleapis.com/books/v1/volumes/${encodeURIComponent(googleBooksId)}?hl=fr${keyParam}`,
+        {},
+        googleRetryBudget
+      );
+      const errId = erreurGoogle(byId);
+      signalerSiCleInvalide(byId);
+      if (!errId && byId.statusCode === 200) {
+        const data = JSON.parse(byId.body);
+        if (data && data.id) {
+          const best = pickBestCandidate(title, author, [data]);
+          if (best) return best;
+        }
+      } else if (errId) {
+        throw new Error(errId);
+      }
+      // 404 ou appariement trop faible : l'identifiant est obsolète, on tente
+      // la recherche classique plutôt que d'abandonner le livre.
+    }
+
+    // 2) Recherche. Aveugle, donc en dernier recours — mais on n'abandonne PAS
+    //    après l'ISBN.
+    //
+    //    Constat : « Haute pression » (Nicolas Ancion) et « Ma reine »
+    //    (Jean-Baptiste Andrea) renvoient `totalItems: 0` par ISBN alors que la
+    //    recherche par titre + auteur les trouve, avec description pour l'un et
+    //    couverture + description pour l'autre. Un ISBN absent de Google ne veut
+    //    donc PAS dire que le livre en est absent : l'ISBN de la BnF désigne
+    //    souvent une édition que Google n'a pas indexée sous cette clé.
+    //    L'ISBN reste tenté en premier car c'est la requête la plus précise.
     const cleanTitle = title.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
     const cleanAuthor = author.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
-    const query = encodeURIComponent(`${cleanTitle} ${cleanAuthor}`);
-    url = `https://www.googleapis.com/books/v1/volumes?q=${query}&langRestrict=fr&hl=fr&maxResults=5`;
-  }
-  
-  if (GOOGLE_BOOKS_API_KEY) {
-    url += `&key=${GOOGLE_BOOKS_API_KEY}`;
-  }
-  
-  try {
-    countGoogleCall();
-    let res = await httpGet(url, {}, googleRetryBudget);
-    if (res.statusCode === 429) {
-      throw new Error("RATE_LIMIT_EXCEEDED");
-    }
-    if (res.statusCode >= 500) {
-      // Le serveur est momentanément indisponible : ce n'est pas un "livre absent"
-      throw new Error("TEMPORARY_ERROR");
-    }
-    if (res.statusCode === 200) {
-      const data = JSON.parse(res.body);
-      // ID direct : une seule réponse, à valider malgré tout
-      if (googleBooksId && data.id) {
-        return pickBestCandidate(title, author, [data]);
-      }
-      // Recherche : on parcourt tous les résultats et on ne garde que ceux qui correspondent
-      if (data.items && data.items.length > 0) {
-        return pickBestCandidate(title, author, data.items);
-      }
-    }
-    
-    // Si la recherche restreinte en français n'a rien renvoyé, tenter avec hl=fr seul sans langRestrict
-    if (!googleBooksId && !isbn) {
-      const cleanTitle = title.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
-      const cleanAuthor = author.replace(/['’"()]/g, ' ').replace(/[-\s]+/g, ' ').trim();
-      const query = encodeURIComponent(`${cleanTitle} ${cleanAuthor}`);
-      let fallbackUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}&hl=fr&maxResults=5`;
-      if (GOOGLE_BOOKS_API_KEY) fallbackUrl += `&key=${GOOGLE_BOOKS_API_KEY}`;
-      
-      const fallbackRes = await httpGet(fallbackUrl, {}, googleRetryBudget);
-      if (fallbackRes.statusCode === 429) {
-        throw new Error("RATE_LIMIT_EXCEEDED");
-      }
-      if (fallbackRes.statusCode >= 500) {
-        throw new Error("TEMPORARY_ERROR");
-      }
-      if (fallbackRes.statusCode === 200) {
-        const fallbackData = JSON.parse(fallbackRes.body);
-        if (fallbackData.items && fallbackData.items.length > 0) {
-          return pickBestCandidate(title, author, fallbackData.items);
+    const requetes = [];
+    if (isbn) requetes.push(`isbn:${isbn}`);
+    if (cleanTitle) requetes.push(`${cleanTitle} ${cleanAuthor}`.trim());
+
+    for (const q of requetes) {
+      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&printType=books&hl=fr&maxResults=5${keyParam}`;
+      const res = await httpGet(url, {}, googleRetryBudget);
+      const err = erreurGoogle(res);
+      signalerSiCleInvalide(res);
+      if (err) throw new Error(err);
+
+      if (res.statusCode === 200) {
+        const data = JSON.parse(res.body);
+        if (data.items && data.items.length > 0) {
+          // On parcourt tous les résultats et on ne garde que ceux qui
+          // correspondent. Si aucun ne convient, on tente la requête suivante.
+          const best = pickBestCandidate(title, author, data.items);
+          if (best) return best;
         }
       }
     }
-    
+
     // Aucun résultat suffisamment proche : on préfère ne rien associer
     // plutôt que d'enregistrer une couverture qui appartient à un autre livre
     return null;
   } catch (err) {
     // Le quota est épuisé ou le serveur est saturé : à remonter à l'appelant
-    if (err.message === "RATE_LIMIT_EXCEEDED" || err.message === "TEMPORARY_ERROR") {
+    if (err.message === "DAILY_QUOTA_EXCEEDED" || err.message === "TEMPORARY_ERROR") {
       throw err;
     }
     console.error(`❌ Erreur Google Books pour "${title}":`, err.message);
@@ -726,24 +981,36 @@ async function fetchOpenLibrary(title, author, isbn = '') {
     const doc = best.doc;
     
     let description = '';
+    // Les « subjects » de l'oeuvre sont un signal de genre gratuit : on télécharge
+    // déjà cette fiche pour la description, autant lire aussi les sujets. Ils
+    // manquent souvent, mais quand ils sont là ils sont explicites — la fiche
+    // d'« Antigone » porte « Drama », « French drama ».
+    let workSubjects = [];
     if (doc.key) {
       const workUrl = `https://openlibrary.org${doc.key}.json`;
       const workRes = await httpGet(workUrl);
       if (workRes.statusCode === 200) {
         const workData = JSON.parse(workRes.body);
         if (workData.description) {
-          description = typeof workData.description === 'string' 
-            ? workData.description 
+          description = typeof workData.description === 'string'
+            ? workData.description
             : (workData.description.value || '');
+        }
+        if (Array.isArray(workData.subjects)) {
+          workSubjects = workData.subjects.filter((s) => typeof s === 'string');
         }
       }
     }
-    
+
+    // On fusionne les sujets de la recherche et ceux de la fiche d'oeuvre : les
+    // deux sont partiels et ne se recouvrent pas.
+    const subjects = [...new Set([...(doc.subject || []), ...workSubjects])];
+
     return {
       title: doc.title,
       author: Array.isArray(doc.author_name) ? doc.author_name.join(' ') : (doc.author_name || ''),
       description: description,
-      subjects: doc.subject || [],
+      subjects: subjects,
       coverId: doc.cover_i,
       isbn: doc.isbn ? doc.isbn[0] : null,
       match: best.match
@@ -1009,15 +1276,64 @@ async function enrich() {
     console.log("🛡️ Initialisation d'un fichier d'overrides vide : metadata-overrides.json");
   }
 
-  // 3. Mettre à jour les genres des livres déjà en cache à l'aide de l'analyse textuelle locale
+  // 3a. Contrôle des genres déjà en cache contre les 11 du Kot, et des
+  //     descriptions déjà en cache contre la porte française.
+  //
+  //     Deux contrôles, parce que deux valeurs n'ont jamais été validées :
+  //     · un genre hors liste fait disparaître un livre des filtres du site
+  //       sans le moindre message ;
+  //     · une description en espagnol ou une notice de catalogue était
+  //       conservée telle quelle et faisait croire le livre renseigné — donc
+  //       complet — alors qu'elle ne vaut rien.
+  //     Le nettoyage ne touche pas les décisions humaines (overrides).
+  let genresNettoyes = 0;
+  let descriptionsNettoyees = 0;
+  for (const slug of Object.keys(metadata)) {
+    const entree = metadata[slug];
+    if (!entree) continue;
+
+    const g = entree.genre;
+    if (g !== undefined && g !== null && g !== '' && !genreValide(g)) {
+      if (genresNettoyes < 10) {
+        console.error(`   ⚠️  Genre hors des 11 du Kot dans le cache : "${g}" → Inconnu (${slug})`);
+      }
+      entree.genre = 'Inconnu';
+      genresNettoyes++;
+    }
+
+    // Une description non conforme est retirée du cache : elle sera remplacée
+    // par une vraie au prochain passage, ou laissée vide. Laisser une
+    // description espagnole en place la faisait passer pour un livre complet.
+    if (overrides[slug]) continue;
+    if (entree.description && !acceptDescription(entree.description).keep) {
+      if (descriptionsNettoyees < 10) {
+        const r = acceptDescription(entree.description);
+        console.error(`   ⚠️  Description non conforme retiree (${r.reason}) : ${slug}`);
+      }
+      entree.description = '';
+      descriptionsNettoyees++;
+    }
+  }
+  if (genresNettoyes > 0) {
+    console.log(`🧹 Genres hors des 11 du Kot ramenés à « Inconnu » : ${genresNettoyes}`);
+  }
+  if (descriptionsNettoyees > 0) {
+    console.log(`🧹 Descriptions non françaises ou notices de catalogue retirees du cache : ${descriptionsNettoyees}`);
+  }
+
+  // 3b. Mettre à jour les genres des livres déjà en cache à l'aide de l'analyse textuelle locale
   let localUpdates = 0;
   Object.keys(metadata).forEach(slug => {
     if (overrides[slug]) return; // décision humaine : ne pas y toucher
     const book = metadata[slug];
     if (book && book.description && (!book.genre || book.genre === 'Inconnu')) {
-      const resolvedGenre = classifyBookText(book.title || '', book.description, book.genre || '');
+      // Les sujets Open Library éventuellement mis en cache sont joints au
+      // texte : ils portent souvent le genre (« Drama », « Detective ») là où
+      // la description, elle, n'a aucun mot-clé.
+      const sujets = Array.isArray(book.subjects) ? book.subjects.join(' ') : '';
+      const resolvedGenre = classifyBookText(book.title || '', book.description, sujets);
       if (resolvedGenre !== 'Inconnu') {
-        book.genre = resolvedGenre;
+        book.genre = normaliserGenre(resolvedGenre);
         localUpdates++;
       }
     }
@@ -1028,6 +1344,15 @@ async function enrich() {
       fs.writeFileSync(METADATA_FILE, JSON.stringify(metadata, null, 2), 'utf-8');
     } catch (e) {
       console.error("⚠️ Impossible d'enregistrer les genres mis à jour localement :", e.message);
+    }
+  }
+  // Le nettoyage des genres et des descriptions modifie lui aussi le cache :
+  // il doit être enregistré, sinon il serait perdu au prochain run.
+  if ((genresNettoyes > 0 || descriptionsNettoyees > 0) && localUpdates === 0) {
+    try {
+      fs.writeFileSync(METADATA_FILE, JSON.stringify(metadata, null, 2), 'utf-8');
+    } catch (e) {
+      console.error("⚠️ Impossible d'enregistrer le nettoyage du cache :", e.message);
     }
   }
   
@@ -1113,7 +1438,7 @@ async function enrich() {
         title: o.title || titre,
         author: o.author || auteur,
         description: o.description || metadata[slug]?.description || '',
-        genre: o.genre || metadata[slug]?.genre || 'Inconnu',
+        genre: normaliserGenre(o.genre || metadata[slug]?.genre || 'Inconnu'),
         coverUrl: o.coverUrl || metadata[slug]?.coverUrl || '',
         isbn: o.isbn || metadata[slug]?.isbn || book.ISBN || '',
         verified: o.verified !== undefined ? o.verified : (metadata[slug]?.verified ?? true),
@@ -1162,8 +1487,18 @@ async function enrich() {
     
     // Extraction des clés d'identifiants prioritaires depuis la ligne Google Sheet
     let isbn = (book.ISBN || '').toString().trim();
-    const googleBooksId = (book.ID_GoogleBooks || '').toString().trim();
+    let googleBooksId = (book.ID_GoogleBooks || '').toString().trim();
     const sheetIsbn = isbn;
+
+    // L'identifiant de volume Google Books déjà résolu lors d'un run précédent
+    // est réutilisé : il permet de lire /volumes/{id}, endpoint qui fonctionne,
+    // au lieu de /volumes?q=, renvoyant des 503 par vagues. Chaque livre n'a
+    // donc besoin de passer par la recherche qu'une seule fois, après quoi il
+    // est servi par une lecture fiable et économique.
+    if (!googleBooksId && entree && entree.googleBooksId) {
+      googleBooksId = entree.googleBooksId;
+      dire(`   🔖 Identifiant Google Books réutilisé du cache (${googleBooksId})`);
+    }
 
     // La BnF a peut-être déjà répondu lors d'un run précédent : on réutilise
     // son ISBN au lieu de refaire la requête, qui est le principal coût du run.
@@ -1219,38 +1554,31 @@ async function enrich() {
 
     // 1) Open Library par ISBN : déterministe, gratuit, sans quota.
     //    On ne récupère que la couverture : les descriptions Open Library sont
-    //    rarement en français et le contrôle de langue les rejettera de toute façon.
+    //    rarement en français et le contrôle de langue les rejettera de toute
+    //    façon.
+    //
+    //    On ne renseigne PLUS enrichedData ici. Le faire déclenchait le
+    //    « if (!enrichedData) » de l'étape Google et court-circuitait la
+    //    recherche : ces livres n'obtenaient alors jamais de description ni de
+    //    genre (12 des 13 concernés sont toujours « Inconnu »). La couverture
+    //    est donc mise de côté et fusionnée plus loin.
+    let couvertureOl = '';
     if (isbn && !hasOverride) {
       const olIsbn = await fetchOpenLibraryCoverByIsbn(isbn);
       if (olIsbn && olIsbn.coverUrl) {
-        enrichedData = {
-          title: titre,
-          author: auteur,
-          resolvedTitle: olIsbn.title || titre,
-          resolvedAuthor: olIsbn.author || auteur,
-          description: '',
-          genre: 'Inconnu',
-          coverUrl: olIsbn.coverUrl,
-          isbn: isbn,
-          verified: true,
-          matchScore: olIsbn.match,
-          publisher: bnfInfo ? bnfInfo.publisher : '',
-          publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
-          bnfRef: bnfInfo ? bnfInfo.bnfRef : '',
-          needsReview: false,
-          enrichedAt: new Date().toISOString(),
-          source: 'open_library_isbn'
-        };
+        couvertureOl = olIsbn.coverUrl;
         dire(`   📗 Couverture Open Library trouvée par ISBN ${isbn}`);
       }
     }
 
     // 2) Google Books, sauf si le coupe-circuit est ouvert.
     //    Le refroidissement est temporaire : après Google_COOLDOWN_MIN on
-    //    réessaie, la panne pouvant être finie.
+    //    réessaie, la panne pouvant être finie. Le coupe-circuit est désactivé
+    //    par défaut (GOOGLE_BREAKER=1 pour l'activer) : face à une panne
+    //    partielle permanente il coupait Google du run entier.
     const now = Date.now();
     const googleCooling = now < googleSkipUntil;
-    if (now >= googleSkipUntil && googleUnhealthy()) {
+    if (GOOGLE_BREAKER && now >= googleSkipUntil && googleUnhealthy()) {
       googleSkipUntil = now + GOOGLE_COOLDOWN_MIN * 60000;
       googleRetriedCount++;
       console.log(`\n🔌 Google Books est saturé (${Math.round(googleFailureRate() * 100)} % d'échecs sur les ${googleResults.length} derniers appels).`);
@@ -1277,17 +1605,24 @@ async function enrich() {
               dire(`   🚫 Description écartée (${descCheck.reason})`);
             }
 
-            // Mappage des genres (hybride : catégories + description/titre)
-            let genre = 'Inconnu';
-            if (info.categories && info.categories.length > 0) {
-              genre = mapCategoryToGenre(info.categories);
-            }
+            // Mappage des genres (hybride : catégories + description/titre).
+            // Les catégories servent AUSSI de matière au classifieur textuel
+            // quand le mapping par mots-clés échoue : elles étaient auparavant
+            // jetées, alors qu'elles sont souvent le meilleur indice disponible.
+            const categoriesTexte = (info.categories || []).join(' ');
+            let genre = mapCategoryToGenre(info.categories);
             if (genre === 'Inconnu') {
-              genre = classifyBookText(titre, desc);
+              genre = classifyBookText(titre, desc, categoriesTexte);
             }
+            // Filet de sécurité : quoi qu'il arrive, le genre écrit est l'un
+            // des 11 du Kot (ou « Inconnu »).
+            genre = normaliserGenre(genre);
 
-            // Extraire la couverture
-            let cover = '';
+            // Extraire la couverture. La couverture Open Library obtenue par
+            // ISBN fait office de repli : une réponse Google sans image ne doit
+            // pas la faire disparaître (le point de fusion plus bas privilégie
+            // enrichedData.coverUrl).
+            let cover = couvertureOl;
             if (info.imageLinks) {
               cover = info.imageLinks.medium || info.imageLinks.thumbnail || '';
               if (cover.startsWith('http://')) {
@@ -1315,6 +1650,11 @@ async function enrich() {
               isbn: resolvedIsbn,
               verified: true,
               matchScore: match,
+              // Identifiant de volume Google Books : une fois connu, les runs
+              // suivants lisent /volumes/{id} (endpoint fiable) au lieu de
+              // passer par la recherche (endpoint dégradé, ~80 % de 503).
+              // Fait partie de la réponse de pickBestCandidate, pas de volumeInfo.
+              googleBooksId: (gbResult.item && gbResult.item.id) || googleBooksId || '',
               // Données de référence ajoutées par la BnF
               publisher: bnfInfo ? bnfInfo.publisher : '',
               publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
@@ -1325,49 +1665,52 @@ async function enrich() {
             };
           }
         } catch (err) {
-      if (err.message === "RATE_LIMIT_EXCEEDED") {
-        console.error("⚠️ Quota journalier Google Books dépassé (Erreur 429).");
-        quotaReached = true;
-        apiCallsCount--;
-        viderJournal(false);
-        break;
-      }
-      if (err.message === "TEMPORARY_ERROR") {
-        // Google est saturé (503). On n'inscrit pas le livre comme "absent" :
-        // on conserve ce que la BnF a permis d'établir (ISBN, éditeur, année)
-        // et on le laisse ouvert pour un nouvel essai.
-        temporaryErrorCount++;
-        apiCallsCount--;
-        noteGoogleResult(false);
+          // La panne est enregistrée dans la fenêtre de santé de Google, que
+          // l'erreur soit transitoire ou un épuisement de quota.
+          noteGoogleResult(false);
+          apiCallsCount--;
 
-        if (bnfInfo && (bnfInfo.isbn || bnfInfo.publisher || bnfInfo.publishedDate)) {
-          const dejaConnu = metadata[slug];
-          metadata[slug] = Object.assign({}, dejaConnu || {}, {
-            title: titre,
-            author: auteur,
-            // On ne remplace la description que si elle est absente ou non française
-            description: dejaConnu && acceptDescription(dejaConnu.description).keep
-              ? dejaConnu.description : '',
-            genre: dejaConnu && dejaConnu.genre ? dejaConnu.genre : 'Inconnu',
-            coverUrl: dejaConnu ? (dejaConnu.coverUrl || '') : '',
-            isbn: bnfInfo.isbn || (dejaConnu ? dejaConnu.isbn : '') || sheetIsbn,
-            publisher: bnfInfo.publisher,
-            publishedDate: bnfInfo.publishedDate,
-            bnfRef: bnfInfo.bnfRef,
-            needsReview: true,
-            source: 'bnf_only',
-            enrichedAt: new Date().toISOString()
-          });
-          dire('   📚 Données BnF conservées (ISBN, éditeur, année) malgré la panne.');
-        } else {
-          dire('   ⚠️ Google Books indisponible et aucune donnée BnF — livre laissé intact.');
-        }
-        // Pendant une panne, ces lignes se répètent sur des dizaines de livres :
-        // la bannière du coupe-circuit explique déjà la situation.
-        viderJournal(false);
-        continue;
+          if (err.message === "DAILY_QUOTA_EXCEEDED") {
+            console.error("🛑 Quota journalier Google Books épuisé (429, quota journalier).");
+            console.error('   Le reste du catalogue sera traité au prochain run ; relancez demain.');
+            quotaReached = true;
+            viderJournal(false);
+            break;
+          }
+          if (err.message === "TEMPORARY_ERROR") {
+            // Google est saturé (503/429 par minute). On n'inscrit pas le livre
+            // comme "absent" : on conserve ce que la BnF a permis d'établir
+            // (ISBN, éditeur, année) et on le laisse ouvert pour un nouvel essai.
+            temporaryErrorCount++;
+
+            if (bnfInfo && (bnfInfo.isbn || bnfInfo.publisher || bnfInfo.publishedDate)) {
+              const dejaConnu = metadata[slug];
+              metadata[slug] = Object.assign({}, dejaConnu || {}, {
+                title: titre,
+                author: auteur,
+                // On ne remplace la description que si elle est absente ou non française
+                description: dejaConnu && acceptDescription(dejaConnu.description).keep
+                  ? dejaConnu.description : '',
+                genre: dejaConnu && dejaConnu.genre ? normaliserGenre(dejaConnu.genre) : 'Inconnu',
+                coverUrl: (dejaConnu ? (dejaConnu.coverUrl || '') : '') || couvertureOl,
+                isbn: bnfInfo.isbn || (dejaConnu ? dejaConnu.isbn : '') || sheetIsbn,
+                publisher: bnfInfo.publisher,
+                publishedDate: bnfInfo.publishedDate,
+                bnfRef: bnfInfo.bnfRef,
+                needsReview: true,
+                source: 'bnf_only',
+                enrichedAt: new Date().toISOString()
+              });
+              dire('   📚 Données BnF conservées (ISBN, éditeur, année) malgré la panne.');
+            } else {
+              dire('   ⚠️ Google Books indisponible et aucune donnée BnF — livre laissé intact.');
+            }
+            // Pendant une panne, ces lignes se répètent sur des dizaines de
+            // livres : le message de synthèse l'explique déjà.
+            viderJournal(false);
+            continue;
+          }
       }
-    }
     }
     }   // fin du else (Google) et du if (!enrichedData)
 
@@ -1376,14 +1719,20 @@ async function enrich() {
       dire(`   -> Fallback Open Library...`);
       const olResult = await fetchOpenLibrary(titre, auteur, isbn);
       if (olResult) {
+        // Idem : les sujets alimentent aussi le classifieur textuel quand le
+        // mapping par mots-clés échoue.
+        const sujetsTexte = (olResult.subjects || []).join(' ');
         let genre = mapCategoryToGenre(olResult.subjects);
         if (genre === 'Inconnu') {
-          genre = classifyBookText(titre, olResult.description || '');
+          genre = classifyBookText(titre, olResult.description || '', sujetsTexte);
         }
+        genre = normaliserGenre(genre);
         let cover = '';
         if (olResult.coverId) {
           cover = `https://covers.openlibrary.org/b/id/${olResult.coverId}-L.jpg`;
         }
+        // La couverture obtenue par ISBN fait toujours office de repli.
+        if (!cover) cover = couvertureOl;
         // Contrôle de langue sur la description Open Library
         const olDescCheck = acceptDescription(olResult.description || '');
         if (olResult.description && !olDescCheck.keep) {
@@ -1401,6 +1750,10 @@ async function enrich() {
           isbn: olResult.isbn || isbn || '',
           verified: true,
           matchScore: olResult.match,
+          // Sujets Open Library conservés (nombre borné) : ils permettent de
+          // reclasser le livre plus tard sans nouvel appel réseau, exactement
+          // comme googleBooksId le fait pour la recherche.
+          subjects: (olResult.subjects || []).slice(0, 25),
           publisher: bnfInfo ? bnfInfo.publisher : '',
           publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
           bnfRef: bnfInfo ? bnfInfo.bnfRef : '',
@@ -1410,7 +1763,31 @@ async function enrich() {
         };
       }
     }
-    
+
+    // 4) Faute de mieux, la couverture obtenue par ISBN est au moins
+    //    enregistrée. C'est l'ancien comportement de l'étape 1, devenu
+    //    dernier recours au lieu d'écraser Google.
+    if (!enrichedData && couvertureOl) {
+      enrichedData = {
+        title: titre,
+        author: auteur,
+        resolvedTitle: titre,
+        resolvedAuthor: auteur,
+        description: '',
+        genre: 'Inconnu',
+        coverUrl: couvertureOl,
+        isbn: isbn,
+        verified: true,
+        matchScore: { ok: true, titleScore: 1, authorScore: 1 },
+        publisher: bnfInfo ? bnfInfo.publisher : '',
+        publishedDate: bnfInfo ? bnfInfo.publishedDate : '',
+        bnfRef: bnfInfo ? bnfInfo.bnfRef : '',
+        needsReview: false,
+        enrichedAt: new Date().toISOString(),
+        source: 'open_library_isbn'
+      };
+    }
+
     if (enrichedData) {
       // Point unique de fusion : la nouvelle réponse n'écrase jamais un champ
       // déjà rempli. Une source qui ne renvoie pas d'image ne doit pas faire
@@ -1421,8 +1798,10 @@ async function enrich() {
       metadata[slug] = Object.assign({}, dejaConnu, enrichedData, {
         coverUrl: enrichedData.coverUrl || dejaConnu.coverUrl || '',
         description: enrichedData.description || descriptionExistante,
-        genre: (enrichedData.genre && enrichedData.genre !== 'Inconnu')
-          ? enrichedData.genre : (dejaConnu.genre || 'Inconnu'),
+        // Dernier passage par les 11 genres du Kot : quoi que la source ait
+        // renvoyé, la valeur écrite fait partie de la liste du site.
+        genre: normaliserGenre((enrichedData.genre && enrichedData.genre !== 'Inconnu')
+          ? enrichedData.genre : (dejaConnu.genre || 'Inconnu')),
         publisher: enrichedData.publisher || dejaConnu.publisher || '',
         publishedDate: enrichedData.publishedDate || dejaConnu.publishedDate || '',
         bnfRef: enrichedData.bnfRef || dejaConnu.bnfRef || '',
@@ -1444,8 +1823,8 @@ async function enrich() {
         title: titre,
         author: auteur,
         description: gardeDescription,
-        genre: dejaConnu.genre && dejaConnu.genre !== 'Inconnu' ? dejaConnu.genre : 'Inconnu',
-        coverUrl: dejaConnu.coverUrl || '',
+        genre: normaliserGenre(dejaConnu.genre && dejaConnu.genre !== 'Inconnu' ? dejaConnu.genre : 'Inconnu'),
+        coverUrl: dejaConnu.coverUrl || couvertureOl || '',
         isbn: isbn || dejaConnu.isbn || sheetIsbn || '',
         publisher: (bnf && bnf.confirmed ? bnf.publisher : '') || dejaConnu.publisher || '',
         publishedDate: (bnf && bnf.confirmed ? bnf.pubDate : '') || dejaConnu.publishedDate || '',
@@ -1504,6 +1883,12 @@ async function enrich() {
   console.log(`Erreurs temporaires (à retenter): ${temporaryErrorCount}`);
   console.log(`Livres sans Google (coupe-circuit): ${googleSkippedCount}`);
   console.log(`Total livres dans le cache     : ${Object.keys(metadata).length}`);
+  if (genresNettoyes > 0) {
+    console.log(`🧹 Genres hors des 11 du Kot corrigés dans le cache : ${genresNettoyes}`);
+  }
+  if (genresHorsListe > 0) {
+    console.log(`⚠️  Genres hors des 11 du Kot ignorés pendant ce run : ${genresHorsListe}`);
+  }
   if (googleSkippedCount > 0) {
     console.log(`🔌 Google Books ignoré pour ${googleSkippedCount} livre(s) (taux d'échec ${Math.round(googleFailureRate() * 100)} %).`);
   }
@@ -1533,18 +1918,43 @@ module.exports = {
   fetchOpenLibrary,
   fetchOpenLibraryCoverByIsbn,
   fetchGoogleBooks,
+  httpGet,
+  backoffDelay,
+  classify429,
+  detectLanguage,
+  acceptDescription,
+  isCatalogDumping,
+  classifyBookText,
+  mapCategoryToGenre,
+  genreValide,
+  normaliserGenre,
+  normaliserPourClassification,
+  GENRE_KEYWORDS,
+  CATEGORY_KEYWORDS,
+  VALID_GENRES,
   matchScore,
   scoreTitle,
   scoreAuthor,
-  acceptDescription,
-  classifyBookText,
-  mapCategoryToGenre,
-  detectLanguage,
-  isCatalogDumping,
   cleanPublisher,
   extractYear,
   normalizeIsbn,
   slugify,
   googleUnhealthy,
-  SHEET_URL
+  SHEET_URL,
+  // Réexportés pour rendre les seuils observables depuis les tests.
+  config: {
+    RETRY_ON_5XX,
+    RETRY_BASE_MS,
+    RETRY_MAX_MS,
+    GOOGLE_DAILY_CAP,
+    GOOGLE_BREAKER,
+    GOOGLE_WINDOW,
+    GOOGLE_UNHEALTHY_RATE,
+    GOOGLE_MIN_SAMPLES,
+    VALID_GENRES,
+    LANG_MIN_DENSITY,
+    LANG_MIN_HITS,
+    LANG_ES_MIN_HITS,
+    LANG_ES_MIN_DENSITY
+  }
 };
